@@ -154,13 +154,19 @@ namespace {
         // of elements - did we reach the end of both ranges?
         if (leftIt != leftEnd) {
             for (; leftIt != leftEnd; ++leftIt) {
-                leftLine += " " + toQString(*leftIt);
+                auto item = toQString(*leftIt);
+                leftLine += " " + item;
+                item.fill('X');
+                rightLine += " " + item;
             }
             equal = false;
 
         } else if (rightIt != rightEnd) {
             for (; rightIt != rightEnd; ++rightIt) {
-                rightLine += " " + toQString(*rightIt);
+                auto item = toQString(*leftIt);
+                rightLine += " " + item;
+                item.fill('X');
+                leftLine += " " + item;
             }
             equal = false;
         }
@@ -602,7 +608,7 @@ void ResultSetQuickCheckTest::testUsedResourcesForAgents()
         {                                                                      \
             sort(memItems, ResourceScoreCache::Column().Dir()                  \
                            | ResourceScoreCache::targettedResource().asc());   \
-            ResultSet dbItems = baseTerm | OrderFlag;                          \
+            ResultSet dbItems = baseTerm | OrderFlag | Limit(100);             \
             ASSERT_RANGE_EQUAL(memItems, dbItems);                             \
         }
 
