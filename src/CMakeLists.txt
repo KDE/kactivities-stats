@@ -47,8 +47,8 @@ include_directories (
 set_target_properties (
    KF5ActivitiesStats
    PROPERTIES
-   VERSION "0.0.1"
-   SOVERSION "1"
+   VERSION "5.19.0"
+   SOVERSION "5"
    EXPORT_NAME ActivitiesStats
    )
 

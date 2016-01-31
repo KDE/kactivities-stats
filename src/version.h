@@ -29,17 +29,17 @@
  * file formats or network protocols
  */
 #define KACTIVITIESSTATS_VERSION_STRING \
-    "0.0.1"
+    "5.19.0"
 
 /// @brief Major version of libkactivitiesstats, at compile time
 #define KACTIVITIESSTATS_VERSION_MAJOR \
-    0
+    5
 /// @brief Minor version of libkactivitiesstats, at compile time
 #define KACTIVITIESSTATS_VERSION_MINOR \
-    0
+    19
 /// @brief Release version of libkactivitiesstats, at compile time
 #define KACTIVITIESSTATS_VERSION_RELEASE \
-    1
+    0
 
 #define KACTIVITIESSTATS_MAKE_VERSION(a, b, c) \
     (((a) << 16) | ((b) << 8) | (c))
