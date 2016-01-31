@@ -21,7 +21,6 @@
 #include <QDebug>
 
 namespace KActivities {
-namespace Experimental {
 namespace Stats {
 
 // Term classes
@@ -86,10 +85,9 @@ Terms::Url Terms::Url::contains(const QString &infix)
 }
 
 } // namespace Stats
-} // namespace Experimental
 } // namespace KActivities
 
-namespace KAStats = KActivities::Experimental::Stats;
+namespace KAStats = KActivities::Stats;
 
 #define QDEBUG_TERM_OUT(TYPE, OUT)                               \
     QDebug operator<<(QDebug dbg, const KAStats::Terms::TYPE &_) \

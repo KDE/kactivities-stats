@@ -20,7 +20,6 @@
 #include <boost/optional.hpp>
 
 namespace KActivities {
-namespace Experimental {
 namespace Stats {
 
 using namespace Terms;
@@ -262,6 +261,5 @@ iterator::difference_type operator-(const iterator &left, const iterator &right)
 }
 
 } // namespace Stats
-} // namespace Experimental
 } // namespace KActivities
 

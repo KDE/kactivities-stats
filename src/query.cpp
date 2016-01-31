@@ -21,7 +21,6 @@
 #include <QDebug>
 
 namespace KActivities {
-namespace Experimental {
 namespace Stats {
 
 namespace details {
@@ -184,10 +183,9 @@ int Query::offset() const
 }
 
 } // namespace Stats
-} // namespace Experimental
 } // namespace KActivities
 
-namespace KAStats = KActivities::Experimental::Stats;
+namespace KAStats = KActivities::Stats;
 
 QDebug operator<<(QDebug dbg, const KAStats::Query &query)
 {

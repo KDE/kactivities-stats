@@ -38,7 +38,6 @@
 #include "activitiessync_p.h"
 
 namespace KActivities {
-namespace Experimental {
 namespace Stats {
 
 using namespace Terms;
@@ -428,7 +427,6 @@ ResultSet::Result ResultSet::at(int index) const
 }
 
 } // namespace Stats
-} // namespace Experimental
 } // namespace KActivities
 
 #include "resultset_iterator.cpp"

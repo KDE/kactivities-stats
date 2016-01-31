@@ -25,7 +25,6 @@
 #include <QDebug>
 
 namespace KActivities {
-namespace Experimental {
 namespace Stats {
 
 class ResultSetPrivate;
@@ -234,7 +233,6 @@ inline QDebug operator<< (QDebug out, const ResultSet::Result &result)
 }
 
 } // namespace Stats
-} // namespace Experimental
 } // namespace KActivities
 
 #endif // KACTIVITIES_STATS_RESULTSET

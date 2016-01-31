@@ -33,7 +33,6 @@ class QDBusPendingCallWatcher;
 class KConfigGroup;
 
 namespace KActivities {
-namespace Experimental {
 namespace Stats {
 
 class ResultModelPrivate;
@@ -127,7 +126,6 @@ private:
 };
 
 } // namespace Stats
-} // namespace Experimental
 } // namespace KActivities
 
 #endif // KACTIVITIES_STATS_RESULTMODEL_H

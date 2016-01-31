@@ -25,7 +25,6 @@
 #include "query.h"
 
 namespace KActivities {
-namespace Experimental {
 namespace Stats {
 
 /**
@@ -57,7 +56,6 @@ void KACTIVITIESSTATS_EXPORT forgetEarlierStats(Terms::Activity activity,
 void KACTIVITIESSTATS_EXPORT forgetResources(const Query &query);
 
 } // namespace Stats
-} // namespace Experimental
 } // namespace KActivities
 
 #endif // CLEANING_H

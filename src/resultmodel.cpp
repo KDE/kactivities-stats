@@ -53,7 +53,6 @@
 #define QDBG qDebug() << "KActivitiesStats(" << (void*)this << ")"
 
 namespace KActivities {
-namespace Experimental {
 namespace Stats {
 
 class ResultModelPrivate {
@@ -85,11 +84,11 @@ public:
             , m_clientId(clientId)
         {
             if (!m_clientId.isEmpty()) {
-                m_configFile = new KConfig(
+                m_configFile.reset(new KConfig(
                         QStandardPaths::writableLocation(QStandardPaths::ConfigLocation)
-                        + QStringLiteral("/kactivitymanagerd-statsrc"));
+                        + QStringLiteral("/kactivitymanagerd-statsrc")));
 
-                m_config = KConfigGroup(m_configFile, "ResultModel-OrderingFor-" + clientId);
+                m_config = KConfigGroup(m_configFile.get(), "ResultModel-OrderingFor-" + clientId);
 
                 if (m_config.isValid()) {
                     m_fixedItems = m_config.readEntry("kactivitiesLinkedItemsOrder",
@@ -102,7 +101,6 @@ public:
 
         ~Cache()
         {
-            delete m_configFile;
         }
 
         inline int size() const
@@ -178,7 +176,7 @@ public:
         int m_countLimit;
 
         QString m_clientId;
-        KConfig *m_configFile;
+        std::unique_ptr<KConfig> m_configFile;
         KConfigGroup m_config;
         QStringList m_fixedItems;
 
@@ -1006,7 +1004,6 @@ void ResultModel::unlinkFromActivity(const QUrl &resource,
 }
 
 } // namespace Stats
-} // namespace Experimental
 } // namespace KActivities
 
 // #include "resourcemodel.moc"

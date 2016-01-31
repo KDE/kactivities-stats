@@ -53,7 +53,6 @@
 #define QDBG qDebug() << "KActivitiesStats(" << (void*)this << ")"
 
 namespace KActivities {
-namespace Experimental {
 namespace Stats {
 
 // Main class
@@ -372,6 +371,5 @@ void ResultWatcher::unlinkFromActivity(const QUrl &resource,
 }
 
 } // namespace Stats
-} // namespace Experimental
 } // namespace KActivities
 

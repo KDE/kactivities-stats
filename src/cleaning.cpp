@@ -26,7 +26,6 @@
 #include "common/dbus/common.h"
 
 namespace KActivities {
-namespace Experimental {
 namespace Stats {
 
 
@@ -74,6 +73,5 @@ void forgetEarlierStats(Terms::Activity activities, int months)
 }
 
 } // namespace Stats
-} // namespace Experimental
 } // namespace KActivities
 

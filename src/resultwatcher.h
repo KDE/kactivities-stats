@@ -26,7 +26,6 @@
 #include "resultset.h"
 
 namespace KActivities {
-namespace Experimental {
 namespace Stats {
 
 class ResultWatcherPrivate;
@@ -121,7 +120,6 @@ private:
 };
 
 } // namespace Stats
-} // namespace Experimental
 } // namespace KActivities
 
 #endif // KACTIVITIES_STATS_RESULTWATCHER

@@ -34,7 +34,6 @@
 #include "terms.h"
 
 namespace KActivities {
-namespace Experimental {
 namespace Stats {
 
 class QueryPrivate;
@@ -159,11 +158,10 @@ inline Query operator| (Terms::Select selection, Term &&term)
 
 
 } // namespace Stats
-} // namespace Experimental
 } // namespace KActivities
 
 KACTIVITIESSTATS_EXPORT
-QDebug operator<<(QDebug dbg, const KActivities::Experimental::Stats::Query &query);
+QDebug operator<<(QDebug dbg, const KActivities::Stats::Query &query);
 
 #endif // KACTIVITIES_STATS_QUERY_H
 

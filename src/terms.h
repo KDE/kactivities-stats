@@ -32,7 +32,6 @@
 #include "kactivitiesstats_export.h"
 
 namespace KActivities {
-namespace Experimental {
 namespace Stats {
 
 namespace Terms {
@@ -203,32 +202,31 @@ namespace Terms {
 } // namespace Terms
 
 } // namespace Stats
-} // namespace Experimental
 } // namespace KActivities
 
 KACTIVITIESSTATS_EXPORT
-QDebug operator<<(QDebug dbg, const KActivities::Experimental::Stats::Terms::Order &order);
+QDebug operator<<(QDebug dbg, const KActivities::Stats::Terms::Order &order);
 
 KACTIVITIESSTATS_EXPORT
-QDebug operator<<(QDebug dbg, const KActivities::Experimental::Stats::Terms::Select &select);
+QDebug operator<<(QDebug dbg, const KActivities::Stats::Terms::Select &select);
 
 KACTIVITIESSTATS_EXPORT
-QDebug operator<<(QDebug dbg, const KActivities::Experimental::Stats::Terms::Type &type);
+QDebug operator<<(QDebug dbg, const KActivities::Stats::Terms::Type &type);
 
 KACTIVITIESSTATS_EXPORT
-QDebug operator<<(QDebug dbg, const KActivities::Experimental::Stats::Terms::Agent &agent);
+QDebug operator<<(QDebug dbg, const KActivities::Stats::Terms::Agent &agent);
 
 KACTIVITIESSTATS_EXPORT
-QDebug operator<<(QDebug dbg, const KActivities::Experimental::Stats::Terms::Activity &activity);
+QDebug operator<<(QDebug dbg, const KActivities::Stats::Terms::Activity &activity);
 
 KACTIVITIESSTATS_EXPORT
-QDebug operator<<(QDebug dbg, const KActivities::Experimental::Stats::Terms::Url &url);
+QDebug operator<<(QDebug dbg, const KActivities::Stats::Terms::Url &url);
 
 KACTIVITIESSTATS_EXPORT
-QDebug operator<<(QDebug dbg, const KActivities::Experimental::Stats::Terms::Limit &limit);
+QDebug operator<<(QDebug dbg, const KActivities::Stats::Terms::Limit &limit);
 
 KACTIVITIESSTATS_EXPORT
-QDebug operator<<(QDebug dbg, const KActivities::Experimental::Stats::Terms::Offset &offset);
+QDebug operator<<(QDebug dbg, const KActivities::Stats::Terms::Offset &offset);
 
 #endif // KACTIVITIES_STATS_TERMS_H
 
