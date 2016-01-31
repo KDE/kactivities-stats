@@ -181,24 +181,27 @@ public:
         ));
     }
 
-#undef DEBUG_MATCHERS
-
     bool eventMatches(const QString &agent, const QString &resource,
                       const QString &activity) const
     {
         // The order of checks is not arbitrary, it is sorted
         // from the cheapest, to the most expensive
-        return agentMatches(agent)
+        return kamd::utils::debug_and_return(DEBUG_MATCHERS, "event matches?",
+               agentMatches(agent)
                && activityMatches(activity)
                && urlMatches(resource)
                && typeMatches(resource)
-               ;
+               );
     }
 
     void onResourceLinkedToActivity(const QString &agent,
                                     const QString &resource,
                                     const QString &activity)
     {
+        #if DEBUG_MATCHERS
+        qDebug() << "Resource linked: " << agent << resource << activity;
+        #endif
+
         // The used resources do not really care about the linked ones
         if (query.selection() == Terms::UsedResources) return;
 
@@ -213,6 +216,10 @@ public:
                                         const QString &resource,
                                         const QString &activity)
     {
+        #if DEBUG_MATCHERS
+        qDebug() << "Resource unlinked: " << agent << resource << activity;
+        #endif
+
         // The used resources do not really care about the linked ones
         if (query.selection() == Terms::UsedResources) return;
 
@@ -220,6 +227,8 @@ public:
 
         emit q->resultUnlinked(resource);
     }
+
+#undef DEBUG_MATCHERS
 
     void onResourceScoreUpdated(const QString &activity, const QString &agent,
                                 const QString &resource, double score,

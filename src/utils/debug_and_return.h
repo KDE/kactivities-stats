@@ -38,11 +38,9 @@ T debug_and_return(const char * message, T && value) {
 
 template<typename T>
 T debug_and_return(bool debug, const char * message, T && value) {
-    #ifdef QT_DEBUG
     if (debug) {
         qDebug() << message << " " << value;
     }
-    #endif
 
     return std::forward<T>(value);
 }
