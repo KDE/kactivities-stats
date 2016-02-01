@@ -99,8 +99,6 @@ Q_SIGNALS:
     void resultsInvalidated();
 
 public:
-    // TODO: BLOCKER Move these to libKActivities
-
     void linkToActivity(const QUrl &resource,
                         const Terms::Activity &activity
                             = Terms::Activity(QStringList()),

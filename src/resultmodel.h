@@ -38,9 +38,9 @@ namespace Stats {
 class ResultModelPrivate;
 
 /**
- * ResultModel
+ * Provides a model which displays the resources matching
+ * the specified Query.
  */
-
 class KACTIVITIESSTATS_EXPORT ResultModel : public QAbstractListModel {
     Q_OBJECT
 
@@ -70,7 +70,6 @@ public:
     void fetchMore(const QModelIndex &parent) Q_DECL_OVERRIDE;
     bool canFetchMore(const QModelIndex &parent) const Q_DECL_OVERRIDE;
 
-    // TODO: BLOCKER Move these to libKActivities
     void linkToActivity(const QUrl &resource,
                         const Terms::Activity &activity
                             = Terms::Activity(QStringList()),
@@ -106,7 +105,8 @@ public Q_SLOTS:
      * Note that this only applies to the linked resources
      * since the recently/frequently used ones have
      * their natural order.
-     * This requires the clientId to be specified on construction.
+     *
+     * @note This requires the clientId to be specified on construction.
      */
     void setResultPosition(const QString &resource, int position);
 
@@ -116,7 +116,8 @@ public Q_SLOTS:
      * Note that this only affects the linked resources
      * since the recently/frequently used ones have
      * their natural order.
-     * This requires the config to be specified on construction.
+     *
+     * @note This requires the clientId to be specified on construction.
      */
     void sortItems(Qt::SortOrder sortOrder);
 

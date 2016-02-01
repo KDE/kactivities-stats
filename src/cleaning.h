@@ -53,6 +53,9 @@ void KACTIVITIESSTATS_EXPORT forgetRecentStats(Terms::Activity activity,
 void KACTIVITIESSTATS_EXPORT forgetEarlierStats(Terms::Activity activity,
                                                 int months);
 
+/**
+ * Forget resources that match the specified query
+ */
 void KACTIVITIESSTATS_EXPORT forgetResources(const Query &query);
 
 } // namespace Stats

@@ -39,10 +39,30 @@ namespace Stats {
 class QueryPrivate;
 
 /**
- * Class which defines what resource statistics should be
- * returned.
+ * The activities system tracks resources (documents, contacts, etc.)
+ * that the user has used. It also allows linking resources to
+ * specific activities (like bookmarks, favorites, etc.).
  *
- * By default, limit will be set to 10.
+ * The Query class specifies which resources to return -
+ * the previously used ones, the linked ones, or to
+ * combine these two.
+ *
+ * It allows filtering the results depending on the resource type,
+ * the agent (application that reported the usage event,
+ * @see KActivities::ResourceInstance) and the activity the resource
+ * has been used in, or linked to. It also allows filtering
+ * on the URL of the resource.
+ *
+ * While it can be explicitly instantiated, a preferred approach
+ * is to use the pipe syntax like this:
+ *
+ * <code>
+ * auto query = UsedResources
+ *                 | RecentlyUsedFirst
+ *                 | Agent::any()
+ *                 | Type::any()
+ *                 | Activity::current();
+ * </code>
  */
 class KACTIVITIESSTATS_EXPORT Query {
 public:
@@ -62,12 +82,14 @@ public:
     QStringList types() const;
     QStringList agents() const;
     QStringList activities() const;
+
     QStringList urlFilters() const;
     Terms::Order ordering() const;
     int offset() const;
     int limit() const;
 
     void setSelection(Terms::Select selection);
+
     void addTypes(const QStringList &types);
     void addAgents(const QStringList &agents);
     void addActivities(const QStringList &activities);

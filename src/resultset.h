@@ -35,9 +35,20 @@ class ResultSet_IteratorPrivate;
  * Class that can query the KActivities usage tracking mechanism
  * for resources.
  *
- * Note: It is important to note that you should not create a
- * long-living instance of ResultSet. It might lock the database
- * and break proper updating mechanisms.
+ * Note: It is important to note that you should not create
+ * long-living instances of ResultSet. It might lock the database
+ * and break proper updating mechanisms. If you want a list of results
+ * that automatically get updated, use ResultModel.
+ *
+ * ResultSet is meant to be used when you just need to fetch a few results
+ * like this:
+ *
+ * <code>
+ * auto results = ResultSet(AllResources | Agent("org.kde.kate"));
+ * for (const auto &result: results) {
+ *     // ...
+ * }
+ * </code>
  */
 class KACTIVITIESSTATS_EXPORT ResultSet {
 public:
