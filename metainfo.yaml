@@ -4,7 +4,7 @@ tier: 2
 type: solution
 platforms:
     - name: Linux
-      note: Needs QtDBus, QtSql, KActivities
+      note: Needs QtDBus, QtSql, KActivities, boost
 portingAid: false
 deprecated: false
 release: false
