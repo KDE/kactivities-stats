@@ -105,8 +105,10 @@ install (
    )
 
 add_subdirectory (src)
-add_subdirectory (autotests)
-add_subdirectory (tests)
+if(BUILD_TESTING)
+  add_subdirectory (autotests)
+  add_subdirectory (tests)
+endif (BUILD_TESTING)
 
 # Write out the features
 feature_summary (WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
