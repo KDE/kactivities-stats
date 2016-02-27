@@ -42,6 +42,8 @@ set(KF5_DEP_VERSION "5.18.0") # handled by release scripts
 find_package (KF5Config ${KF5_DEP_VERSION} CONFIG REQUIRED)
 find_package (KF5Activities ${KF5_DEP_VERSION} CONFIG REQUIRED)
 
+find_package (Boost 1.49 REQUIRED)
+
 # Basic includes
 include (CPack)
 
