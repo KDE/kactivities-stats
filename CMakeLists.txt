@@ -35,8 +35,8 @@ set (CMAKE_AUTOMOC ON)
 find_package (Qt5 ${REQUIRED_QT_VERSION} CONFIG REQUIRED COMPONENTS Core DBus Sql)
 
 # KDE Frameworks
-set(KF5_VERSION "5.19.0") # handled by release scripts
-set(KF5_DEP_VERSION "5.18.0") # handled by release scripts
+set(KF5_VERSION "5.20.0") # handled by release scripts
+set(KF5_DEP_VERSION "5.20.0") # handled by release scripts
 # find_package (KF5DBusAddons ${KF5_DEP_VERSION} CONFIG REQUIRED)
 # find_package (KF5I18n ${KF5_DEP_VERSION} CONFIG REQUIRED)
 find_package (KF5Config ${KF5_DEP_VERSION} CONFIG REQUIRED)
