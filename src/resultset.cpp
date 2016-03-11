@@ -333,7 +333,8 @@ public:
     const QString &allResourcesQuery() const
     {
         // TODO: Implement counting of the linked items
-        // int linkedItemsCount = 0; // ...;
+
+        // int linkedItemsCount = 0;
         //
         // if (linkedItemsCount >= limit) {
         //     return linkedResourcesQuery();
@@ -342,6 +343,7 @@ public:
         //     return usedResourcesQuery();
         //
         // } else {
+
             static QString usedResourcesQuery_ = usedResourcesQuery();
 
             static const QString query =
@@ -355,6 +357,7 @@ public:
                         QLatin1String("WHERE rsc.targettedResource NOT IN "
                         "(SELECT resource FROM LinkedResourcesResults) AND "))
                     .replace(QLatin1String("1 as linkStatus"), QLatin1String("0 as linkStatus"));
+
         // }
 
         return query;

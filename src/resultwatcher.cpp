@@ -211,7 +211,7 @@ public:
         if (!eventMatches(agent, resource, activity)) return;
 
         // TODO: See whether it makes sense to have
-        // lastUpdate/firstUpdate here as well
+        //       lastUpdate/firstUpdate here as well
         emit q->resultLinked(resource);
     }
 
