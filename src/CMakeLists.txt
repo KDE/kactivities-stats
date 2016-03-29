@@ -14,8 +14,6 @@ set (
    ${KASTATS_CURRENT_ROOT_SOURCE_DIR}/src/common/database/Database.cpp
    ${KASTATS_CURRENT_ROOT_SOURCE_DIR}/src/common/database/schema/ResourcesDatabaseSchema.cpp
    ${KASTATS_CURRENT_ROOT_SOURCE_DIR}/src/utils/qsqlquery_iterator.cpp
-
-   version.cpp
    )
 
 qt5_add_dbus_interface (
@@ -48,8 +46,8 @@ include_directories (
 set_target_properties (
    KF5ActivitiesStats
    PROPERTIES
-   VERSION "5.20.0"
-   SOVERSION "5"
+   VERSION ${KACTIVITIESSTATS_VERSION_STRING}
+   SOVERSION ${KACTIVITIESSTATS_SOVERSION}
    EXPORT_NAME ActivitiesStats
    )
 
@@ -81,7 +79,6 @@ ecm_generate_headers (
    ResultWatcher
    ResultModel
    Cleaning
-   Version
 
    PREFIX KActivitiesStats
    REQUIRED_HEADERS KActivitiesStats_HEADERS
