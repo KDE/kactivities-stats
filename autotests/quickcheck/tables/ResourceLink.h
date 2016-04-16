@@ -37,9 +37,9 @@ namespace ResourceLink {
         }
     };
 
-    DECL_COLUMN(QString, usedActivity);
-    DECL_COLUMN(QString, initiatingAgent);
-    DECL_COLUMN(QString, targettedResource);
+    DECL_COLUMN(QString, usedActivity)
+    DECL_COLUMN(QString, initiatingAgent)
+    DECL_COLUMN(QString, targettedResource)
 
     template <typename Range>
     inline std::vector<Item> groupByResource(const Range &range)

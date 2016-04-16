@@ -58,7 +58,7 @@ namespace {
     }
 
     std::map<DatabaseInfo, std::weak_ptr<Database>> databases;
-};
+}
 
 class QSqlDatabaseWrapper {
 private:

@@ -46,13 +46,13 @@ namespace ResourceScoreCache {
 
     };
 
-    DECL_COLUMN(QString, usedActivity);
-    DECL_COLUMN(QString, initiatingAgent);
-    DECL_COLUMN(QString, targettedResource);
+    DECL_COLUMN(QString, usedActivity)
+    DECL_COLUMN(QString, initiatingAgent)
+    DECL_COLUMN(QString, targettedResource)
 
-    DECL_COLUMN(double, cachedScore);
-    DECL_COLUMN(int, lastUpdate);
-    DECL_COLUMN(int, firstUpdate);
+    DECL_COLUMN(double, cachedScore)
+    DECL_COLUMN(int, lastUpdate)
+    DECL_COLUMN(int, firstUpdate)
 
     template <typename Range>
     inline std::vector<Item> groupByResource(const Range &range)

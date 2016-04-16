@@ -37,9 +37,9 @@ namespace ResourceInfo {
 
     };
 
-    DECL_COLUMN(QString, targettedResource);
-    DECL_COLUMN(QString, title);
-    DECL_COLUMN(QString, mimetype);
+    DECL_COLUMN(QString, targettedResource)
+    DECL_COLUMN(QString, title)
+    DECL_COLUMN(QString, mimetype)
 
 }
 
