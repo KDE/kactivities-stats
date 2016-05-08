@@ -989,6 +989,7 @@ void ResultModel::setResultPosition(const QString &resource, int position)
 void ResultModel::sortItems(Qt::SortOrder sortOrder)
 {
     // TODO
+    Q_UNUSED(sortOrder);
 }
 
 void ResultModel::linkToActivity(const QUrl &resource,
@@ -1009,4 +1010,3 @@ void ResultModel::unlinkFromActivity(const QUrl &resource,
 } // namespace KActivities
 
 // #include "resourcemodel.moc"
-
