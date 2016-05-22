@@ -12,3 +12,7 @@ libraries:
  - qmake: KActivitiesStats
    cmake: "KF5::ActivitiesStats"
 cmakename: KF5ActivitiesStats
+
+public_lib: true
+group: Frameworks
+subgroup: Tier 2
