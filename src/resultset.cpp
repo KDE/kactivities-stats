@@ -39,6 +39,8 @@
 // KActivities
 #include "activitiessync_p.h"
 
+#define DEBUG_QUERIES 0
+
 namespace KActivities {
 namespace Stats {
 
@@ -244,7 +246,7 @@ public:
             + limitOffsetSuffix();
 
 
-        return kamd::utils::debug_and_return("Query: ",
+        return kamd::utils::debug_and_return(DEBUG_QUERIES, "Query: ",
             query
                 .replace(QLatin1String("$orderingColumn"), orderingColumn)
                 .replace(QLatin1String("$agentsFilter"), agentsFilter.join(QStringLiteral(" OR ")))
