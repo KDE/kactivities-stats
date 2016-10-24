@@ -171,6 +171,13 @@ public:
                                 d->destinationFor(*resourcePosition));
         }
 
+        inline void debug() const
+        {
+            for (const auto& item: m_items) {
+                qDebug() << "Item: " << item;
+            }
+        }
+
     private:
         ResultModelPrivate *const d;
 
@@ -536,10 +543,15 @@ public:
 
         #define ORDER_BY(Field) member(&ResultSet::Result::Field) > Field
         #define ORDER_BY_FULL(Field)                                           \
-            cache.lowerBound(FixedItemsLessThan(cache, resource)               \
-                             && ORDER_BY(linkStatus)                           \
-                             && ORDER_BY(Field)                                \
-                             && ORDER_BY(resource))
+            (query.selection() == Terms::AllResources ?                        \
+                cache.lowerBound(FixedItemsLessThan(cache, resource)           \
+                                 && ORDER_BY(linkStatus)                       \
+                                 && ORDER_BY(Field)                            \
+                                 && ORDER_BY(resource)) :                      \
+                cache.lowerBound(FixedItemsLessThan(cache, resource)           \
+                                 && ORDER_BY(Field)                            \
+                                 && ORDER_BY(resource))                        \
+            )
 
         const auto destination =
             query.ordering() == HighScoredFirst      ? ORDER_BY_FULL(score):
@@ -694,7 +706,7 @@ public:
     {
         using boost::lower_bound;
 
-        QDBG << "ResultModelPrivate::onResultAdded "
+        QDBG << "ResultModelPrivate::onResultScoreUpdated "
              << "result added:" << resource
              << "score:" << score
              << "last:" << lastUpdate
@@ -707,7 +719,9 @@ public:
 
         ResultSet::Result::LinkStatus linkStatus
             = result ? result->linkStatus()
-                     : ResultSet::Result::NotLinked;
+            : query.selection() != Terms::UsedResources ? ResultSet::Result::Unknown
+            : query.selection() != Terms::LinkedResources ? ResultSet::Result::Linked
+            : ResultSet::Result::NotLinked;
 
         if (result) {
             // We are only updating a result we already had,

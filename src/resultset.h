@@ -240,8 +240,9 @@ inline QDebug operator<< (QDebug out, const ResultSet::Result &result)
         << (result.linkStatus() == ResultSet::Result::Linked ? "⊤" :
             result.linkStatus() == ResultSet::Result::NotLinked ? "⊥" : "?")
         << result.score()
-        << result.title()
-        << result.resource()
+        << (result.title() != result.resource() ? result.title() : QString())
+        << result.lastUpdate()
+        << result.resource().rightRef(20)
         ;
 }
 
