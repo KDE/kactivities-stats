@@ -202,7 +202,7 @@ public:
                                     const QString &activity)
     {
         #if DEBUG_MATCHERS
-        qDebug() << "Resource linked: " << agent << resource << activity;
+        qDebug() << "Resource has been linked: " << agent << resource << activity;
         #endif
 
         // The used resources do not really care about the linked ones

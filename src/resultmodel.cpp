@@ -785,15 +785,8 @@ public:
     {
         const auto result = cache.find(resource);
 
-        if (!result) return;
-
-        if (query.selection() == Terms::LinkedResources) {
+        if (query.selection() != Terms::UsedResources) {
             onResultScoreUpdated(resource, 0, 0, 0);
-
-        } else if (query.selection() == Terms::AllResources) {
-            result->setLinkStatus(ResultSet::Result::Linked);
-            repositionResult(result, destinationFor(*result));
-
         }
     }
 
@@ -915,7 +908,9 @@ QVariant ResultModel::data(const QModelIndex &item, int role) const
 {
     const auto row = item.row();
 
-    if (row < 0 || row >= d->cache.size()) return QVariant();
+    if (row < 0 || row >= d->cache.size()) {
+        return QVariant();
+    }
 
     const auto &result = d->cache[row];
 
