@@ -783,8 +783,6 @@ public:
 
     void onResultLinked(const QString &resource)
     {
-        const auto result = cache.find(resource);
-
         if (query.selection() != Terms::UsedResources) {
             onResultScoreUpdated(resource, 0, 0, 0);
         }
