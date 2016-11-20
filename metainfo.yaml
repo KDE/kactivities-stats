@@ -5,6 +5,8 @@ type: solution
 platforms:
     - name: Linux
       note: Needs QtDBus, QtSql, KActivities, boost
+    - name: FreeBSD 
+      note: Needs QtDBus, QtSql, KActivities, boost
 portingAid: false
 deprecated: false
 release: true
