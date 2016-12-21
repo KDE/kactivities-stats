@@ -376,6 +376,7 @@ void ResultWatcher::unlinkFromActivity(const QUrl &resource,
 
     for (const auto &activity : activities) {
         for (const auto &agent : agents) {
+            qDebug() << "Unlink " << agent << resource << activity;
             d->linking->UnlinkResourceFromActivity(agent, resource.toString(),
                                                    activity);
         }

@@ -893,12 +893,13 @@ ResultModel::~ResultModel()
 QHash<int, QByteArray> ResultModel::roleNames() const
 {
     return {
-        { ResourceRole    , "resource" },
-        { TitleRole       , "title" },
-        { ScoreRole       , "score" },
-        { FirstUpdateRole , "created" },
-        { LastUpdateRole  , "modified" },
-        { LinkStatusRole  , "linkStatus" }
+        { ResourceRole         , "resource" },
+        { TitleRole            , "title" },
+        { ScoreRole            , "score" },
+        { FirstUpdateRole      , "created" },
+        { LastUpdateRole       , "modified" },
+        { LinkStatusRole       , "linkStatus" },
+        { LinkedActivitiesRole , "linkedActivities" }
     };
 }
 
@@ -918,12 +919,13 @@ QVariant ResultModel::data(const QModelIndex &item, int role) const
                QString::number(result.linkStatus()) + " - " +
                QString::number(result.score())
            )
-         : role == ResourceRole    ? result.resource()
-         : role == TitleRole       ? result.title()
-         : role == ScoreRole       ? result.score()
-         : role == FirstUpdateRole ? result.firstUpdate()
-         : role == LastUpdateRole  ? result.lastUpdate()
-         : role == LinkStatusRole  ? result.linkStatus()
+         : role == ResourceRole         ? result.resource()
+         : role == TitleRole            ? result.title()
+         : role == ScoreRole            ? result.score()
+         : role == FirstUpdateRole      ? result.firstUpdate()
+         : role == LastUpdateRole       ? result.lastUpdate()
+         : role == LinkStatusRole       ? result.linkStatus()
+         : role == LinkedActivitiesRole ? result.linkedActivities()
          : QVariant()
          ;
 }

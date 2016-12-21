@@ -52,12 +52,13 @@ public:
     virtual ~ResultModel();
 
     enum Roles {
-        ResourceRole    = Qt::UserRole,
-        TitleRole       = Qt::UserRole + 1,
-        ScoreRole       = Qt::UserRole + 2,
-        FirstUpdateRole = Qt::UserRole + 3,
-        LastUpdateRole  = Qt::UserRole + 4,
-        LinkStatusRole  = Qt::UserRole + 5
+        ResourceRole         = Qt::UserRole,
+        TitleRole            = Qt::UserRole + 1,
+        ScoreRole            = Qt::UserRole + 2,
+        FirstUpdateRole      = Qt::UserRole + 3,
+        LastUpdateRole       = Qt::UserRole + 4,
+        LinkStatusRole       = Qt::UserRole + 5,
+        LinkedActivitiesRole = Qt::UserRole + 6
     };
 
     int rowCount(const QModelIndex &parent

@@ -29,6 +29,7 @@
 // Local
 #include <common/database/Database.h>
 #include <utils/debug_and_return.h>
+#include <utils/qsqlquery_iterator.h>
 
 // Boost and STL
 #include <boost/range/algorithm/transform.hpp>
@@ -55,6 +56,7 @@ public:
     uint    lastUpdate;
     uint    firstUpdate;
     ResultSet::Result::LinkStatus linkStatus;
+    QStringList linkedActivities;
 
 };
 
@@ -104,8 +106,10 @@ CREATE_GETTER_AND_SETTER(double, score, setScore)
 CREATE_GETTER_AND_SETTER(uint, lastUpdate, setLastUpdate)
 CREATE_GETTER_AND_SETTER(uint, firstUpdate, setFirstUpdate)
 CREATE_GETTER_AND_SETTER(ResultSet::Result::LinkStatus, linkStatus, setLinkStatus)
+CREATE_GETTER_AND_SETTER(QStringList, linkedActivities, setLinkedActivities)
 
 #undef CREATE_GETTER_AND_SETTER
+
 
 class ResultSetPrivate {
 public:
@@ -262,36 +266,37 @@ public:
         //       since the cache was last updated, although, for this query,
         //       scores are not that important.
         static const QString query =
-            QStringLiteral("\n"
-            "SELECT \n"
-            "    rl.targettedResource as resource \n"
-            "  , SUM(rsc.cachedScore) as score \n"
-            "  , MIN(rsc.firstUpdate) as firstUpdate \n"
-            "  , MAX(rsc.lastUpdate)  as lastUpdate \n"
-            "  , rl.usedActivity      as activity \n"
-            "  , rl.initiatingAgent   as agent \n"
-            "  , COALESCE(ri.title, rl.targettedResource) as title \n"
-            "  , ri.mimetype as mimetype \n"
-            "  , 2       as linkStatus \n"
+            R"sql(
+            SELECT
+                rl.targettedResource as resource
+              , SUM(rsc.cachedScore) as score
+              , MIN(rsc.firstUpdate) as firstUpdate
+              , MAX(rsc.lastUpdate)  as lastUpdate
+              , rl.usedActivity      as activity
+              , rl.initiatingAgent   as agent
+              , COALESCE(ri.title, rl.targettedResource) as title
+              , ri.mimetype as mimetype
+              , 2       as linkStatus
 
-            "FROM \n"
-            "    ResourceLink rl \n"
-            "LEFT JOIN \n"
-            "    ResourceScoreCache rsc \n"
-            "    ON rl.targettedResource = rsc.targettedResource \n"
-            "    AND rl.usedActivity     = rsc.usedActivity \n"
-            "    AND rl.initiatingAgent  = rsc.initiatingAgent \n"
-            "LEFT JOIN \n"
-            "    ResourceInfo ri \n"
-            "    ON rl.targettedResource = ri.targettedResource \n"
+            FROM
+                ResourceLink rl
+            LEFT JOIN
+                ResourceScoreCache rsc
+                ON rl.targettedResource = rsc.targettedResource
+                AND rl.usedActivity     = rsc.usedActivity
+                AND rl.initiatingAgent  = rsc.initiatingAgent
+            LEFT JOIN
+                ResourceInfo ri
+                ON rl.targettedResource = ri.targettedResource
 
-            "WHERE \n"
-            "    ($agentsFilter) \n"
-            "    AND ($activitiesFilter) \n"
-            "    AND ($urlFilter)\n"
-            "    AND ($mimetypeFilter)\n"
+            WHERE
+                ($agentsFilter)
+                AND ($activitiesFilter)
+                AND ($urlFilter)
+                AND ($mimetypeFilter)
 
-            "GROUP BY resource, title \n")
+            GROUP BY resource, title
+            )sql"
             ;
 
         return query;
@@ -302,31 +307,32 @@ public:
         // TODO: We need to correct the scores based on the time that passed
         //       since the cache was last updated
         static const QString query =
-            QStringLiteral("\n"
-            "SELECT \n"
-            "    rsc.targettedResource as resource \n"
-            "  , SUM(rsc.cachedScore)  as score \n"
-            "  , MIN(rsc.firstUpdate)  as firstUpdate \n"
-            "  , MAX(rsc.lastUpdate)   as lastUpdate \n"
-            "  , rsc.usedActivity      as activity \n"
-            "  , rsc.initiatingAgent   as agent \n"
-            "  , COALESCE(ri.title, rsc.targettedResource) as title \n"
-            "  , ri.mimetype as mimetype \n"
-            "  , 1 as linkStatus \n" // Note: this is replaced by allResourcesQuery
+            R"sql(
+            SELECT
+                rsc.targettedResource as resource
+              , SUM(rsc.cachedScore)  as score
+              , MIN(rsc.firstUpdate)  as firstUpdate
+              , MAX(rsc.lastUpdate)   as lastUpdate
+              , rsc.usedActivity      as activity
+              , rsc.initiatingAgent   as agent
+              , COALESCE(ri.title, rsc.targettedResource) as title
+              , ri.mimetype as mimetype
+              , 1 as linkStatus -- Note: this is replaced by allResourcesQuery
 
-            "FROM \n"
-            "    ResourceScoreCache rsc \n"
-            "LEFT JOIN \n"
-            "    ResourceInfo ri \n"
-            "    ON rsc.targettedResource = ri.targettedResource \n"
+            FROM
+                ResourceScoreCache rsc
+            LEFT JOIN
+                ResourceInfo ri
+                ON rsc.targettedResource = ri.targettedResource
 
-            "WHERE \n"
-            "    ($agentsFilter) \n"
-            "    AND ($activitiesFilter) \n"
-            "    AND ($urlFilter)\n"
-            "    AND ($mimetypeFilter)\n"
+            WHERE
+                ($agentsFilter)
+                AND ($activitiesFilter)
+                AND ($urlFilter)
+                AND ($mimetypeFilter)
 
-            "GROUP BY resource, title \n")
+            GROUP BY resource, title
+            )sql"
             ;
 
         return query;
@@ -375,8 +381,28 @@ public:
         result.setLastUpdate(query.value(QStringLiteral("lastUpdate")).toInt());
         result.setFirstUpdate(query.value(QStringLiteral("firstUpdate")).toInt());
 
+
         result.setLinkStatus(
             (ResultSet::Result::LinkStatus)query.value(QStringLiteral("linkStatus")).toInt());
+
+        auto query = database->createQuery();
+
+        query.prepare(R"sql(
+            SELECT usedActivity
+            FROM   ResourceLink
+            WHERE  targettedResource = :resource
+            )sql");
+
+        query.bindValue(":resource", result.resource());
+        query.exec();
+
+        QStringList linkedActivities;
+        for (const auto &item: query) {
+            linkedActivities << item[0].toString();
+        }
+
+        result.setLinkedActivities(linkedActivities);
+        qDebug() << result.resource() << "linked to activities" << result.linkedActivities();
 
         return result;
     }
