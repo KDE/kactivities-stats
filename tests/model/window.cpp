@@ -184,7 +184,7 @@ void Window::updateResults()
         Type(ui->textMimetype->text().split(',')) |
 
         // Which activities?
-        Activity(ui->comboActivity->currentText()) |
+        Activity(ui->comboActivity->currentText().split(',')) |
 
         // And how many items
         Limit(ui->spinLimitCount->value())
