@@ -141,6 +141,31 @@ Window::Window()
         ui->comboActivity->addItem(activity);
     }
 
+    foreach (const auto &arg, QCoreApplication::arguments()) {
+        if (arg == "--used") {
+            ui->radioSelectUsedResources->setChecked(true);
+
+        } else if (arg == "--linked") {
+            ui->radioSelectLinkedResources->setChecked(true);
+
+        } else if (arg == "--combined") {
+            ui->radioSelectAllResources->setChecked(true);
+
+        } else if (arg.startsWith("--activity=")) {
+            ui->comboActivity->setCurrentText(arg.split("=")[1]);
+
+        } else if (arg.startsWith("--agent=")) {
+            ui->textAgent->setText(arg.split("=")[1]);
+
+        } else if (arg.startsWith("--mimetype=")) {
+            ui->textMimetype->setText(arg.split("=")[1]);
+
+        } else if (arg == "--select") {
+            updateResults();
+
+        }
+    }
+
 }
 
 Window::~Window()
@@ -203,8 +228,8 @@ void Window::updateResults()
 
     model.reset(new ResultModel(query));
 
-    modelTest.reset();
-    modelTest.reset(new ModelTest(new ResultModel(query)));
+    // modelTest.reset();
+    // modelTest.reset(new ModelTest(new ResultModel(query)));
 
     ui->viewResults->setModel(model.get());
 
