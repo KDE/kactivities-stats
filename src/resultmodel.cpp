@@ -571,7 +571,9 @@ public:
         cache.removeAt(result);
         q->endRemoveRows();
 
-        fetch(cache.size(), 1);
+        if (query.selection() != Terms::LinkedResources) {
+            fetch(cache.size(), 1);
+        }
     }
 
     inline void repositionResult(const Cache::FindCacheResult &result,
