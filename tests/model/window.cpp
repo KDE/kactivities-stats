@@ -117,7 +117,7 @@ public:
 
 Window::Window()
     : ui(new Ui::MainWindow())
-    , model(Q_NULLPTR)
+    , model(nullptr)
     , activities(new KActivities::Consumer())
 {
     ui->setupUi(this);
@@ -183,7 +183,7 @@ void Window::updateResults()
 {
     qDebug() << "Updating the results";
 
-    ui->viewResults->setModel(Q_NULLPTR);
+    ui->viewResults->setModel(nullptr);
 
     auto query =
         // What should we get

@@ -66,8 +66,8 @@ public:
     QList<QRegExp> urlFilters;
 
     ResultWatcherPrivate(ResultWatcher *parent, Query query)
-        : linking(new KAMD_DBUS_CLASS_INTERFACE(Resources/Linking, ResourcesLinking, Q_NULLPTR))
-        , scoring(new KAMD_DBUS_CLASS_INTERFACE(Resources/Scoring, ResourcesScoring, Q_NULLPTR))
+        : linking(new KAMD_DBUS_CLASS_INTERFACE(Resources/Linking, ResourcesLinking, nullptr))
+        , scoring(new KAMD_DBUS_CLASS_INTERFACE(Resources/Scoring, ResourcesScoring, nullptr))
         , q(parent)
         , query(query)
     {

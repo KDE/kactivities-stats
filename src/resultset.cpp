@@ -68,7 +68,7 @@ ResultSet::Result::Result()
 ResultSet::Result::Result(Result &&result)
     : d(result.d)
 {
-    result.d = Q_NULLPTR;
+    result.d = nullptr;
 }
 
 ResultSet::Result::Result(const Result &result)

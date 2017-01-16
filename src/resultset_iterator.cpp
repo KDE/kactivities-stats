@@ -105,7 +105,7 @@ public:
                            const ResultSet_IteratorPrivate &right)
     {
         return left.resultSet == right.resultSet &&
-               left.resultSet != Q_NULLPTR;
+               left.resultSet != nullptr;
     }
 
 };
@@ -116,7 +116,7 @@ iterator::const_iterator(const ResultSet *resultSet, int currentRow)
 }
 
 iterator::const_iterator()
-    : d(new ResultSet_IteratorPrivate(Q_NULLPTR, -1))
+    : d(new ResultSet_IteratorPrivate(nullptr, -1))
 {
 }
 
@@ -128,7 +128,7 @@ iterator::const_iterator(const const_iterator &source)
 
 bool iterator::isSourceValid() const
 {
-    return d->resultSet != Q_NULLPTR;
+    return d->resultSet != nullptr;
 }
 
 iterator &iterator::operator=(const const_iterator &source)
