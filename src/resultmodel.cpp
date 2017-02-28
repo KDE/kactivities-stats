@@ -130,14 +130,10 @@ public:
 
             qDebug() << "Searching for " << resource;
             auto resourcePosition = find(resource);
+
             qDebug() << "Was resource found? " << (bool)resourcePosition;
             if (resourcePosition) {
                 qDebug() << "What is the status? " << resourcePosition.iterator->linkStatus();
-            }
-            if (!resourcePosition
-                || resourcePosition.iterator->linkStatus() == ResultSet::Result::NotLinked) {
-                qWarning("Trying to reposition a resource that we do not have, or is not linked");
-                return;
             }
 
             // Lets make a list of linked items - we can only reorder them,
@@ -155,20 +151,37 @@ public:
                 position = linkedItems.size();
             }
 
-            auto oldPosition = linkedItems.indexOf(resource);
+            // We have two options:
+            //  - we are planning to add an item to the desired position,
+            //    but the item is not yet in the model
+            //  - we want to move an existing item
+            if (!resourcePosition
+                    || resourcePosition.iterator->linkStatus() == ResultSet::Result::NotLinked) {
 
-            kamd::utils::slide_one(
-                    linkedItems.begin() + oldPosition,
-                    linkedItems.begin() + position);
+                qDebug() << "Trying to reposition a resource that we do not have, or is not linked";
 
-            m_fixedItems = linkedItems;
+                linkedItems.insert(position, resource);
+
+                m_fixedItems = linkedItems;
+
+            } else {
+
+                auto oldPosition = linkedItems.indexOf(resource);
+
+                kamd::utils::slide_one(
+                        linkedItems.begin() + oldPosition,
+                        linkedItems.begin() + position);
+
+                m_fixedItems = linkedItems;
+
+                // We are prepared to reorder the cache
+                d->repositionResult(resourcePosition,
+                                    d->destinationFor(*resourcePosition));
+            }
 
             m_config.writeEntry("kactivitiesLinkedItemsOrder", m_fixedItems);
             m_config.sync();
 
-            // We are prepared to reorder the cache
-            d->repositionResult(resourcePosition,
-                                d->destinationFor(*resourcePosition));
         }
 
         inline void debug() const
