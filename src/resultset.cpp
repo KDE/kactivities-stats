@@ -402,7 +402,7 @@ public:
         }
 
         result.setLinkedActivities(linkedActivities);
-        qDebug() << result.resource() << "linked to activities" << result.linkedActivities();
+        // qDebug() << result.resource() << "linked to activities" << result.linkedActivities();
 
         return result;
     }
