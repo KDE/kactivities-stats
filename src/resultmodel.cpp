@@ -513,7 +513,7 @@ public:
         {
         }
 
-        bool compare (const QString &leftResource, const QString &rightResource) const
+        bool lessThan(const QString &leftResource, const QString &rightResource) const
         {
             const bool hasLeft  = cache.fixedOrderedItems().contains(leftResource);
             const bool hasRight = cache.fixedOrderedItems().contains(rightResource);
@@ -523,25 +523,25 @@ public:
                 (!hasLeft &&  hasRight) ? false :
                 ( hasLeft &&  hasRight) ? cache.fixedOrderedItems().indexOf(leftResource) <
                                           cache.fixedOrderedItems().indexOf(rightResource) :
-                false;
+                leftResource < rightResource;
         }
 
         template <typename T>
         bool operator() (const T &left, placeholder) const
         {
-            return compare(left.resource(), matchResource);
+            return lessThan(left.resource(), matchResource);
         }
 
         template <typename T>
         bool operator() (placeholder, const T &right) const
         {
-            return compare(matchResource, right.resource());
+            return lessThan(matchResource, right.resource());
         }
 
         template <typename T, typename V>
         bool operator() (const T &left, const V &right) const
         {
-            return compare(left.resource(), right.resource());
+            return lessThan(left.resource(), right.resource());
         }
 
         const Cache &cache;
