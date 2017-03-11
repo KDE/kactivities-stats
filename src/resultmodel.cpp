@@ -34,7 +34,7 @@
 #include <boost/range/algorithm/lower_bound.hpp>
 
 // KDE
-#include <KConfig>
+#include <KSharedConfig>
 #include <KConfigGroup>
 
 // Local
@@ -86,17 +86,7 @@ public:
             , m_clientId(clientId)
         {
             if (!m_clientId.isEmpty()) {
-                m_configFile.reset(new KConfig(
-                        QStandardPaths::writableLocation(QStandardPaths::ConfigLocation)
-                        + QStringLiteral("/kactivitymanagerd-statsrc")));
-
-                m_config = KConfigGroup(m_configFile.get(), "ResultModel-OrderingFor-" + clientId);
-
-                if (m_config.isValid()) {
-                    m_fixedItems = m_config.readEntry("kactivitiesLinkedItemsOrder",
-                                                      QStringList());
-                }
-
+                m_configFile = KSharedConfig::openConfig("kactivitymanagerd-statsrc");
                 qDebug() << "Configuration activated " << m_configFile->name();
             }
         }
@@ -113,7 +103,7 @@ public:
         inline void setLinkedResultPosition(const QString &resource,
                                             int position)
         {
-            if (!m_config.isValid()) {
+            if (!m_orderingConfig.isValid()) {
                 qWarning() << "We can not reorder the results, no clientId was specified";
                 return;
             }
@@ -162,7 +152,7 @@ public:
 
                 linkedItems.insert(position, resource);
 
-                m_fixedItems = linkedItems;
+                m_fixedOrderedItems = linkedItems;
 
             } else {
 
@@ -172,16 +162,15 @@ public:
                         linkedItems.begin() + oldPosition,
                         linkedItems.begin() + position);
 
-                m_fixedItems = linkedItems;
+                m_fixedOrderedItems = linkedItems;
 
                 // We are prepared to reorder the cache
                 d->repositionResult(resourcePosition,
                                     d->destinationFor(*resourcePosition));
             }
 
-            m_config.writeEntry("kactivitiesLinkedItemsOrder", m_fixedItems);
-            m_config.sync();
-
+            m_orderingConfig.writeEntry("kactivitiesLinkedItemsOrder", m_fixedOrderedItems);
+            m_orderingConfig.sync();
         }
 
         inline void debug() const
@@ -191,6 +180,23 @@ public:
             }
         }
 
+        void loadOrderingConfig(const QString &activityTag)
+        {
+            if (!m_configFile) {
+                qDebug() << "Nothing to load - the client id is empty";
+                return;
+            }
+
+            qDebug() << "Loading fixed items - to preserve the ordering";
+
+            m_orderingConfig =
+                KConfigGroup(m_configFile,
+                             "ResultModel-OrderingFor-" + m_clientId + activityTag);
+
+            m_fixedOrderedItems = m_orderingConfig.readEntry("kactivitiesLinkedItemsOrder",
+                                                             QStringList());
+        }
+
     private:
         ResultModelPrivate *const d;
 
@@ -198,9 +204,9 @@ public:
         int m_countLimit;
 
         QString m_clientId;
-        std::unique_ptr<KConfig> m_configFile;
-        KConfigGroup m_config;
-        QStringList m_fixedItems;
+        KSharedConfig::Ptr m_configFile;
+        KConfigGroup m_orderingConfig;
+        QStringList m_fixedOrderedItems;
 
         friend QDebug operator<< (QDebug out, const Cache &cache)
         {
@@ -212,9 +218,9 @@ public:
         }
 
     public:
-        inline const QStringList &fixedItems() const
+        inline const QStringList &fixedOrderedItems() const
         {
-            return m_fixedItems;
+            return m_fixedOrderedItems;
         }
 
         //_ Fancy iterator, find, lowerBound
@@ -509,14 +515,14 @@ public:
 
         bool compare (const QString &leftResource, const QString &rightResource) const
         {
-            const bool hasLeft  = cache.fixedItems().contains(leftResource);
-            const bool hasRight = cache.fixedItems().contains(rightResource);
+            const bool hasLeft  = cache.fixedOrderedItems().contains(leftResource);
+            const bool hasRight = cache.fixedOrderedItems().contains(rightResource);
 
             return
                 ( hasLeft && !hasRight) ? true :
                 (!hasLeft &&  hasRight) ? false :
-                ( hasLeft &&  hasRight) ? cache.fixedItems().indexOf(leftResource) <
-                                          cache.fixedItems().indexOf(rightResource) :
+                ( hasLeft &&  hasRight) ? cache.fixedOrderedItems().indexOf(leftResource) <
+                                          cache.fixedOrderedItems().indexOf(rightResource) :
                 false;
         }
 
@@ -694,6 +700,13 @@ public:
             // Removing the previously cached data
             // and loading all from scratch
             cache.clear();
+
+            const QString activityTag =
+                query.activities().contains(CURRENT_ACTIVITY_TAG)
+                    ? ("-ForActivity-" + activities.currentActivity())
+                    : "-ForAllActivities";
+
+            cache.loadOrderingConfig(activityTag);
 
             fetch(0, MAX_CHUNK_LOAD_SIZE);
 
