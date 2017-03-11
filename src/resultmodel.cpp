@@ -68,6 +68,12 @@ public:
     {
         using Common::Database;
         database = Database::instance(Database::ResourcesDatabase, Database::ReadOnly);
+        s_privates << this;
+    }
+
+    ~ResultModelPrivate()
+    {
+        s_privates.removeAll(this);
     }
 
     enum Fetch {
@@ -171,6 +177,13 @@ public:
 
             m_orderingConfig.writeEntry("kactivitiesLinkedItemsOrder", m_fixedOrderedItems);
             m_orderingConfig.sync();
+
+            // We need to notify others to reload
+            for (const auto& other: s_privates) {
+                if (other != d && other->cache.m_clientId == m_clientId) {
+                    other->fetch(FetchReset);
+                }
+            }
         }
 
         inline void debug() const
@@ -896,8 +909,11 @@ public:
 
 private:
     ResultModel *const q;
+    static QList<ResultModelPrivate*> s_privates;
 
 };
+
+QList<ResultModelPrivate*> ResultModelPrivate::s_privates;
 
 ResultModel::ResultModel(Query query, QObject *parent)
     : QAbstractListModel(parent)
