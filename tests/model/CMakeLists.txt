@@ -41,6 +41,7 @@ if (NOT WIN32)
       Qt5::Test
       Qt5::Quick
       Qt5::QuickWidgets
+
       KF5::Activities
       KF5::ActivitiesStats
       )

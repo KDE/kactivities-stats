@@ -35,6 +35,7 @@
 
 #include <resultset.h>
 #include <resultmodel.h>
+
 #include <KActivities/Consumer>
 
 #include <boost/range/numeric.hpp>
@@ -166,6 +167,11 @@ Window::Window()
         }
     }
 
+    auto redisplayAction = new QAction(this);
+    addAction(redisplayAction);
+    redisplayAction->setShortcut(Qt::Key_F5);
+    connect(redisplayAction, SIGNAL(triggered()),
+            this, SLOT(updateResults()));
 }
 
 Window::~Window()
