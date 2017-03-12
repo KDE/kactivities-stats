@@ -33,9 +33,6 @@
 #include <QQmlComponent>
 #include <QQuickItem>
 
-#include <resultset.h>
-#include <resultmodel.h>
-
 #include <KActivities/Consumer>
 
 #include <boost/range/numeric.hpp>
@@ -172,10 +169,112 @@ Window::Window()
     redisplayAction->setShortcut(Qt::Key_F5);
     connect(redisplayAction, SIGNAL(triggered()),
             this, SLOT(updateResults()));
+
+    // loading the presets
+
+    const auto recentQueryBase
+                 = UsedResources
+                    | RecentlyUsedFirst
+                    | Agent::any()
+                    | Type::any()
+                    | Activity::current();
+
+    const auto popularQueryBase
+                 = UsedResources
+                    | HighScoredFirst
+                    | Agent::any()
+                    | Type::any()
+                    | Activity::current();
+
+    presets = {
+        { "kicker-favorites",
+            LinkedResources
+                | Agent {
+                    "org.kde.plasma.favorites.applications",
+                    "org.kde.plasma.favorites.contacts"
+                  }
+                | Type::any()
+                | Activity::current()
+                | Activity::global()
+                | Limit(15)
+        },
+        { "kicker-recent-apps-n-docs",
+            recentQueryBase | Url::startsWith("applications:") | Url::file() | Limit(30)
+        },
+        { "kicker-recent-apps",
+            recentQueryBase | Url::startsWith("applications:") | Limit(15)
+        },
+        { "kicker-recent-docs",
+            recentQueryBase | Url::file() | Limit(15)
+        },
+        { "kicker-popular-apps-n-docs",
+            popularQueryBase | Url::startsWith("applications:") | Url::file() | Limit(30)
+        },
+        { "kicker-popular-apps",
+            popularQueryBase | Url::startsWith("applications:") | Limit(15)
+        },
+        { "kicker-popular-docs",
+            popularQueryBase | Url::file() | Limit(15)
+        }
+    };
+
+    ui->comboPreset->addItem("Choose a preset", QVariant());
+    for (const auto& presetId: presets.keys()) {
+        ui->comboPreset->addItem(presetId, presetId);
+    }
+
+    connect(ui->comboPreset, SIGNAL(activated(int)),
+            this, SLOT(selectPreset()));
 }
 
 Window::~Window()
 {
+}
+
+void Window::selectPreset()
+{
+    const auto id = ui->comboPreset->currentData().toString();
+
+    if (id.isEmpty()) return;
+
+    const auto &query = presets[id];
+    qDebug() << "Id: " << id;
+    qDebug() << "Query: " << query;
+
+    // Selection
+    qDebug() << "\tSelection:" << query.selection();
+    ui->radioSelectUsedResources->setChecked(query.selection() == UsedResources);
+    ui->radioSelectLinkedResources->setChecked(query.selection() == LinkedResources);
+    ui->radioSelectAllResources->setChecked(query.selection() == AllResources);
+
+    // Ordering
+    qDebug() << "\tOrdering:" << query.ordering();
+    ui->radioOrderHighScoredFirst->setChecked(query.ordering() == HighScoredFirst);
+    ui->radioOrderRecentlyUsedFirst->setChecked(query.ordering() == RecentlyUsedFirst);
+    ui->radioOrderRecentlyCreatedFirst->setChecked(query.ordering() == RecentlyCreatedFirst);
+    ui->radioOrderByUrl->setChecked(query.ordering() == OrderByUrl);
+    ui->radioOrderByTitle->setChecked(query.ordering() == OrderByTitle);
+
+    // Agents
+    qDebug() << "\tAgents:" << query.agents();
+    ui->textAgent->setText(query.agents().join(','));
+
+    // Types
+    qDebug() << "\tTypes:" << query.types();
+    ui->textMimetype->setText(query.types().join(','));
+
+    // Activities
+    qDebug() << "\tActivities:" << query.activities();
+    ui->comboActivity->setEditText(query.activities().join(','));
+
+    // Url filters
+    qDebug() << "\tUrl filters:" << query.urlFilters();
+    ui->textUrl->setText(query.urlFilters().join(','));
+
+    // Limit
+    ui->spinLimitCount->setValue(query.limit());
+
+    updateResults();
 }
 
 void Window::updateRowCount()
@@ -185,42 +284,11 @@ void Window::updateRowCount()
         ));
 }
 
-void Window::updateResults()
+void Window::setQuery(const KActivities::Stats::Query &query)
 {
     qDebug() << "Updating the results";
 
     ui->viewResults->setModel(nullptr);
-
-    auto query =
-        // What should we get
-        (
-            ui->radioSelectUsedResources->isChecked()   ? UsedResources :
-            ui->radioSelectLinkedResources->isChecked() ? LinkedResources :
-                                                          AllResources
-        ) |
-
-        // How we should order it
-        (
-            ui->radioOrderHighScoredFirst->isChecked()      ? HighScoredFirst :
-            ui->radioOrderRecentlyUsedFirst->isChecked()    ? RecentlyUsedFirst :
-            ui->radioOrderRecentlyCreatedFirst->isChecked() ? RecentlyCreatedFirst :
-            ui->radioOrderByUrl->isChecked()                ? OrderByUrl :
-                                                              OrderByTitle
-        ) |
-
-        // Which agents?
-        Agent(ui->textAgent->text().split(',')) |
-
-        // Which mime?
-        Type(ui->textMimetype->text().split(',')) |
-
-        // Which activities?
-        Activity(ui->comboActivity->currentText().split(',')) |
-
-        // And how many items
-        Limit(ui->spinLimitCount->value())
-
-        ;
 
     // Log results
     using boost::accumulate;
@@ -247,5 +315,43 @@ void Window::updateResults()
     context->setContextProperty("kamdmodel", model.get());
 
     ui->viewResultsQML->setSource(QUrl("qrc:/main.qml"));
+}
+
+void Window::updateResults()
+{
+    qDebug() << "Updating the results";
+
+    setQuery(
+        // What should we get
+        (
+            ui->radioSelectUsedResources->isChecked()   ? UsedResources :
+            ui->radioSelectLinkedResources->isChecked() ? LinkedResources :
+                                                          AllResources
+        ) |
+
+        // How we should order it
+        (
+            ui->radioOrderHighScoredFirst->isChecked()      ? HighScoredFirst :
+            ui->radioOrderRecentlyUsedFirst->isChecked()    ? RecentlyUsedFirst :
+            ui->radioOrderRecentlyCreatedFirst->isChecked() ? RecentlyCreatedFirst :
+            ui->radioOrderByUrl->isChecked()                ? OrderByUrl :
+                                                              OrderByTitle
+        ) |
+
+        // Which agents?
+        Agent(ui->textAgent->text().split(',')) |
+
+        // Which mime?
+        Type(ui->textMimetype->text().split(',')) |
+
+        // Which activities?
+        Activity(ui->comboActivity->currentText().split(',')) |
+
+        // And URL filters
+        Url(ui->textUrl->text().split(',', QString::SkipEmptyParts)) |
+
+        // And how many items
+        Limit(ui->spinLimitCount->value())
+    );
 }
 

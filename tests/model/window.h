@@ -20,6 +20,10 @@
 #pragma once
 
 #include <QMainWindow>
+
+#include <resultset.h>
+#include <resultmodel.h>
+
 #include <memory>
 
 class ModelTest;
@@ -44,11 +48,16 @@ public:
 private Q_SLOTS:
     void updateResults();
     void updateRowCount();
+    void selectPreset();
 
 private:
+    void setQuery(const KActivities::Stats::Query &query);
+
     std::unique_ptr<Ui::MainWindow> ui;
     std::unique_ptr<KActivities::Stats::ResultModel> model;
     std::unique_ptr<ModelTest> modelTest;
     std::unique_ptr<KActivities::Consumer> activities;
+
+    QMap<QString, KActivities::Stats::Query> presets;
 };
 
