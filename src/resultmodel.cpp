@@ -31,7 +31,7 @@
 // STL and Boost
 #include <functional>
 #include <boost/range/algorithm/find_if.hpp>
-#include <boost/range/algorithm/lower_bound.hpp>
+#include <boost/range/algorithm/count_if.hpp>
 
 // KDE
 #include <KSharedConfig>
@@ -93,7 +93,6 @@ public:
         {
             if (!m_clientId.isEmpty()) {
                 m_configFile = KSharedConfig::openConfig("kactivitymanagerd-statsrc");
-                qDebug() << "Configuration activated " << m_configFile->name();
             }
         }
 
@@ -106,7 +105,7 @@ public:
             return m_items.size();
         }
 
-        inline void setLinkedResultPosition(const QString &resource,
+        inline void setLinkedResultPosition(const QString &resourcePath,
                                             int position)
         {
             if (!m_orderingConfig.isValid()) {
@@ -117,19 +116,21 @@ public:
             // Preconditions:
             //  - cache is ordered properly, first on the user's desired order,
             //    then on the query specified order
-            //  - the resource that needs to be moved is already in the cache
             //  - the resource that needs to be moved is a linked resource, not
             //    one that comes from the stats (there are overly many
             //    corner-cases that need to be covered in order to support
             //    reordering of the statistics-based resources)
             //  - the new position for the resource is not outside of the cache
 
-            qDebug() << "Searching for " << resource;
-            auto resourcePosition = find(resource);
+            auto resourcePosition = find(resourcePath);
 
-            qDebug() << "Was resource found? " << (bool)resourcePosition;
             if (resourcePosition) {
-                qDebug() << "What is the status? " << resourcePosition.iterator->linkStatus();
+                if (resourcePosition.index == position) {
+                    return;
+                }
+                if (resourcePosition.iterator->linkStatus() == ResultSet::Result::NotLinked) {
+                    return;
+                }
             }
 
             // Lets make a list of linked items - we can only reorder them,
@@ -141,12 +142,6 @@ public:
                 linkedItems << item.resource();
             }
 
-            // We can not accept the new position to be outside
-            // of the linked items area
-            if (position > linkedItems.size()) {
-                position = linkedItems.size();
-            }
-
             // We have two options:
             //  - we are planning to add an item to the desired position,
             //    but the item is not yet in the model
@@ -154,20 +149,28 @@ public:
             if (!resourcePosition
                     || resourcePosition.iterator->linkStatus() == ResultSet::Result::NotLinked) {
 
-                qDebug() << "Trying to reposition a resource that we do not have, or is not linked";
-
-                linkedItems.insert(position, resource);
+                linkedItems.insert(position, resourcePath);
 
                 m_fixedOrderedItems = linkedItems;
 
             } else {
+                // We can not accept the new position to be outside
+                // of the linked items area
+                if (position >= linkedItems.size()) {
+                    position = linkedItems.size() - 1;
+                }
 
-                auto oldPosition = linkedItems.indexOf(resource);
+                Q_ASSERT(resourcePosition.index == linkedItems.indexOf(resourcePath));
+                auto oldPosition = linkedItems.indexOf(resourcePath);
 
-                kamd::utils::slide_one(
+                const auto oldLinkedItems = linkedItems;
+
+                kamd::utils::move_one(
                         linkedItems.begin() + oldPosition,
                         linkedItems.begin() + position);
 
+                // When we change this, the cache is not valid anymore,
+                // destinationFor will fail and we can not use it
                 m_fixedOrderedItems = linkedItems;
 
                 // We are prepared to reorder the cache
@@ -200,14 +203,20 @@ public:
                 return;
             }
 
-            qDebug() << "Loading fixed items - to preserve the ordering";
-
             m_orderingConfig =
                 KConfigGroup(m_configFile,
                              "ResultModel-OrderingFor-" + m_clientId + activityTag);
 
-            m_fixedOrderedItems = m_orderingConfig.readEntry("kactivitiesLinkedItemsOrder",
-                                                             QStringList());
+            if (m_orderingConfig.hasKey("kactivitiesLinkedItemsOrder")) {
+                // If we have the ordering defined, use it
+                m_fixedOrderedItems = m_orderingConfig.readEntry("kactivitiesLinkedItemsOrder",
+                                                                 QStringList());
+            } else {
+                // Otherwise, copy the order from the previous activity to this one
+                m_orderingConfig.writeEntry("kactivitiesLinkedItemsOrder", m_fixedOrderedItems);
+                m_orderingConfig.sync();
+
+            }
         }
 
     private:
@@ -263,16 +272,6 @@ public:
             {
                 return &(*iterator);
             }
-
-            // const ResultSet::Result &operator*() const
-            // {
-            //     return *iterator;
-            // }
-            //
-            // const ResultSet::Result *operator->() const
-            // {
-            //     return &(*iterator);
-            // }
         };
 
         inline FindCacheResult find(const QString &resource)
@@ -285,28 +284,44 @@ public:
                                            == resource));
         }
 
-        template <typename What, typename Predicate>
-        inline FindCacheResult lowerBound(What &&what, Predicate &&predicate)
-        {
-            return FindCacheResult(
-                this, boost::lower_bound(m_items, std::forward<What>(what),
-                                         std::forward<Predicate>(predicate)));
-        }
-
         template <typename Predicate>
-        inline FindCacheResult lowerBound(Predicate &&predicate)
+        inline FindCacheResult lowerBoundWithSkippedResource(Predicate &&lessThanPredicate)
         {
             using namespace kamd::utils::member_matcher;
-            return FindCacheResult(
-                this, boost::lower_bound(m_items, _,
-                                         std::forward<Predicate>(predicate)));
+            const int count = boost::count_if(m_items,
+                    [&] (const ResultSet::Result &result) {
+                        return lessThanPredicate(result, _);
+                    });
+
+            return FindCacheResult(this, m_items.begin() + count);
+
+
+            // using namespace kamd::utils::member_matcher;
+            //
+            // const auto position =
+            //     std::lower_bound(m_items.begin(), m_items.end(),
+            //                      _, std::forward<Predicate>(lessThanPredicate));
+            //
+            // // We seem to have found the position for the item.
+            // // The problem is that we might have found the same position
+            // // we were previously at. Since this function is usually used
+            // // to reposition the result, we might not be in a completely
+            // // sorted collection, so the next item(s) could be less than us.
+            // // We could do this with count_if, but it would be slower
+            //
+            // if (position >= m_items.cend() - 1) {
+            //     return FindCacheResult(this, position);
+            //
+            // } else if (lessThanPredicate(_, *(position + 1))) {
+            //     return FindCacheResult(this, position);
+            //
+            // } else {
+            //     return FindCacheResult(
+            //         this, std::lower_bound(position + 1, m_items.end(),
+            //                                _, std::forward<Predicate>(lessThanPredicate)));
+            // }
         }
         //^
-
-        inline int indexOf(const FindCacheResult &result)
-        {
-            return std::distance(m_items.begin(), result.iterator);
-        }
 
         inline void insertAt(const FindCacheResult &at,
                              const ResultSet::Result &result)
@@ -528,14 +543,18 @@ public:
 
         bool lessThan(const QString &leftResource, const QString &rightResource) const
         {
-            const bool hasLeft  = cache.fixedOrderedItems().contains(leftResource);
-            const bool hasRight = cache.fixedOrderedItems().contains(rightResource);
+            const auto fixedOrderedItems = cache.fixedOrderedItems();
+
+            const auto indexLeft  = fixedOrderedItems.indexOf(leftResource);
+            const auto indexRight = fixedOrderedItems.indexOf(rightResource);
+
+            const bool hasLeft  = indexLeft != -1;
+            const bool hasRight = indexRight != -1;
 
             return
                 ( hasLeft && !hasRight) ? true :
                 (!hasLeft &&  hasRight) ? false :
-                ( hasLeft &&  hasRight) ? cache.fixedOrderedItems().indexOf(leftResource) <
-                                          cache.fixedOrderedItems().indexOf(rightResource) :
+                ( hasLeft &&  hasRight) ? indexLeft < indexRight :
                 leftResource < rightResource;
         }
 
@@ -576,11 +595,13 @@ public:
         #define ORDER_BY(Field) member(&ResultSet::Result::Field) > Field
         #define ORDER_BY_FULL(Field)                                           \
             (query.selection() == Terms::AllResources ?                        \
-                cache.lowerBound(FixedItemsLessThan(cache, resource)           \
+                cache.lowerBoundWithSkippedResource(                           \
+                                 FixedItemsLessThan(cache, resource)           \
                                  && ORDER_BY(linkStatus)                       \
                                  && ORDER_BY(Field)                            \
                                  && ORDER_BY(resource)) :                      \
-                cache.lowerBound(FixedItemsLessThan(cache, resource)           \
+                cache.lowerBoundWithSkippedResource(                           \
+                                 FixedItemsLessThan(cache, resource)           \
                                  && ORDER_BY(Field)                            \
                                  && ORDER_BY(resource))                        \
             )
@@ -611,19 +632,26 @@ public:
     inline void repositionResult(const Cache::FindCacheResult &result,
                                  const Cache::FindCacheResult &destination)
     {
-        using kamd::utils::slide_one;
-
         // We already have the resource in the cache
         // So, it is the time for a reshuffle
-        const int currentIndex = result.index;
+        const int oldPosition = result.index;
+        int position = destination.index;
 
-        q->dataChanged(q->index(currentIndex), q->index(currentIndex));
+        q->dataChanged(q->index(oldPosition), q->index(oldPosition));
+
+        if (oldPosition == position) {
+            return;
+        }
+
+        if (position > oldPosition) {
+            position++;
+        }
 
         bool moving
-            = q->beginMoveRows(QModelIndex(), currentIndex, currentIndex,
-                               QModelIndex(), destination.index);
+            = q->beginMoveRows(QModelIndex(), oldPosition, oldPosition,
+                               QModelIndex(), position);
 
-        slide_one(result.iterator, destination.iterator);
+        kamd::utils::move_one(result.iterator, destination.iterator);
 
         if (moving) {
             q->endMoveRows();
@@ -745,8 +773,6 @@ public:
     void onResultScoreUpdated(const QString &resource, double score,
                               uint lastUpdate, uint firstUpdate)
     {
-        using boost::lower_bound;
-
         QDBG << "ResultModelPrivate::onResultScoreUpdated "
              << "result added:" << resource
              << "score:" << score
@@ -776,9 +802,7 @@ public:
             item.setLastUpdate(lastUpdate);
             item.setFirstUpdate(firstUpdate);
 
-            const auto destination = destinationFor(item);
-
-            repositionResult(result, destination);
+            repositionResult(result, destinationFor(item));
 
         } else {
             // We do not have the resource in the cache,

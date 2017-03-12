@@ -43,6 +43,25 @@ void slide_one(Iterator f, Iterator p)
     slide(f, f + 1, p);
 }
 
+template <typename Iterator>
+void move_one(Iterator from, Iterator to)
+{
+    if (from < to) {
+        while (from != to) {
+            using std::swap;
+            swap(*from, *(from + 1));
+            ++from;
+        }
+    } else {
+        while (from != to) {
+            using std::swap;
+            swap(*from, *(from - 1));
+            --from;
+        }
+
+    }
+}
+
 } // namespace utils
 } // namespace kamd
 
