@@ -31,6 +31,10 @@ include (KDECMakeSettings)
 include (KDECompilerSettings NO_POLICY_SCOPE)
 include (GenerateExportHeader)
 include (ECMGenerateHeaders)
+include (ECMAddQch)
+
+option(BUILD_QCH "Build API documentation in QCH format (for e.g. Qt Assistant, Qt Creator & KDevelop)" OFF)
+add_feature_info(QCH ${BUILD_QCH} "API documentation in QCH format (for e.g. Qt Assistant, Qt Creator & KDevelop)")
 
 # Qt
 set (CMAKE_AUTOMOC ON)
@@ -78,7 +82,23 @@ ecm_setup_version (
    SOVERSION 1
    )
 
+add_subdirectory (src)
+if(BUILD_TESTING)
+  add_subdirectory (autotests)
+  add_subdirectory (tests)
+endif (BUILD_TESTING)
+
 set (CMAKECONFIG_INSTALL_DIR "${KDE_INSTALL_CMAKEPACKAGEDIR}/KF5ActivitiesStats")
+
+if (BUILD_QCH)
+    ecm_install_qch_export(
+        TARGETS KF5ActivitiesStats_QCH
+        FILE KF5ActivitiesStatsLibraryQchTargets.cmake
+        DESTINATION "${CMAKECONFIG_INSTALL_DIR}"
+        COMPONENT Devel
+    )
+    set(PACKAGE_INCLUDE_QCHTARGETS "include(\"\${CMAKE_CURRENT_LIST_DIR}/KF5ActivitiesStatsLibraryQchTargets.cmake\")")
+endif()
 
 install (
    EXPORT KF5ActivitiesStatsLibraryTargets
@@ -105,12 +125,6 @@ install (
    FILES ${CMAKE_CURRENT_BINARY_DIR}/kactivitiesstats_version.h
    DESTINATION ${KDE_INSTALL_INCLUDEDIR_KF5} COMPONENT Devel
    )
-
-add_subdirectory (src)
-if(BUILD_TESTING)
-  add_subdirectory (autotests)
-  add_subdirectory (tests)
-endif (BUILD_TESTING)
 
 # Write out the features
 feature_summary (WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
