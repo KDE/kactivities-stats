@@ -47,8 +47,8 @@ class KACTIVITIESSTATS_EXPORT ResultModel : public QAbstractListModel {
     Q_OBJECT
 
 public:
-    ResultModel(Query query, QObject *parent = 0);
-    ResultModel(Query query, const QString &clientId, QObject *parent = 0);
+    ResultModel(Query query, QObject *parent = nullptr);
+    ResultModel(Query query, const QString &clientId, QObject *parent = nullptr);
     virtual ~ResultModel();
 
     enum Roles {
