@@ -354,17 +354,17 @@ public:
         {
             using namespace kamd::utils::member_matcher;
 
-#if 0
+#if 1
             QDBG << "======";
             QDBG << "Old items {";
             for (const auto& item: m_items) {
-                QDBG << item << item.title();
+                QDBG << item;
             }
             QDBG << "}";
 
             QDBG << "New items to be added at " << from << " {";
             for (const auto& item: newItems) {
-                QDBG << item << item.title();
+                QDBG << item;
             }
             QDBG << "}";
 #endif
@@ -864,9 +864,9 @@ public:
             removeResult(result);
 
         } else if (query.selection() == Terms::AllResources) {
-            result->setLinkStatus(ResultSet::Result::NotLinked);
-            repositionResult(result, destinationFor(*result));
-
+            // When the result is unlinked, it might go away or not
+            // depending on its previous usage
+            reload();
         }
     }
 

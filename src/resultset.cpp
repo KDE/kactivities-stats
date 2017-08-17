@@ -40,7 +40,7 @@
 // KActivities
 #include "activitiessync_p.h"
 
-#define DEBUG_QUERIES 0
+#define DEBUG_QUERIES 1
 
 namespace KActivities {
 namespace Stats {
@@ -276,7 +276,7 @@ public:
               , rl.initiatingAgent   as agent
               , COALESCE(ri.title, rl.targettedResource) as title
               , ri.mimetype as mimetype
-              , 2       as linkStatus
+              , 2 as linkStatus
 
             FROM
                 ResourceLink rl
