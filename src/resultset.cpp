@@ -40,7 +40,7 @@
 // KActivities
 #include "activitiessync_p.h"
 
-#define DEBUG_QUERIES 1
+#define DEBUG_QUERIES 0
 
 namespace KActivities {
 namespace Stats {

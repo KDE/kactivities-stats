@@ -354,7 +354,7 @@ public:
         {
             using namespace kamd::utils::member_matcher;
 
-#if 1
+#if 0
             QDBG << "======";
             QDBG << "Old items {";
             for (const auto& item: m_items) {
