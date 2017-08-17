@@ -536,9 +536,15 @@ public:
         //_ Compartor that orders the linked items by user-specified order
         typedef kamd::utils::member_matcher::placeholder placeholder;
 
-        FixedItemsLessThan(const Cache &cache,
+        enum Ordering {
+            PartialOrdering,
+            FullOrdering
+        };
+
+        FixedItemsLessThan(Ordering ordering,
+                           const Cache &cache,
                            const QString &matchResource = QString())
-            : cache(cache), matchResource(matchResource)
+            : cache(cache), matchResource(matchResource), ordering(ordering)
         {
         }
 
@@ -556,7 +562,7 @@ public:
                 ( hasLeft && !hasRight) ? true :
                 (!hasLeft &&  hasRight) ? false :
                 ( hasLeft &&  hasRight) ? indexLeft < indexRight :
-                leftResource < rightResource;
+                (ordering == PartialOrdering ? false : leftResource < rightResource);
         }
 
         template <typename T>
@@ -579,6 +585,7 @@ public:
 
         const Cache &cache;
         const QString matchResource;
+        Ordering ordering;
         //^
     };
 
@@ -593,16 +600,17 @@ public:
         const auto lastUpdate  = result.lastUpdate();
         const auto linkStatus  = result.linkStatus();
 
+        #define FIXED_ITEMS_LESS_THAN FixedItemsLessThan(FixedItemsLessThan::FullOrdering, cache, resource)
         #define ORDER_BY(Field) member(&ResultSet::Result::Field) > Field
         #define ORDER_BY_FULL(Field)                                           \
             (query.selection() == Terms::AllResources ?                        \
                 cache.lowerBoundWithSkippedResource(                           \
-                                 FixedItemsLessThan(cache, resource)           \
+                                 FIXED_ITEMS_LESS_THAN                         \
                                  && ORDER_BY(linkStatus)                       \
                                  && ORDER_BY(Field)                            \
                                  && ORDER_BY(resource)) :                      \
                 cache.lowerBoundWithSkippedResource(                           \
-                                 FixedItemsLessThan(cache, resource)           \
+                                 FIXED_ITEMS_LESS_THAN                         \
                                  && ORDER_BY(Field)                            \
                                  && ORDER_BY(resource))                        \
             )
@@ -615,6 +623,7 @@ public:
             ;
         #undef ORDER_BY
         #undef ORDER_BY_FULL
+        #undef FIXED_ITEMS_LESS_THAN
 
         return destination;
     }
@@ -727,10 +736,12 @@ public:
         hasMore = (it != results.end());
 
         // We need to sort the new items for the linked resources
-        // user-defined reordering
+        // user-defined reordering. This needs only to be a partial sort,
+        // the main sorting is done by sqlite
         if (query.selection() != Terms::UsedResources) {
-            std::stable_sort(newItems.begin(), newItems.end(),
-                             FixedItemsLessThan(cache));
+            std::stable_sort(
+                newItems.begin(), newItems.end(),
+                FixedItemsLessThan(FixedItemsLessThan::PartialOrdering, cache));
         }
 
         cache.replace(newItems, from);

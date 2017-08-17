@@ -245,10 +245,10 @@ public:
         QStringList mimetypeFilter = transformedList(
                 queryDefinition.types(), &ResultSetPrivate::mimetypeClause);
 
-        auto query = _query
-            + "\nORDER BY $orderingColumn resource ASC\n"
-            + limitOffsetSuffix();
+        auto query = _query;
 
+        query.replace("ORDER_BY_CLAUSE", "ORDER BY $orderingColumn resource ASC")
+             .replace("LIMIT_CLAUSE", limitOffsetSuffix());
 
         return kamd::utils::debug_and_return(DEBUG_QUERIES, "Query: ",
             query
@@ -296,6 +296,9 @@ public:
                 AND ($mimetypeFilter)
 
             GROUP BY resource, title
+
+            ORDER_BY_CLAUSE
+            LIMIT_CLAUSE
             )sql"
             ;
 
@@ -317,7 +320,7 @@ public:
               , rsc.initiatingAgent   as agent
               , COALESCE(ri.title, rsc.targettedResource) as title
               , ri.mimetype as mimetype
-              , 1 as linkStatus -- Note: this is replaced by allResourcesQuery
+              , 1 as linkStatus
 
             FROM
                 ResourceScoreCache rsc
@@ -332,6 +335,9 @@ public:
                 AND ($mimetypeFilter)
 
             GROUP BY resource, title
+
+            ORDER_BY_CLAUSE
+            LIMIT_CLAUSE
             )sql"
             ;
 
@@ -340,36 +346,90 @@ public:
 
     static const QString &allResourcesQuery()
     {
-        // TODO: Implement counting of the linked items
+        // TODO: We need to correct the scores based on the time that passed
+        //       since the cache was last updated, although, for this query,
+        //       scores are not that important.
+        static const QString query =
+            R"sql(
+            WITH
+                LinkedResourcesResults AS (
+                    SELECT rl.targettedResource as resource
+                         , rsc.cachedScore      as score
+                         , rsc.firstUpdate      as firstUpdate
+                         , rsc.lastUpdate       as lastUpdate
+                         , rl.usedActivity      as activity
+                         , rl.initiatingAgent   as agent
+                         , 2 as linkStatus
 
-        // int linkedItemsCount = 0;
-        //
-        // if (linkedItemsCount >= limit) {
-        //     return linkedResourcesQuery();
-        //
-        // } else if (linkedItemsCount == 0) {
-        //     return usedResourcesQuery();
-        //
-        // } else {
+                    FROM
+                        ResourceLink rl
 
-            static const QString usedResourcesQuery_ = [] {
-                auto query = usedResourcesQuery();
-                query.replace(QLatin1String("WHERE"),
-                          QLatin1String("WHERE rsc.targettedResource NOT IN "
-                          "(SELECT resource FROM LinkedResourcesResults) AND "))
-                     .replace(QLatin1String("1 as linkStatus"), QLatin1String("0 as linkStatus"));
-                return query;
-            }();
+                    LEFT JOIN
+                        ResourceScoreCache rsc
+                        ON  rl.targettedResource = rsc.targettedResource
+                        AND rl.usedActivity      = rsc.usedActivity
+                        AND rl.initiatingAgent   = rsc.initiatingAgent
 
-            static const QString query =
-                "WITH LinkedResourcesResults as (\n" +
-                linkedResourcesQuery() +
-                "\n)\n" +
-                "SELECT * FROM LinkedResourcesResults \n" +
-                "UNION \n" +
-                usedResourcesQuery_;
+                    WHERE
+                        ($agentsFilter)
+                        AND ($activitiesFilter)
+                        AND ($urlFilter)
+                        AND ($mimetypeFilter)
+                ),
 
-        // }
+                UsedResourcesResults AS (
+                    SELECT rsc.targettedResource as resource
+                         , rsc.cachedScore       as score
+                         , rsc.firstUpdate       as firstUpdate
+                         , rsc.lastUpdate        as lastUpdate
+                         , rsc.usedActivity      as activity
+                         , rsc.initiatingAgent   as agent
+                         , 0 as linkStatus
+
+                    FROM
+                        ResourceScoreCache rsc
+
+                    WHERE
+                        ($agentsFilter)
+                        AND ($activitiesFilter)
+                        AND ($urlFilter)
+                        AND ($mimetypeFilter)
+                ),
+
+                CollectedResults AS (
+                    SELECT *
+                    FROM LinkedResourcesResults
+
+                    UNION
+
+                    SELECT *
+                    FROM UsedResourcesResults
+                    WHERE resource NOT IN (SELECT resource FROM LinkedResourcesResults)
+                )
+
+                SELECT
+                    resource
+                  , SUM(score) as score
+                  , MIN(firstUpdate) as firstUpdate
+                  , MAX(lastUpdate) as lastUpdate
+                  , activity
+                  , agent
+                  , COALESCE(ri.title, resource) as title
+                  , ri.mimetype as mimetype
+                  , linkStatus
+
+                FROM CollectedResults cr
+
+                LEFT JOIN
+                    ResourceInfo ri
+                    ON cr.resource = ri.targettedResource
+
+                GROUP BY resource, title
+
+                ORDER_BY_CLAUSE
+                LIMIT_CLAUSE
+            )sql"
+            ;
 
         return query;
     }

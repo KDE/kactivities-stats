@@ -28,18 +28,9 @@ namespace kamd {
 namespace utils {
 
 template<typename T>
-T debug_and_return(const char * message, T && value) {
-    #ifdef QT_DEBUG
-    qDebug() << message << " " << value;
-    #endif
-
-    return std::forward<T>(value);
-}
-
-template<typename T>
 T debug_and_return(bool debug, const char * message, T && value) {
     if (debug) {
-        qDebug() << message << " " << value;
+        qDebug().noquote() << message << " " << value;
     }
 
     return std::forward<T>(value);
