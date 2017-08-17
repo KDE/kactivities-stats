@@ -355,15 +355,16 @@ public:
             using namespace kamd::utils::member_matcher;
 
 #if 0
-            QDBG << "===\nOld items {";
+            QDBG << "======";
+            QDBG << "Old items {";
             for (const auto& item: m_items) {
-                QDBG << item;
+                QDBG << item << item.title();
             }
             QDBG << "}";
 
             QDBG << "New items to be added at " << from << " {";
             for (const auto& item: newItems) {
-                QDBG << item;
+                QDBG << item << item.title();
             }
             QDBG << "}";
 #endif

@@ -260,7 +260,7 @@ public:
             );
     }
 
-    const QString &linkedResourcesQuery() const
+    static const QString &linkedResourcesQuery()
     {
         // TODO: We need to correct the scores based on the time that passed
         //       since the cache was last updated, although, for this query,
@@ -302,7 +302,7 @@ public:
         return query;
     }
 
-    const QString &usedResourcesQuery() const
+    static const QString &usedResourcesQuery()
     {
         // TODO: We need to correct the scores based on the time that passed
         //       since the cache was last updated
@@ -338,7 +338,7 @@ public:
         return query;
     }
 
-    const QString &allResourcesQuery() const
+    static const QString &allResourcesQuery()
     {
         // TODO: Implement counting of the linked items
 
@@ -352,7 +352,14 @@ public:
         //
         // } else {
 
-            static QString usedResourcesQuery_ = usedResourcesQuery();
+            static const QString usedResourcesQuery_ = [] {
+                auto query = usedResourcesQuery();
+                query.replace(QLatin1String("WHERE"),
+                          QLatin1String("WHERE rsc.targettedResource NOT IN "
+                          "(SELECT resource FROM LinkedResourcesResults) AND "))
+                     .replace(QLatin1String("1 as linkStatus"), QLatin1String("0 as linkStatus"));
+                return query;
+            }();
 
             static const QString query =
                 "WITH LinkedResourcesResults as (\n" +
@@ -360,11 +367,7 @@ public:
                 "\n)\n" +
                 "SELECT * FROM LinkedResourcesResults \n" +
                 "UNION \n" +
-                usedResourcesQuery_
-                    .replace(QLatin1String("WHERE "),
-                        QLatin1String("WHERE rsc.targettedResource NOT IN "
-                        "(SELECT resource FROM LinkedResourcesResults) AND "))
-                    .replace(QLatin1String("1 as linkStatus"), QLatin1String("0 as linkStatus"));
+                usedResourcesQuery_;
 
         // }
 
