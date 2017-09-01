@@ -191,6 +191,7 @@ Window::Window()
             LinkedResources
                 | Agent {
                     "org.kde.plasma.favorites.applications",
+                    "org.kde.plasma.favorites.documents",
                     "org.kde.plasma.favorites.contacts"
                   }
                 | Type::any()
@@ -302,8 +303,10 @@ void Window::setQuery(const KActivities::Stats::Query &query)
 
     model.reset(new ResultModel(query));
 
-    // modelTest.reset();
-    // modelTest.reset(new ModelTest(new ResultModel(query)));
+    if (QCoreApplication::arguments().contains("--enable-model-test")) {
+        modelTest.reset();
+        modelTest.reset(new ModelTest(new ResultModel(query)));
+    }
 
     ui->viewResults->setModel(model.get());
 
