@@ -60,7 +60,7 @@ class QueryPrivate {
 public:
     QueryPrivate()
         : ordering(Terms::HighScoredFirst)
-        , limit(10)
+        , limit(0)
         , offset(0)
     {
     }
@@ -201,6 +201,7 @@ QDebug operator<<(QDebug dbg, const KAStats::Query &query)
         << ", " << Activity(query.activities())
         << ", " << Url(query.urlFilters())
         << ", " << query.ordering()
+        << ", Limit: " << query.limit()
         << " }";
     return dbg;
 }
