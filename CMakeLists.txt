@@ -3,7 +3,7 @@
 cmake_minimum_required(VERSION 3.0)
 
 set(KF5_VERSION "5.41.0") # handled by release scripts
-set(KF5_DEP_VERSION "5.40.0") # handled by release scripts
+set(KF5_DEP_VERSION "5.41.0") # handled by release scripts
 project (KActivitiesStats VERSION ${KF5_VERSION})
 
 set (REQUIRED_QT_VERSION 5.7.0)
@@ -20,7 +20,7 @@ set (KASTATS_CURRENT_ROOT_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
 # Extra CMake stuff
 include (FeatureSummary)
-find_package (ECM 5.40.0  NO_MODULE)
+find_package (ECM 5.41.0  NO_MODULE)
 set_package_properties (ECM PROPERTIES TYPE REQUIRED DESCRIPTION "Extra CMake Modules." URL "https://projects.kde.org/projects/kdesupport/extra-cmake-modules")
 feature_summary (WHAT REQUIRED_PACKAGES_NOT_FOUND FATAL_ON_MISSING_REQUIRED_PACKAGES)
 
