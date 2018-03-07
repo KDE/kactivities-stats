@@ -134,10 +134,8 @@ public:
               : QString()));
 
         if (query.lastError().isValid()) {
-            qDebug() << "Error: " << query.lastError();
+            qWarning() << "[Error at ResultSetPrivate::initQuery]: " << query.lastError();
         }
-
-        Q_ASSERT_X(query.isActive(), "ResultSet initQuery", "Query is not valid");
     }
 
     QString agentClause(const QString &agent) const
@@ -245,13 +243,13 @@ public:
         QStringList mimetypeFilter = transformedList(
                 queryDefinition.types(), &ResultSetPrivate::mimetypeClause);
 
-        auto query = _query;
+        auto queryString = _query;
 
-        query.replace("ORDER_BY_CLAUSE", "ORDER BY $orderingColumn resource ASC")
-             .replace("LIMIT_CLAUSE", limitOffsetSuffix());
+        queryString.replace("ORDER_BY_CLAUSE", "ORDER BY $orderingColumn resource ASC")
+                   .replace("LIMIT_CLAUSE", limitOffsetSuffix());
 
         return kamd::utils::debug_and_return(DEBUG_QUERIES, "Query: ",
-            query
+            queryString
                 .replace(QLatin1String("$orderingColumn"), orderingColumn)
                 .replace(QLatin1String("$agentsFilter"), agentsFilter.join(QStringLiteral(" OR ")))
                 .replace(QLatin1String("$activitiesFilter"), activitiesFilter.join(QStringLiteral(" OR ")))
@@ -265,7 +263,7 @@ public:
         // TODO: We need to correct the scores based on the time that passed
         //       since the cache was last updated, although, for this query,
         //       scores are not that important.
-        static const QString query =
+        static const QString queryString =
             R"sql(
             SELECT
                 rl.targettedResource as resource
@@ -302,14 +300,14 @@ public:
             )sql"
             ;
 
-        return query;
+        return queryString;
     }
 
     static const QString &usedResourcesQuery()
     {
         // TODO: We need to correct the scores based on the time that passed
         //       since the cache was last updated
-        static const QString query =
+        static const QString queryString =
             R"sql(
             SELECT
                 rsc.targettedResource as resource
@@ -341,7 +339,7 @@ public:
             )sql"
             ;
 
-        return query;
+        return queryString;
     }
 
     static const QString &allResourcesQuery()
@@ -349,7 +347,7 @@ public:
         // TODO: We need to correct the scores based on the time that passed
         //       since the cache was last updated, although, for this query,
         //       scores are not that important.
-        static const QString query =
+        static const QString queryString =
             R"sql(
             WITH
                 LinkedResourcesResults AS (
@@ -431,12 +429,15 @@ public:
             )sql"
             ;
 
-        return query;
+        return queryString;
     }
 
     ResultSet::Result currentResult() const
     {
         ResultSet::Result result;
+
+        if (!database || !query.isActive()) return result;
+
         result.setResource(query.value(QStringLiteral("resource")).toString());
         result.setTitle(query.value(QStringLiteral("title")).toString());
         result.setMimetype(query.value(QStringLiteral("mimetype")).toString());
@@ -448,19 +449,19 @@ public:
         result.setLinkStatus(
             (ResultSet::Result::LinkStatus)query.value(QStringLiteral("linkStatus")).toInt());
 
-        auto query = database->createQuery();
+        auto linkedActivitiesQuery = database->createQuery();
 
-        query.prepare(R"sql(
+        linkedActivitiesQuery.prepare(R"sql(
             SELECT usedActivity
             FROM   ResourceLink
             WHERE  targettedResource = :resource
             )sql");
 
-        query.bindValue(":resource", result.resource());
-        query.exec();
+        linkedActivitiesQuery.bindValue(":resource", result.resource());
+        linkedActivitiesQuery.exec();
 
         QStringList linkedActivities;
-        for (const auto &item: query) {
+        for (const auto &item: linkedActivitiesQuery) {
             linkedActivities << item[0].toString();
         }
 
@@ -471,7 +472,7 @@ public:
     }
 };
 
-ResultSet::ResultSet(Query query)
+ResultSet::ResultSet(Query queryDefinition)
     : d(new ResultSetPrivate())
 {
     using namespace Common;
@@ -483,10 +484,9 @@ ResultSet::ResultSet(Query query)
                       "that you do not have the Activity Manager running, or that "
                       "something else is broken on your system. Recent documents and "
                       "alike will not work!";
-        Q_ASSERT_X((bool)d->database, "ResultSet constructor", "Database is NULL");
     }
 
-    d->queryDefinition = query;
+    d->queryDefinition = queryDefinition;
 
     d->initQuery();
 }
@@ -515,7 +515,7 @@ ResultSet::~ResultSet()
 
 ResultSet::Result ResultSet::at(int index) const
 {
-    Q_ASSERT_X(d->query.isActive(), "ResultSet::at", "Query is not active");
+    if (!d->query.isActive()) return Result();
 
     d->query.seek(index);
 

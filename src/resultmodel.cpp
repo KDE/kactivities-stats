@@ -891,6 +891,8 @@ public:
     //_ Title and mimetype functions
     void fillTitleAndMimetype(ResultSet::Result &result)
     {
+        if (!database) return;
+
         auto query = database->execQuery(
                 "SELECT "
                 "title, mimetype "

@@ -159,11 +159,15 @@ public:
         auto type = kamd::utils::make_lazy_val([&] () -> QString {
             using Common::Database;
 
-            auto query
+            auto database
                 = Database::instance(Database::ResourcesDatabase,
-                                     Database::ReadOnly)
-                      ->execQuery("SELECT mimetype FROM ResourceInfo WHERE "
-                                  "targettedResource = '" + resource + "'");
+                                     Database::ReadOnly);
+
+            if (!database) return QString();
+
+            auto query
+                = database->execQuery("SELECT mimetype FROM ResourceInfo WHERE "
+                                      "targettedResource = '" + resource + "'");
 
             for (const auto &item : query) {
                 return item[0].toString();
