@@ -22,6 +22,7 @@
 #include "ui_window.h"
 #include "modeltest.h"
 
+#include <QAction>
 #include <QListView>
 #include <QDebug>
 #include <QCoreApplication>
