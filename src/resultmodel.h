@@ -49,7 +49,7 @@ class KACTIVITIESSTATS_EXPORT ResultModel : public QAbstractListModel {
 public:
     ResultModel(Query query, QObject *parent = nullptr);
     ResultModel(Query query, const QString &clientId, QObject *parent = nullptr);
-    virtual ~ResultModel();
+    ~ResultModel() override;
 
     enum Roles {
         ResourceRole         = Qt::UserRole,
@@ -62,16 +62,16 @@ public:
     };
 
     int rowCount(const QModelIndex &parent
-                 = QModelIndex()) const Q_DECL_OVERRIDE;
+                 = QModelIndex()) const override;
     QVariant data(const QModelIndex &item,
-                  int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
-    QHash<int, QByteArray> roleNames() const Q_DECL_OVERRIDE;
+                  int role = Qt::DisplayRole) const override;
+    QHash<int, QByteArray> roleNames() const override;
 
     QVariant headerData(int section, Qt::Orientation orientation,
-                        int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
+                        int role = Qt::DisplayRole) const override;
 
-    void fetchMore(const QModelIndex &parent) Q_DECL_OVERRIDE;
-    bool canFetchMore(const QModelIndex &parent) const Q_DECL_OVERRIDE;
+    void fetchMore(const QModelIndex &parent) override;
+    bool canFetchMore(const QModelIndex &parent) const override;
 
     void linkToActivity(const QUrl &resource,
                         const Terms::Activity &activity

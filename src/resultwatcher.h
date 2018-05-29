@@ -41,7 +41,7 @@ class KACTIVITIESSTATS_EXPORT ResultWatcher: public QObject {
     Q_OBJECT
 
 public:
-    ResultWatcher(Query query, QObject *parent = nullptr);
+    explicit ResultWatcher(Query query, QObject *parent = nullptr);
     ~ResultWatcher();
 
 Q_SIGNALS:
