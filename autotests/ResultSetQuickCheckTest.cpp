@@ -189,7 +189,7 @@ namespace {
 //_ Data init
 void ResultSetQuickCheckTest::initTestCase()
 {
-    qsrand(time(NULL));
+    qsrand(time(nullptr));
 
     QString databaseFile;
 
