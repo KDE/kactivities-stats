@@ -600,7 +600,7 @@ public:
         const auto lastUpdate  = result.lastUpdate();
         const auto linkStatus  = result.linkStatus();
 
-        #define FIXED_ITEMS_LESS_THAN FixedItemsLessThan(FixedItemsLessThan::FullOrdering, cache, resource)
+        #define FIXED_ITEMS_LESS_THAN FixedItemsLessThan(FixedItemsLessThan::PartialOrdering, cache, resource)
         #define ORDER_BY(Field) member(&ResultSet::Result::Field) > Field
         #define ORDER_BY_FULL(Field)                                           \
             (query.selection() == Terms::AllResources ?                        \
