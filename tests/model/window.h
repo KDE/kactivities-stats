@@ -43,7 +43,7 @@ class Window: public QMainWindow {
 
 public:
     Window();
-    ~Window();
+    ~Window() override;
 
 private Q_SLOTS:
     void updateResults();

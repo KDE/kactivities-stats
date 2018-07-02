@@ -46,7 +46,7 @@ using namespace KAStats::Terms;
 class Delegate: public QItemDelegate {
 public:
     void paint(QPainter *painter, const QStyleOptionViewItem &option,
-               const QModelIndex &index) const Q_DECL_OVERRIDE
+               const QModelIndex &index) const override
     {
         painter->save();
 
@@ -106,7 +106,7 @@ public:
     }
 
     QSize sizeHint(const QStyleOptionViewItem &option,
-                   const QModelIndex &index) const Q_DECL_OVERRIDE
+                   const QModelIndex &index) const override
     {
         Q_UNUSED(option);
         Q_UNUSED(index);
