@@ -343,7 +343,7 @@ public:
         {
             if (m_items.size() == 0) return;
 
-            d->q->beginRemoveRows(QModelIndex(), 0, m_items.size());
+            d->q->beginRemoveRows(QModelIndex(), 0, m_items.size() - 1);
             m_items.clear();
             d->q->endRemoveRows();
         }
