@@ -89,19 +89,19 @@ void ResultWatcherTest::testLinkedResources()
             LinkedResources | Agent::global()
                             | Activity::any());
 
-    watcher.linkToActivity(QUrl("test://link1"), Activity::current());
+    watcher.linkToActivity(QUrl(QStringLiteral("test://link1")), Activity::current());
 
     // A signal should arrive soon, waiting for 5 seconds at most
     CHECK_SIGNAL_RESULT(&watcher, &KAStats::ResultWatcher::resultLinked, 5,
                         (const QString &uri),
-                        QCOMPARE(QString("test://link1"), uri));
+                        QCOMPARE(QStringLiteral("test://link1"), uri));
 
-    watcher.unlinkFromActivity(QUrl("test://link1"), Activity::current());
+    watcher.unlinkFromActivity(QUrl(QStringLiteral("test://link1")), Activity::current());
 
     // A signal should arrive soon, waiting for 5 seconds at most
     CHECK_SIGNAL_RESULT(&watcher, &KAStats::ResultWatcher::resultUnlinked, 5,
                         (const QString &uri),
-                        QCOMPARE(QString("test://link1"), uri));
+                        QCOMPARE(QStringLiteral("test://link1"), uri));
 }
 
 void ResultWatcherTest::testUsedResources()
@@ -116,7 +116,7 @@ void ResultWatcherTest::testUsedResources()
     // Openning a resource for a few seconds
     {
         KActivities::ResourceInstance resource(0);
-        resource.setUri(QUrl("test://test1"));
+        resource.setUri(QUrl(QStringLiteral("test://test1")));
 
         liveSleep(3);
     }
@@ -124,7 +124,7 @@ void ResultWatcherTest::testUsedResources()
     // A signal should arrive soon, waiting for 5 seconds at most
     CHECK_SIGNAL_RESULT(&watcher, &KAStats::ResultWatcher::resultScoreUpdated, 5,
                         (const QString &uri, double),
-                        QCOMPARE(QString("test://test1"), uri));
+                        QCOMPARE(QStringLiteral("test://test1"), uri));
 }
 
 void ResultWatcherTest::initTestCase()

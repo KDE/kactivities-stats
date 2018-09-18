@@ -142,20 +142,20 @@ public:
     {
         if (agent == QLatin1String(":any")) return QStringLiteral("1");
 
-        return "agent = '" + (
+        return QStringLiteral("agent = '") + (
                 agent == QLatin1String(":current") ? QCoreApplication::instance()->applicationName() :
                                       agent
-            ) + "'";
+            ) + QStringLiteral("'");
     }
 
     QString activityClause(const QString &activity) const
     {
         if (activity == QLatin1String(":any")) return QStringLiteral("1");
 
-        return "activity = '" + (
+        return QStringLiteral("activity = '") + (
                 activity == QLatin1String(":current") ? ActivitiesSync::currentActivity(activities) :
                                          activity
-            ) + "'";
+            ) + QStringLiteral("'");
     }
 
     inline QString starPattern(const QString &pattern) const
@@ -169,14 +169,14 @@ public:
     {
         if (urlFilter == QLatin1String("*")) return QStringLiteral("1");
 
-        return "resource LIKE '" + Common::starPatternToLike(urlFilter) + "' ESCAPE '\\'";
+        return QStringLiteral("resource LIKE '") + Common::starPatternToLike(urlFilter) + QStringLiteral("' ESCAPE '\\'");
     }
 
     QString mimetypeClause(const QString &mimetype) const
     {
         if (mimetype == QLatin1String(":any") || mimetype == QLatin1String("*")) return QStringLiteral("1");
 
-        return "mimetype LIKE '" + Common::starPatternToLike(mimetype) + "' ESCAPE '\\'";
+        return QStringLiteral("mimetype LIKE '") + Common::starPatternToLike(mimetype) + QStringLiteral("' ESCAPE '\\'");
     }
 
     /**
@@ -203,11 +203,11 @@ public:
 
         const int limit = queryDefinition.limit();
         if (limit > 0) {
-            result += " LIMIT " + QString::number(limit);
+            result += QStringLiteral(" LIMIT ") + QString::number(limit);
 
             const int offset = queryDefinition.offset();
             if (offset > 0) {
-                result += " OFFSET " + QString::number(offset);
+                result += QStringLiteral(" OFFSET ") + QString::number(offset);
             }
         }
 
@@ -245,8 +245,8 @@ public:
 
         auto queryString = _query;
 
-        queryString.replace("ORDER_BY_CLAUSE", "ORDER BY $orderingColumn resource ASC")
-                   .replace("LIMIT_CLAUSE", limitOffsetSuffix());
+        queryString.replace(QStringLiteral("ORDER_BY_CLAUSE"), QStringLiteral("ORDER BY $orderingColumn resource ASC"))
+                   .replace(QStringLiteral("LIMIT_CLAUSE"), limitOffsetSuffix());
 
         return kamd::utils::debug_and_return(DEBUG_QUERIES, "Query: ",
             queryString
@@ -264,7 +264,7 @@ public:
         //       since the cache was last updated, although, for this query,
         //       scores are not that important.
         static const QString queryString =
-            R"sql(
+            QStringLiteral(R"sql(
             SELECT
                 rl.targettedResource as resource
               , SUM(rsc.cachedScore) as score
@@ -297,7 +297,7 @@ public:
 
             ORDER_BY_CLAUSE
             LIMIT_CLAUSE
-            )sql"
+            )sql")
             ;
 
         return queryString;
@@ -308,7 +308,7 @@ public:
         // TODO: We need to correct the scores based on the time that passed
         //       since the cache was last updated
         static const QString queryString =
-            R"sql(
+            QStringLiteral(R"sql(
             SELECT
                 rsc.targettedResource as resource
               , SUM(rsc.cachedScore)  as score
@@ -336,7 +336,7 @@ public:
 
             ORDER_BY_CLAUSE
             LIMIT_CLAUSE
-            )sql"
+            )sql")
             ;
 
         return queryString;
@@ -348,7 +348,7 @@ public:
         //       since the cache was last updated, although, for this query,
         //       scores are not that important.
         static const QString queryString =
-            R"sql(
+            QStringLiteral(R"sql(
             WITH
                 LinkedResourcesResults AS (
                     SELECT rl.targettedResource as resource
@@ -426,7 +426,7 @@ public:
 
                 ORDER_BY_CLAUSE
                 LIMIT_CLAUSE
-            )sql"
+            )sql")
             ;
 
         return queryString;
@@ -451,13 +451,13 @@ public:
 
         auto linkedActivitiesQuery = database->createQuery();
 
-        linkedActivitiesQuery.prepare(R"sql(
+        linkedActivitiesQuery.prepare(QStringLiteral(R"sql(
             SELECT usedActivity
             FROM   ResourceLink
             WHERE  targettedResource = :resource
-            )sql");
+            )sql"));
 
-        linkedActivitiesQuery.bindValue(":resource", result.resource());
+        linkedActivitiesQuery.bindValue(QStringLiteral(":resource"), result.resource());
         linkedActivitiesQuery.exec();
 
         QStringList linkedActivities;

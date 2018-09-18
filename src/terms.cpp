@@ -42,21 +42,21 @@ namespace Stats {
     }
 
 IMPLEMENT_TERM_CONSTRUCTORS(Type)
-IMPLEMENT_SPECIAL_TERM_VALUE(Type, any, ":any")
+IMPLEMENT_SPECIAL_TERM_VALUE(Type, any, QStringLiteral(":any"))
 
 IMPLEMENT_TERM_CONSTRUCTORS(Agent)
-IMPLEMENT_SPECIAL_TERM_VALUE(Agent, any, ":any")
-IMPLEMENT_SPECIAL_TERM_VALUE(Agent, global, ":global")
-IMPLEMENT_SPECIAL_TERM_VALUE(Agent, current, ":current")
+IMPLEMENT_SPECIAL_TERM_VALUE(Agent, any, QStringLiteral(":any"))
+IMPLEMENT_SPECIAL_TERM_VALUE(Agent, global, QStringLiteral(":global"))
+IMPLEMENT_SPECIAL_TERM_VALUE(Agent, current, QStringLiteral(":current"))
 
 IMPLEMENT_TERM_CONSTRUCTORS(Activity)
-IMPLEMENT_SPECIAL_TERM_VALUE(Activity, any, ":any")
-IMPLEMENT_SPECIAL_TERM_VALUE(Activity, global, ":global")
-IMPLEMENT_SPECIAL_TERM_VALUE(Activity, current, ":current")
+IMPLEMENT_SPECIAL_TERM_VALUE(Activity, any, QStringLiteral(":any"))
+IMPLEMENT_SPECIAL_TERM_VALUE(Activity, global, QStringLiteral(":global"))
+IMPLEMENT_SPECIAL_TERM_VALUE(Activity, current, QStringLiteral(":current"))
 
 IMPLEMENT_TERM_CONSTRUCTORS(Url)
-IMPLEMENT_SPECIAL_TERM_VALUE(Url, localFile, "/*")
-IMPLEMENT_SPECIAL_TERM_VALUE(Url, file, QStringList() << "/*" << "smb:*" << "fish:*" << "sftp:*" << "ftp:*")
+IMPLEMENT_SPECIAL_TERM_VALUE(Url, localFile, QStringLiteral("/*"))
+IMPLEMENT_SPECIAL_TERM_VALUE(Url, file, QStringList() << QStringLiteral("/*") << QStringLiteral("smb:*") << QStringLiteral("fish:*") << QStringLiteral("sftp:*") << QStringLiteral("ftp:*"))
 
 #undef IMPLEMENT_TERM_CONSTRUCTORS
 #undef IMPLEMENT_SPECIAL_TERM_VALUE
@@ -78,12 +78,12 @@ Terms::Offset::Offset(int value)
 
 Terms::Url Terms::Url::startsWith(const QString &prefix)
 {
-    return Url(prefix + "*");
+    return Url(prefix + QStringLiteral("*"));
 }
 
 Terms::Url Terms::Url::contains(const QString &infix)
 {
-    return Url("*" + infix + "*");
+    return Url(QStringLiteral("*") + infix + QStringLiteral("*"));
 }
 
 } // namespace Stats

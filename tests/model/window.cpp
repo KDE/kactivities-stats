@@ -73,7 +73,7 @@ public:
 
         // Painting the score
         painter->drawText(titleRect,
-                          "Score: " + QString::number(index.data(ResultModel::ScoreRole).toDouble()),
+                          QStringLiteral("Score: ") + QString::number(index.data(ResultModel::ScoreRole).toDouble()),
                           QTextOption(Qt::AlignRight));
 
         // Painting the moification and creation times
@@ -95,10 +95,10 @@ public:
         titleRect.moveTop(titleRect.top() + lineHeight);
 
         painter->drawText(titleRect,
-                          "Modified: " + lastUpdate.toString()
+                          QStringLiteral("Modified: ") + lastUpdate.toString()
                           );
         painter->drawText(titleRect,
-                          "Created: " + firstUpdate.toString(),
+                          QStringLiteral("Created: ") + firstUpdate.toString(),
                           QTextOption(Qt::AlignRight));
 
         painter->restore();
@@ -134,32 +134,32 @@ Window::Window()
             this, SLOT(updateRowCount()));
 
     for (const auto &activity :
-         (QStringList() << ":current"
-                        << ":any"
-                        << ":global") + activities->activities()) {
+         (QStringList() << QStringLiteral(":current")
+                        << QStringLiteral(":any")
+                        << QStringLiteral(":global")) + activities->activities()) {
         ui->comboActivity->addItem(activity);
     }
 
     foreach (const auto &arg, QCoreApplication::arguments()) {
-        if (arg == "--used") {
+        if (arg == QLatin1String("--used")) {
             ui->radioSelectUsedResources->setChecked(true);
 
-        } else if (arg == "--linked") {
+        } else if (arg == QLatin1String("--linked")) {
             ui->radioSelectLinkedResources->setChecked(true);
 
-        } else if (arg == "--combined") {
+        } else if (arg == QLatin1String("--combined")) {
             ui->radioSelectAllResources->setChecked(true);
 
-        } else if (arg.startsWith("--activity=")) {
-            ui->comboActivity->setCurrentText(arg.split("=")[1]);
+        } else if (arg.startsWith(QLatin1String("--activity="))) {
+            ui->comboActivity->setCurrentText(arg.split(QLatin1String("="))[1]);
 
-        } else if (arg.startsWith("--agent=")) {
-            ui->textAgent->setText(arg.split("=")[1]);
+        } else if (arg.startsWith(QLatin1String("--agent="))) {
+            ui->textAgent->setText(arg.split(QLatin1String("="))[1]);
 
-        } else if (arg.startsWith("--mimetype=")) {
-            ui->textMimetype->setText(arg.split("=")[1]);
+        } else if (arg.startsWith(QLatin1String("--mimetype="))) {
+            ui->textMimetype->setText(arg.split(QLatin1String("="))[1]);
 
-        } else if (arg == "--select") {
+        } else if (arg == QLatin1String("--select")) {
             updateResults();
 
         }
@@ -188,39 +188,39 @@ Window::Window()
                     | Activity::current();
 
     presets = {
-        { "kicker-favorites",
+        { QStringLiteral("kicker-favorites"),
             LinkedResources
                 | Agent {
-                    "org.kde.plasma.favorites.applications",
-                    "org.kde.plasma.favorites.documents",
-                    "org.kde.plasma.favorites.contacts"
+                    QStringLiteral("org.kde.plasma.favorites.applications"),
+                    QStringLiteral("org.kde.plasma.favorites.documents"),
+                    QStringLiteral("org.kde.plasma.favorites.contacts")
                   }
                 | Type::any()
                 | Activity::current()
                 | Activity::global()
                 | Limit(15)
         },
-        { "kicker-recent-apps-n-docs",
-            recentQueryBase | Url::startsWith("applications:") | Url::file() | Limit(30)
+        { QStringLiteral("kicker-recent-apps-n-docs"),
+            recentQueryBase | Url::startsWith(QStringLiteral("applications:")) | Url::file() | Limit(30)
         },
-        { "kicker-recent-apps",
-            recentQueryBase | Url::startsWith("applications:") | Limit(15)
+        { QStringLiteral("kicker-recent-apps"),
+            recentQueryBase | Url::startsWith(QStringLiteral("applications:")) | Limit(15)
         },
-        { "kicker-recent-docs",
+        { QStringLiteral("kicker-recent-docs"),
             recentQueryBase | Url::file() | Limit(15)
         },
-        { "kicker-popular-apps-n-docs",
-            popularQueryBase | Url::startsWith("applications:") | Url::file() | Limit(30)
+        { QStringLiteral("kicker-popular-apps-n-docs"),
+            popularQueryBase | Url::startsWith(QStringLiteral("applications:")) | Url::file() | Limit(30)
         },
-        { "kicker-popular-apps",
-            popularQueryBase | Url::startsWith("applications:") | Limit(15)
+        { QStringLiteral("kicker-popular-apps"),
+            popularQueryBase | Url::startsWith(QStringLiteral("applications:")) | Limit(15)
         },
-        { "kicker-popular-docs",
+        { QStringLiteral("kicker-popular-docs"),
             popularQueryBase | Url::file() | Limit(15)
         }
     };
 
-    ui->comboPreset->addItem("Choose a preset", QVariant());
+    ui->comboPreset->addItem(QStringLiteral("Choose a preset"), QVariant());
     for (const auto& presetId: presets.keys()) {
         ui->comboPreset->addItem(presetId, presetId);
     }
@@ -259,19 +259,19 @@ void Window::selectPreset()
 
     // Agents
     qDebug() << "\tAgents:" << query.agents();
-    ui->textAgent->setText(query.agents().join(','));
+    ui->textAgent->setText(query.agents().join(QLatin1Char(',')));
 
     // Types
     qDebug() << "\tTypes:" << query.types();
-    ui->textMimetype->setText(query.types().join(','));
+    ui->textMimetype->setText(query.types().join(QLatin1Char(',')));
 
     // Activities
     qDebug() << "\tActivities:" << query.activities();
-    ui->comboActivity->setEditText(query.activities().join(','));
+    ui->comboActivity->setEditText(query.activities().join(QLatin1Char(',')));
 
     // Url filters
     qDebug() << "\tUrl filters:" << query.urlFilters();
-    ui->textUrl->setText(query.urlFilters().join(','));
+    ui->textUrl->setText(query.urlFilters().join(QLatin1Char(',')));
 
     // Limit
     ui->spinLimitCount->setValue(query.limit());
@@ -298,13 +298,13 @@ void Window::setQuery(const KActivities::Stats::Query &query)
     ui->textLog->setText(
         accumulate(ResultSet(query), QString(),
             [] (const QString &acc, const ResultSet::Result &result) {
-                return acc + result.title() + " (" + result.resource() + ")\n";
+                return acc + result.title() + QStringLiteral(" (") + result.resource() + QStringLiteral(")\n");
             })
         );
 
     model.reset(new ResultModel(query));
 
-    if (QCoreApplication::arguments().contains("--enable-model-test")) {
+    if (QCoreApplication::arguments().contains(QLatin1String("--enable-model-test"))) {
         modelTest.reset();
         modelTest.reset(new ModelTest(new ResultModel(query)));
     }
@@ -316,9 +316,9 @@ void Window::setQuery(const KActivities::Stats::Query &query)
     auto context = ui->viewResultsQML->rootContext();
     ui->viewResultsQML->setResizeMode(QQuickWidget::SizeRootObjectToView);
 
-    context->setContextProperty("kamdmodel", model.get());
+    context->setContextProperty(QStringLiteral("kamdmodel"), model.get());
 
-    ui->viewResultsQML->setSource(QUrl("qrc:/main.qml"));
+    ui->viewResultsQML->setSource(QUrl(QStringLiteral("qrc:/main.qml")));
 }
 
 void Window::updateResults()
@@ -343,16 +343,16 @@ void Window::updateResults()
         ) |
 
         // Which agents?
-        Agent(ui->textAgent->text().split(',')) |
+        Agent(ui->textAgent->text().split(QLatin1Char(','))) |
 
         // Which mime?
-        Type(ui->textMimetype->text().split(',')) |
+        Type(ui->textMimetype->text().split(QLatin1Char(','))) |
 
         // Which activities?
-        Activity(ui->comboActivity->currentText().split(',')) |
+        Activity(ui->comboActivity->currentText().split(QLatin1Char(','))) |
 
         // And URL filters
-        Url(ui->textUrl->text().split(',', QString::SkipEmptyParts)) |
+        Url(ui->textUrl->text().split(QLatin1Char(','), QString::SkipEmptyParts)) |
 
         // And how many items
         Limit(ui->spinLimitCount->value())

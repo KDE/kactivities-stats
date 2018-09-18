@@ -183,18 +183,18 @@ void initSchema(Database &database)
 
         // When the activity field was empty, it meant the file was
         // linked to all activities (aka :global)
-        database.execQuery("UPDATE ResourceLink " + updateActivity);
+        database.execQuery(QStringLiteral("UPDATE ResourceLink ") + updateActivity);
 
         // When the agent field was empty, it meant the file was not
         // linked to a specified agent (aka :global)
-        database.execQuery("UPDATE ResourceLink " + updateAgent);
+        database.execQuery(QStringLiteral("UPDATE ResourceLink ") + updateAgent);
 
         // These were not supposed to be empty, but in the case they were,
         // deal with them as well
-        database.execQuery("UPDATE ResourceEvent " + updateActivity);
-        database.execQuery("UPDATE ResourceEvent " + updateAgent);
-        database.execQuery("UPDATE ResourceScoreCache " + updateActivity);
-        database.execQuery("UPDATE ResourceScoreCache " + updateAgent);
+        database.execQuery(QStringLiteral("UPDATE ResourceEvent ") + updateActivity);
+        database.execQuery(QStringLiteral("UPDATE ResourceEvent ") + updateAgent);
+        database.execQuery(QStringLiteral("UPDATE ResourceScoreCache ") + updateActivity);
+        database.execQuery(QStringLiteral("UPDATE ResourceScoreCache ") + updateAgent);
 
     }
 }

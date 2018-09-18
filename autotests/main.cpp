@@ -98,8 +98,8 @@ int main(int argc, char *argv[])
 
 #define ADD_TEST(TestName)                                                     \
     qDebug() << "Test " << #TestName << " is enabled "                         \
-             << (all || app.arguments().contains(#TestName));                  \
-    if (all || app.arguments().contains(#TestName)) {                          \
+             << (all || app.arguments().contains(QLatin1String(#TestName)));   \
+    if (all || app.arguments().contains(QLatin1String(#TestName))) {           \
         runner << new TestName##Test();                                        \
     }
 

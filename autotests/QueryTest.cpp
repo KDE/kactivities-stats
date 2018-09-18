@@ -39,20 +39,20 @@ QueryTest::QueryTest(QObject *parent)
 
 void QueryTest::testDefaults()
 {
-    TEST_CHUNK("Testing the term defaults");
+    TEST_CHUNK(QStringLiteral("Testing the term defaults"));
 
     Query query;
 
     QCOMPARE(query.selection(),  AllResources);
-    QCOMPARE(query.types(),      {":any"});
-    QCOMPARE(query.agents(),     {":current"});
-    QCOMPARE(query.activities(), {":current"});
+    QCOMPARE(query.types(),      {QStringLiteral(":any")});
+    QCOMPARE(query.agents(),     {QStringLiteral(":current")});
+    QCOMPARE(query.activities(), {QStringLiteral(":current")});
     QCOMPARE(query.ordering(),   HighScoredFirst);
 }
 
 void QueryTest::testDebuggingOutput()
 {
-    TEST_CHUNK("Debugging output for a query");
+    TEST_CHUNK(QStringLiteral("Debugging output for a query"));
 
     Query query;
 
@@ -62,7 +62,7 @@ void QueryTest::testDebuggingOutput()
 
 void QueryTest::testDerivationFromDefault()
 {
-    TEST_CHUNK("Testing query derivation from default")
+    TEST_CHUNK(QStringLiteral("Testing query derivation from default"))
 
     Query queryDefault;
     auto  queryDerived = queryDefault | LinkedResources;
@@ -78,7 +78,7 @@ void QueryTest::testDerivationFromDefault()
 
 void QueryTest::testDerivationFromCustom()
 {
-    TEST_CHUNK("Testing query derivation from custom")
+    TEST_CHUNK(QStringLiteral("Testing query derivation from custom"))
 
     Query queryCustom;
     auto  queryDerived = queryCustom | LinkedResources;
@@ -94,61 +94,61 @@ void QueryTest::testDerivationFromCustom()
 
 void QueryTest::testNormalSyntaxAgentManipulation()
 {
-    TEST_CHUNK("Testing normal syntax manipulation: Agents")
+    TEST_CHUNK(QStringLiteral("Testing normal syntax manipulation: Agents"))
 
     Query query;
-    query.addAgents(QStringList() << "gvim" << "kate");
+    query.addAgents(QStringList() << QStringLiteral("gvim") << QStringLiteral("kate"));
 
-    QCOMPARE(query.agents(), QStringList() << "gvim" << "kate");
+    QCOMPARE(query.agents(), QStringList() << QStringLiteral("gvim") << QStringLiteral("kate"));
 
-    query.addAgents(QStringList() << "kwrite");
+    query.addAgents(QStringList() << QStringLiteral("kwrite"));
 
-    QCOMPARE(query.agents(), QStringList() << "gvim" << "kate" << "kwrite");
+    QCOMPARE(query.agents(), QStringList() << QStringLiteral("gvim") << QStringLiteral("kate") << QStringLiteral("kwrite"));
 
     query.clearAgents();
 
-    QCOMPARE(query.agents(), QStringList() << ":current");
+    QCOMPARE(query.agents(), QStringList() << QStringLiteral(":current"));
 }
 
 void QueryTest::testNormalSyntaxTypeManipulation()
 {
-    TEST_CHUNK("Testing normal syntax manipulation: Types")
+    TEST_CHUNK(QStringLiteral("Testing normal syntax manipulation: Types"))
 
     Query query;
-    query.addTypes(QStringList() << "text/html" << "text/plain");
+    query.addTypes(QStringList() << QStringLiteral("text/html") << QStringLiteral("text/plain"));
 
-    QCOMPARE(query.types(), QStringList() << "text/html" << "text/plain");
+    QCOMPARE(query.types(), QStringList() << QStringLiteral("text/html") << QStringLiteral("text/plain"));
 
-    query.addTypes(QStringList() << "text/xml");
+    query.addTypes(QStringList() << QStringLiteral("text/xml"));
 
-    QCOMPARE(query.types(), QStringList() << "text/html" << "text/plain" << "text/xml");
+    QCOMPARE(query.types(), QStringList() << QStringLiteral("text/html") << QStringLiteral("text/plain") << QStringLiteral("text/xml"));
 
     query.clearTypes();
 
-    QCOMPARE(query.types(), QStringList() << ":any");
+    QCOMPARE(query.types(), QStringList() << QStringLiteral(":any"));
 }
 
 void QueryTest::testNormalSyntaxActivityManipulation()
 {
-    TEST_CHUNK("Testing normal syntax manipulation: Activities")
+    TEST_CHUNK(QStringLiteral("Testing normal syntax manipulation: Activities"))
 
     Query query;
-    query.addActivities(QStringList() << "a1" << "a2");
+    query.addActivities(QStringList() << QStringLiteral("a1") << QStringLiteral("a2"));
 
-    QCOMPARE(query.activities(), QStringList() << "a1" << "a2");
+    QCOMPARE(query.activities(), QStringList() << QStringLiteral("a1") << QStringLiteral("a2"));
 
-    query.addActivities(QStringList() << "a3");
+    query.addActivities(QStringList() << QStringLiteral("a3"));
 
-    QCOMPARE(query.activities(), QStringList() << "a1" << "a2" << "a3");
+    QCOMPARE(query.activities(), QStringList() << QStringLiteral("a1") << QStringLiteral("a2") << QStringLiteral("a3"));
 
     query.clearActivities();
 
-    QCOMPARE(query.activities(), QStringList() << ":current");
+    QCOMPARE(query.activities(), QStringList() << QStringLiteral(":current"));
 }
 
 void QueryTest::testNormalSyntaxOrderingManipulation()
 {
-    TEST_CHUNK("Testing normal syntax manipulation: Activities")
+    TEST_CHUNK(QStringLiteral("Testing normal syntax manipulation: Activities"))
 
     Query query;
 
@@ -165,27 +165,27 @@ void QueryTest::testNormalSyntaxOrderingManipulation()
 
 void QueryTest::testFancySyntaxBasic()
 {
-    TEST_CHUNK("Testing the fancy syntax, non c++11")
+    TEST_CHUNK(QStringLiteral("Testing the fancy syntax, non c++11"))
 
     auto query = LinkedResources
-                    | Type("text")
-                    | Type("image")
-                    | Agent("test")
+                    | Type(QStringLiteral("text"))
+                    | Type(QStringLiteral("image"))
+                    | Agent(QStringLiteral("test"))
                     | RecentlyCreatedFirst;
 
     QCOMPARE(query.selection(),  LinkedResources);
-    QCOMPARE(query.types(),      QStringList() << "text" << "image");
-    QCOMPARE(query.agents(),     QStringList() << "test");
-    QCOMPARE(query.activities(), QStringList() << ":current");
+    QCOMPARE(query.types(),      QStringList() << QStringLiteral("text") << QStringLiteral("image"));
+    QCOMPARE(query.agents(),     QStringList() << QStringLiteral("test"));
+    QCOMPARE(query.activities(), QStringList() << QStringLiteral(":current"));
     QCOMPARE(query.ordering(),   RecentlyCreatedFirst);
 
     #ifdef Q_COMPILER_INITIALIZER_LISTS
-    TEST_CHUNK("Testing the fancy syntax, c++11")
+    TEST_CHUNK(QStringLiteral("Testing the fancy syntax, c++11"))
 
     // Testing the fancy c++11 syntax
     auto queryCXX11 = LinkedResources
-                | Type{"text", "image"}
-                | Agent{"test"}
+                | Type{QStringLiteral("text"), QStringLiteral("image")}
+                | Agent{QStringLiteral("test")}
                 | RecentlyCreatedFirst;
 
     QCOMPARE(query, queryCXX11);
@@ -194,82 +194,82 @@ void QueryTest::testFancySyntaxBasic()
 
 void QueryTest::testFancySyntaxAgentDefinition()
 {
-    TEST_CHUNK("Testing the fancy syntax, agent definition")
+    TEST_CHUNK(QStringLiteral("Testing the fancy syntax, agent definition"))
 
     {
         auto query = LinkedResources | OrderByUrl;
-        QCOMPARE(query.agents(), QStringList() << ":current");
+        QCOMPARE(query.agents(), QStringList() << QStringLiteral(":current"));
     }
 
     {
-        auto query = LinkedResources | Agent("gvim");
-        QCOMPARE(query.agents(), QStringList() << "gvim");
+        auto query = LinkedResources | Agent(QStringLiteral("gvim"));
+        QCOMPARE(query.agents(), QStringList() << QStringLiteral("gvim"));
     }
 
     {
-        auto query = LinkedResources | Agent("gvim") | Agent("kate");
-        QCOMPARE(query.agents(), QStringList() << "gvim" << "kate");
+        auto query = LinkedResources | Agent(QStringLiteral("gvim")) | Agent(QStringLiteral("kate"));
+        QCOMPARE(query.agents(), QStringList() << QStringLiteral("gvim") << QStringLiteral("kate"));
     }
 
     {
-        auto query = LinkedResources | Agent(QStringList() << "gvim" << "kate");
-        QCOMPARE(query.agents(), QStringList() << "gvim" << "kate");
+        auto query = LinkedResources | Agent(QStringList() << QStringLiteral("gvim") << QStringLiteral("kate"));
+        QCOMPARE(query.agents(), QStringList() << QStringLiteral("gvim") << QStringLiteral("kate"));
     }
 }
 
 void QueryTest::testFancySyntaxTypeDefinition()
 {
-    TEST_CHUNK("Testing the fancy syntax, type definition")
+    TEST_CHUNK(QStringLiteral("Testing the fancy syntax, type definition"))
 
     {
         auto query = LinkedResources | OrderByUrl;
-        QCOMPARE(query.types(), QStringList() << ":any");
+        QCOMPARE(query.types(), QStringList() << QStringLiteral(":any"));
     }
 
     {
-        auto query = LinkedResources | Type("text/plain");
-        QCOMPARE(query.types(), QStringList() << "text/plain");
+        auto query = LinkedResources | Type(QStringLiteral("text/plain"));
+        QCOMPARE(query.types(), QStringList() << QStringLiteral("text/plain"));
     }
 
     {
-        auto query = LinkedResources | Type("text/plain") | Type("text/html");
-        QCOMPARE(query.types(), QStringList() << "text/plain" << "text/html");
+        auto query = LinkedResources | Type(QStringLiteral("text/plain")) | Type(QStringLiteral("text/html"));
+        QCOMPARE(query.types(), QStringList() << QStringLiteral("text/plain") << QStringLiteral("text/html"));
     }
 
     {
-        auto query = LinkedResources | Type(QStringList() << "text/plain" << "text/html");
-        QCOMPARE(query.types(), QStringList() << "text/plain" << "text/html");
+        auto query = LinkedResources | Type(QStringList() << QStringLiteral("text/plain") << QStringLiteral("text/html"));
+        QCOMPARE(query.types(), QStringList() << QStringLiteral("text/plain") << QStringLiteral("text/html"));
     }
 }
 
 void QueryTest::testFancySyntaxActivityDefinition()
 {
-    TEST_CHUNK("Testing the fancy syntax, activity definition")
+    TEST_CHUNK(QStringLiteral("Testing the fancy syntax, activity definition"))
 
     {
         auto query = LinkedResources | OrderByUrl;
-        QCOMPARE(query.activities(), QStringList() << ":current");
+        QCOMPARE(query.activities(), QStringList() << QStringLiteral(":current"));
     }
 
     {
-        auto query = LinkedResources | Activity("gvim");
-        QCOMPARE(query.activities(), QStringList() << "gvim");
+        auto query = LinkedResources | Activity(QStringLiteral("gvim"));
+        QCOMPARE(query.activities(), QStringList() << QStringLiteral("gvim"));
     }
 
     {
-        auto query = LinkedResources | Activity("gvim") | Activity("kate");
-        QCOMPARE(query.activities(), QStringList() << "gvim" << "kate");
+        auto query = LinkedResources | Activity(QStringLiteral("gvim")) | Activity(QStringLiteral("kate"));
+        QCOMPARE(query.activities(), QStringList() << QStringLiteral("gvim") << QStringLiteral("kate"));
     }
 
     {
-        auto query = LinkedResources | Activity(QStringList() << "gvim" << "kate");
-        QCOMPARE(query.activities(), QStringList() << "gvim" << "kate");
+        auto query = LinkedResources | Activity(QStringList() << QStringLiteral("gvim") << QStringLiteral("kate"));
+        QCOMPARE(query.activities(), QStringList() << QStringLiteral("gvim") << QStringLiteral("kate"));
     }
 }
 
 void QueryTest::testFancySyntaxOrderingDefinition()
 {
-    TEST_CHUNK("Testing the fancy syntax, activity definition")
+    TEST_CHUNK(QStringLiteral("Testing the fancy syntax, activity definition"))
 
     {
         auto query = LinkedResources | OrderByUrl;

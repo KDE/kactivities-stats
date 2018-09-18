@@ -80,15 +80,15 @@ namespace {
     {
         return
             item.targettedResource
-            + ':' + resourceTitle(item.targettedResource)
-            + '(' + QString::number(item.cachedScore) + ')';
+            + QLatin1Char(':') + resourceTitle(item.targettedResource)
+            + QLatin1Char('(') + QString::number(item.cachedScore) + QLatin1Char(')');
     }
 
     QString toQString(const ResourceLink::Item &item)
     {
         return
             item.targettedResource
-            + ':' + resourceTitle(item.targettedResource)
+            + QLatin1Char(':') + resourceTitle(item.targettedResource)
             // + '(' + QString::number(0/* item.score */) + ')'
             ;
     }
@@ -97,8 +97,8 @@ namespace {
     {
         return
             item.resource()
-            + ':' + item.title()
-            + '(' + QString::number(item.score()) + ')';
+            + QLatin1Char(':') + item.title()
+            + QLatin1Char('(') + QString::number(item.score()) + QLatin1Char(')');
     }
 
     bool operator==(const ResourceScoreCache::Item &left,
@@ -136,7 +136,7 @@ namespace {
             auto rightString = toQString(*rightIt);
 
             if (*leftIt == *rightIt) {
-                rightString.fill('.');
+                rightString.fill(QLatin1Char('.'));
 
             } else {
                 equal = false;
@@ -144,10 +144,10 @@ namespace {
 
             int longer  = qMax(leftString.length(), rightString.length());
             leftString  = leftString.leftJustified(longer);
-            rightString = rightString.leftJustified(longer, '.');
+            rightString = rightString.leftJustified(longer, QLatin1Char('.'));
 
-            leftLine += " " + leftString;
-            rightLine += " " + rightString;
+            leftLine += QStringLiteral(" ") + leftString;
+            rightLine += QStringLiteral(" ") + rightString;
         }
 
         // So far, we are equal, but do we have the same number
@@ -155,18 +155,18 @@ namespace {
         if (leftIt != leftEnd) {
             for (; leftIt != leftEnd; ++leftIt) {
                 auto item = toQString(*leftIt);
-                leftLine += " " + item;
-                item.fill('X');
-                rightLine += " " + item;
+                leftLine += QStringLiteral(" ") + item;
+                item.fill(QLatin1Char('X'));
+                rightLine += QStringLiteral(" ") + item;
             }
             equal = false;
 
         } else if (rightIt != rightEnd) {
             for (; rightIt != rightEnd; ++rightIt) {
                 auto item = toQString(*leftIt);
-                rightLine += " " + item;
-                item.fill('X');
-                leftLine += " " + item;
+                rightLine += QStringLiteral(" ") + item;
+                item.fill(QLatin1Char('X'));
+                leftLine += QStringLiteral(" ") + item;
             }
             equal = false;
         }
@@ -193,25 +193,25 @@ void ResultSetQuickCheckTest::initTestCase()
 
     QString databaseFile;
 
-    int dbArgIndex = QCoreApplication::arguments().indexOf("--ResultSetQuickCheckDatabase");
+    int dbArgIndex = QCoreApplication::arguments().indexOf(QStringLiteral("--ResultSetQuickCheckDatabase"));
     if (dbArgIndex > 0) {
         databaseFile = QCoreApplication::arguments()[dbArgIndex+1];
 
-        qDebug() << "Using an existing database: " + databaseFile;
+        qDebug() << "Using an existing database: "  << databaseFile;
         Common::ResourcesDatabaseSchema::overridePath(databaseFile);
 
         pullFromDatabase();
 
     } else {
 
-        QTemporaryDir dir(QDir::tempPath() + "/KActivitiesStatsTest_ResultSetQuickCheckTest_XXXXXX");
+        QTemporaryDir dir(QDir::tempPath() + QStringLiteral("/KActivitiesStatsTest_ResultSetQuickCheckTest_XXXXXX"));
         dir.setAutoRemove(false);
 
         if (!dir.isValid()) {
             qFatal("Can not create a temporary directory");
         }
 
-        databaseFile = dir.path() + "/database";
+        databaseFile = dir.path() + QStringLiteral("/database");
 
         qDebug() << "Creating database in " << databaseFile;
         Common::ResourcesDatabaseSchema::overridePath(databaseFile);
@@ -232,30 +232,30 @@ void ResultSetQuickCheckTest::initTestCase()
         pushToDatabase();
     }
 
-    if (QCoreApplication::arguments().contains("--show-data")) {
+    if (QCoreApplication::arguments().contains(QLatin1String("--show-data"))) {
         QString rscs;
         for (const auto& rsc: resourceScoreCaches) {
-            rscs += '(' + rsc.targettedResource +
-                    ',' + rsc.usedActivity +
-                    ',' + rsc.initiatingAgent +
-                    ',' + rsc.cachedScore +
-                    ')';
+            rscs += QLatin1Char('(') + rsc.targettedResource +
+                    QLatin1Char(',') + rsc.usedActivity +
+                    QLatin1Char(',') + rsc.initiatingAgent +
+                    QLatin1Char(',') + QString::number(rsc.cachedScore) +
+                    QLatin1Char(')');
         }
 
         QString ris;
         for (const auto& ri: resourceInfos) {
-            ris += '(' + ri.targettedResource +
-                   ',' + ri.title +
-                   ',' + ri.mimetype +
-                   ')';
+            ris += QLatin1Char('(') + ri.targettedResource +
+                   QLatin1Char(',') + ri.title +
+                   QLatin1Char(',') + ri.mimetype +
+                   QLatin1Char(')');
         }
 
         QString rls;
         for (const auto& rl: resourceLinks) {
-            rls += '(' + rl.targettedResource +
-                   ',' + rl.usedActivity +
-                   ',' + rl.initiatingAgent +
-                   ')';
+            rls += QLatin1Char('(') + rl.targettedResource +
+                   QLatin1Char(',') + rl.usedActivity +
+                   QLatin1Char(',') + rl.initiatingAgent +
+                   QLatin1Char(')');
         }
 
         qDebug() << "\nUsed data: -----------------------------"
@@ -287,35 +287,35 @@ void ResultSetQuickCheckTest::generateActivitiesList()
 void ResultSetQuickCheckTest::generateAgentsList()
 {
     for (int i = 0; i < NUMBER_AGENTS; ++i) {
-        agentsList << "Agent_" + QString::number(i);
+        agentsList << QStringLiteral("Agent_") + QString::number(i);
     }
 }
 
 void ResultSetQuickCheckTest::generateTypesList()
 {
     typesList
-        << "application/postscript"
-        << "application/pdf"
-        << "image/x-psd"
-        << "image/x-sgi"
-        << "image/x-tga"
-        << "image/x-xbitmap"
-        << "image/x-xwindowdump"
-        << "image/x-xcf"
-        << "image/x-compressed-xcf"
-        << "image/tiff"
-        << "image/jpeg"
-        << "image/x-psp"
-        << "image/png"
-        << "image/x-icon"
-        << "image/x-xpixmap"
-        << "image/svg+xml"
-        << "application/pdf"
-        << "image/x-wmf"
-        << "image/jp2"
-        << "image/jpeg2000"
-        << "image/jpx"
-        << "image/x-xcursor";
+        << QStringLiteral("application/postscript")
+        << QStringLiteral("application/pdf")
+        << QStringLiteral("image/x-psd")
+        << QStringLiteral("image/x-sgi")
+        << QStringLiteral("image/x-tga")
+        << QStringLiteral("image/x-xbitmap")
+        << QStringLiteral("image/x-xwindowdump")
+        << QStringLiteral("image/x-xcf")
+        << QStringLiteral("image/x-compressed-xcf")
+        << QStringLiteral("image/tiff")
+        << QStringLiteral("image/jpeg")
+        << QStringLiteral("image/x-psp")
+        << QStringLiteral("image/png")
+        << QStringLiteral("image/x-icon")
+        << QStringLiteral("image/x-xpixmap")
+        << QStringLiteral("image/svg+xml")
+        << QStringLiteral("application/pdf")
+        << QStringLiteral("image/x-wmf")
+        << QStringLiteral("image/jp2")
+        << QStringLiteral("image/jpeg2000")
+        << QStringLiteral("image/jpx")
+        << QStringLiteral("image/x-xcursor");
 }
 
 void ResultSetQuickCheckTest::generateResourcesList()
@@ -323,7 +323,7 @@ void ResultSetQuickCheckTest::generateResourcesList()
     for (int i = 0; i < NUMBER_RESOURCES; ++i) {
         resourcesList << (
                 QStringLiteral("/r")
-                + (i < 10 ? "0" : "")
+                + (i < 10 ? QStringLiteral("0") : QString())
                 + QString::number(i)
             );
     }
@@ -337,7 +337,7 @@ void ResultSetQuickCheckTest::generateResourceInfos()
 
         ResourceInfo::Item ri;
         ri.targettedResource = resource;
-        ri.title = "Title_" + QString::number(qrand() % 100);
+        ri.title = QStringLiteral("Title_") + QString::number(qrand() % 100);
         ri.mimetype = randItem(typesList);
 
         resourceInfos.insert(ri);
@@ -388,28 +388,28 @@ void ResultSetQuickCheckTest::pushToDatabase()
     Common::ResourcesDatabaseSchema::initSchema(*database);
 
     // Inserting activities, so that a test can be replicated
-    database->execQuery("CREATE TABLE Activity (activity TEXT)");
+    database->execQuery(QStringLiteral("CREATE TABLE Activity (activity TEXT)"));
     for (const auto& activity: activitiesList) {
         database->execQuery(QStringLiteral("INSERT INTO Activity VALUES ('%1')")
                 .arg(activity));
     }
 
     // Inserting agent, so that a test can be replicated
-    database->execQuery("CREATE TABLE Agent (agent TEXT)");
+    database->execQuery(QStringLiteral("CREATE TABLE Agent (agent TEXT)"));
     for (const auto& agent: agentsList) {
         database->execQuery(QStringLiteral("INSERT INTO Agent VALUES ('%1')")
                 .arg(agent));
     }
 
     // Inserting types, so that a test can be replicated
-    database->execQuery("CREATE TABLE Type (type TEXT)");
+    database->execQuery(QStringLiteral("CREATE TABLE Type (type TEXT)"));
     for (const auto& type: typesList) {
         database->execQuery(QStringLiteral("INSERT INTO Type VALUES ('%1')")
                 .arg(type));
     }
 
     // Inserting resources, so that a test can be replicated
-    database->execQuery("CREATE TABLE Resource (resource TEXT)");
+    database->execQuery(QStringLiteral("CREATE TABLE Resource (resource TEXT)"));
     for (const auto& resource: resourcesList) {
         database->execQuery(QStringLiteral("INSERT INTO Resource VALUES ('%1')")
                 .arg(resource));
@@ -523,57 +523,57 @@ void ResultSetQuickCheckTest::pullFromDatabase()
             Common::Database::ReadWrite
         );
 
-    auto activityQuery = database->execQuery("SELECT * FROM Activity");
+    auto activityQuery = database->execQuery(QStringLiteral("SELECT * FROM Activity"));
     for (const auto& activity: activityQuery) {
         activitiesList << activity[0].toString();
     }
 
-    auto agentQuery = database->execQuery("SELECT * FROM Agent");
+    auto agentQuery = database->execQuery(QStringLiteral("SELECT * FROM Agent"));
     for (const auto& agent: agentQuery) {
         agentsList << agent[0].toString();
     }
 
-    auto typeQuery = database->execQuery("SELECT * FROM Type");
+    auto typeQuery = database->execQuery(QStringLiteral("SELECT * FROM Type"));
     for (const auto& type: typeQuery) {
         typesList << type[0].toString();
     }
 
-    auto resourceQuery = database->execQuery("SELECT * FROM Resource");
+    auto resourceQuery = database->execQuery(QStringLiteral("SELECT * FROM Resource"));
     for (const auto& resource: resourceQuery) {
         resourcesList << resource[0].toString();
     }
 
 
-    auto rscQuery = database->execQuery("SELECT * FROM ResourceScoreCache");
+    auto rscQuery = database->execQuery(QStringLiteral("SELECT * FROM ResourceScoreCache"));
 
     for (const auto &rsc: rscQuery) {
         ResourceScoreCache::Item item;
-        item.usedActivity      = rsc["usedActivity"].toString();
-        item.initiatingAgent   = rsc["initiatingAgent"].toString();
-        item.targettedResource = rsc["targettedResource"].toString();
-        item.cachedScore       = rsc["cachedScore"].toDouble();
-        item.firstUpdate       = rsc["firstUpdate"].toInt();
-        item.lastUpdate        = rsc["lastUpdate"].toInt();
+        item.usedActivity      = rsc[QStringLiteral("usedActivity")].toString();
+        item.initiatingAgent   = rsc[QStringLiteral("initiatingAgent")].toString();
+        item.targettedResource = rsc[QStringLiteral("targettedResource")].toString();
+        item.cachedScore       = rsc[QStringLiteral("cachedScore")].toDouble();
+        item.firstUpdate       = rsc[QStringLiteral("firstUpdate")].toInt();
+        item.lastUpdate        = rsc[QStringLiteral("lastUpdate")].toInt();
         resourceScoreCaches.insert(item);
     }
 
-    auto riQuery = database->execQuery("SELECT * FROM ResourceInfo");
+    auto riQuery = database->execQuery(QStringLiteral("SELECT * FROM ResourceInfo"));
 
     for (const auto& ri: riQuery) {
         ResourceInfo::Item item;
-        item.targettedResource = ri["targettedResource"].toString();
-        item.title             = ri["title"].toString();
-        item.mimetype          = ri["mimetype"].toString();
+        item.targettedResource = ri[QStringLiteral("targettedResource")].toString();
+        item.title             = ri[QStringLiteral("title")].toString();
+        item.mimetype          = ri[QStringLiteral("mimetype")].toString();
         resourceInfos.insert(item);
     }
 
-    auto rlQuery = database->execQuery("SELECT * FROM ResourceLink");
+    auto rlQuery = database->execQuery(QStringLiteral("SELECT * FROM ResourceLink"));
 
     for (const auto& rl: rlQuery) {
         ResourceLink::Item item;
-        item.targettedResource = rl["targettedResource"].toString();
-        item.usedActivity      = rl["usedActivity"].toString();
-        item.initiatingAgent   = rl["initiatingAgent"].toString();
+        item.targettedResource = rl[QStringLiteral("targettedResource")].toString();
+        item.usedActivity      = rl[QStringLiteral("usedActivity")].toString();
+        item.initiatingAgent   = rl[QStringLiteral("initiatingAgent")].toString();
         resourceLinks.insert(item);
     }
 }

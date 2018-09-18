@@ -48,7 +48,7 @@ ResultSetTest::ResultSetTest(QObject *parent)
 namespace {
     QString getBarredUri(const KAStats::ResultSet::Result &result)
     {
-        return result.resource() + "|";
+        return result.resource() + QStringLiteral("|");
     }
 
     QString concatenateResults(const KAStats::ResultSet &results)
@@ -89,7 +89,7 @@ void ResultSetTest::testUsedResources()
 
     qDebug() << "Agent: " << QCoreApplication::instance()->applicationName();
 
-    TEST_CHUNK("Getting the used resources by the highest score, default query")
+    TEST_CHUNK(QStringLiteral("Getting the used resources by the highest score, default query"))
     {
         ResultSet result(UsedResources);
 
@@ -111,18 +111,18 @@ void ResultSetTest::testUsedResources()
                  concatenateResults(result));
     }
 
-    TEST_CHUNK("Getting the used resources by the highest score, gvim")
+    TEST_CHUNK(QStringLiteral("Getting the used resources by the highest score, gvim"))
     {
         ResultSet result(UsedResources
                         | HighScoredFirst
-                        | Agent{"gvim"}
+                        | Agent{QStringLiteral("gvim")}
                         );
 
         QCOMPARE(result.at(0).resource(), QStringLiteral("/path/high1_act1_gvim"));
         QCOMPARE(result.at(1).resource(), QStringLiteral("/path/high4_act1_gvim"));
     }
 
-    TEST_CHUNK("Getting the used resources by the highest score, global agent")
+    TEST_CHUNK(QStringLiteral("Getting the used resources by the highest score, global agent"))
     {
         ResultSet result(UsedResources
                         | HighScoredFirst
@@ -134,7 +134,7 @@ void ResultSetTest::testUsedResources()
         QCOMPARE(result.at(2).resource(), QStringLiteral("/path/mid8_act1_glob"));
     }
 
-    TEST_CHUNK("Getting the used resources by the highest score, any agent")
+    TEST_CHUNK(QStringLiteral("Getting the used resources by the highest score, any agent"))
     {
         ResultSet result(UsedResources
                         | HighScoredFirst
@@ -150,14 +150,14 @@ void ResultSetTest::testUsedResources()
 
 void ResultSetTest::initTestCase()
 {
-    QTemporaryDir dir(QDir::tempPath() + "/KActivitiesStatsTest_ResultSetTest_XXXXXX");
+    QTemporaryDir dir(QDir::tempPath() + QStringLiteral("/KActivitiesStatsTest_ResultSetTest_XXXXXX"));
     dir.setAutoRemove(false);
 
     if (!dir.isValid()) {
         qFatal("Can not create a temporary directory");
     }
 
-    const auto databaseFile = dir.path() + "/database";
+    const auto databaseFile = dir.path() + QStringLiteral("/database");
 
     Common::ResourcesDatabaseSchema::overridePath(databaseFile);
     qDebug() << "Creating database in " << databaseFile;
@@ -169,7 +169,7 @@ void ResultSetTest::initTestCase()
     Common::ResourcesDatabaseSchema::initSchema(*database);
 
     database->execQuery(
-            "INSERT INTO ResourceScoreCache (usedActivity, initiatingAgent, targettedResource, scoreType, cachedScore, firstUpdate, lastUpdate) VALUES "
+            QStringLiteral("INSERT INTO ResourceScoreCache (usedActivity, initiatingAgent, targettedResource, scoreType, cachedScore, firstUpdate, lastUpdate) VALUES "
 
             "   ('activity1' , 'gvim'                 , '/path/high1_act1_gvim' , '0' , '800' , '-1' , '1421446599')"
             " , ('activity2' , 'kate'                 , '/path/high2_act2_kate' , '0' , '700' , '-1' , '1421439442')"
@@ -191,7 +191,7 @@ void ResultSetTest::initTestCase()
 
             " , ('activity1' , 'gvim'                 , '/path/low3_act1_gvim'  , '0' , '6'   , '-1' , '1421434704')"
             " , ('activity1' , 'kate'                 , '/path/low2_act1_kate'  , '0' , '3'   , '-1' , '1421433266')"
-            " , ('activity1' , 'kate'                 , '/path/low1_act1_kate'  , '0' , '2'   , '-1' , '1421433254')"
+            " , ('activity1' , 'kate'                 , '/path/low1_act1_kate'  , '0' , '2'   , '-1' , '1421433254')")
 
         );
 
@@ -203,13 +203,13 @@ void ResultSetTest::initTestCase()
     }
 
     database->execQuery(
-            "UPDATE ResourceScoreCache SET usedActivity = '"
+            QStringLiteral("UPDATE ResourceScoreCache SET usedActivity = '")
                 + kamd.currentActivity()
-                + "' WHERE usedActivity = 'activity1'");
+                + QStringLiteral("' WHERE usedActivity = 'activity1'"));
 
 
     database->execQuery(
-            "INSERT INTO ResourceLink (usedActivity, initiatingAgent, targettedResource) VALUES "
+            QStringLiteral("INSERT INTO ResourceLink (usedActivity, initiatingAgent, targettedResource) VALUES "
 
               "('activity1' , 'gvim' , '/path/mid1_a1')"
             ", ('activity1' , 'gvim' , '/path/mid2_a1')"
@@ -218,7 +218,7 @@ void ResultSetTest::initTestCase()
             ", ('activity2' , 'gvim' , '/path/link5_a2')"
             ", ('activity1' , 'kate' , '/path/link6_a1')"
             ", ('activity1' , 'kate' , '/path/link7_a1')"
-            ", ('activity1' , 'kate' , '/path/link8_a1')"
+            ", ('activity1' , 'kate' , '/path/link8_a1')")
 
         );
 }

@@ -136,10 +136,10 @@ bool Query::operator!= (const Query &right) const
         d->What.clear();                                                       \
     }
 
-IMPLEMENT_QUERY_LIST_FIELD(Types,      types,      QStringList(":any"))
-IMPLEMENT_QUERY_LIST_FIELD(Agents,     agents,     QStringList(":current"))
-IMPLEMENT_QUERY_LIST_FIELD(Activities, activities, QStringList(":current"))
-IMPLEMENT_QUERY_LIST_FIELD(UrlFilters, urlFilters, QStringList("*"))
+IMPLEMENT_QUERY_LIST_FIELD(Types,      types,      QStringList(QStringLiteral(":any")))
+IMPLEMENT_QUERY_LIST_FIELD(Agents,     agents,     QStringList(QStringLiteral(":current")))
+IMPLEMENT_QUERY_LIST_FIELD(Activities, activities, QStringList(QStringLiteral(":current")))
+IMPLEMENT_QUERY_LIST_FIELD(UrlFilters, urlFilters, QStringList(QStringLiteral("*")))
 
 #undef IMPLEMENT_QUERY_LIST_FIELD
 

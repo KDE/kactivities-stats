@@ -92,7 +92,7 @@ public:
             , m_clientId(clientId)
         {
             if (!m_clientId.isEmpty()) {
-                m_configFile = KSharedConfig::openConfig("kactivitymanagerd-statsrc");
+                m_configFile = KSharedConfig::openConfig(QStringLiteral("kactivitymanagerd-statsrc"));
             }
         }
 
@@ -205,7 +205,7 @@ public:
 
             m_orderingConfig =
                 KConfigGroup(m_configFile,
-                             "ResultModel-OrderingFor-" + m_clientId + activityTag);
+                             QStringLiteral("ResultModel-OrderingFor-") + m_clientId + activityTag);
 
             if (m_orderingConfig.hasKey("kactivitiesLinkedItemsOrder")) {
                 // If we have the ordering defined, use it
@@ -504,7 +504,7 @@ public:
             // Check whether we got an item representing a non-existent file,
             // if so, schedule its removal from the database
             for (const auto &item: newItems) {
-                if (item.resource().startsWith('/') && !QFile(item.resource()).exists()) {
+                if (item.resource().startsWith(QLatin1Char('/')) && !QFile(item.resource()).exists()) {
                     d->q->forgetResource(item.resource());
                 }
             }
@@ -756,8 +756,8 @@ public:
 
             const QString activityTag =
                 query.activities().contains(CURRENT_ACTIVITY_TAG)
-                    ? ("-ForActivity-" + activities.currentActivity())
-                    : "-ForAllActivities";
+                    ? (QStringLiteral("-ForActivity-") + activities.currentActivity())
+                    : QStringLiteral("-ForAllActivities");
 
             cache.loadOrderingConfig(activityTag);
 
@@ -824,8 +824,8 @@ public:
             ResultSet::Result result;
             result.setResource(resource);
 
-            result.setTitle(" ");
-            result.setMimetype(" ");
+            result.setTitle(QStringLiteral(" "));
+            result.setMimetype(QStringLiteral(" "));
             fillTitleAndMimetype(result);
 
             result.setScore(score);
@@ -894,18 +894,18 @@ public:
         if (!database) return;
 
         auto query = database->execQuery(
-                "SELECT "
+                QStringLiteral("SELECT "
                 "title, mimetype "
                 "FROM "
                 "ResourceInfo "
                 "WHERE "
-                "targettedResource = '" + result.resource() + "'"
+                "targettedResource = '") + result.resource() + QStringLiteral("'")
                 );
 
         // Only one item at most
         for (const auto &item: query) {
-            result.setTitle(item["title"].toString());
-            result.setMimetype(item["mimetype"].toString());
+            result.setTitle(item[QStringLiteral("title")].toString());
+            result.setMimetype(item[QStringLiteral("mimetype")].toString());
         }
     }
 
@@ -995,10 +995,10 @@ QVariant ResultModel::data(const QModelIndex &item, int role) const
 
     const auto &result = d->cache[row];
 
-    return role == Qt::DisplayRole ? (
-               result.title() + " " +
-               result.resource() + " - " +
-               QString::number(result.linkStatus()) + " - " +
+    return role == Qt::DisplayRole ? QString(
+               result.title() + QStringLiteral(" ") +
+               result.resource() + QStringLiteral(" - ") +
+               QString::number(result.linkStatus()) + QStringLiteral(" - ") +
                QString::number(result.score())
            )
          : role == ResourceRole         ? result.resource()

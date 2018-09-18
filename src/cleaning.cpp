@@ -58,9 +58,9 @@ void forgetRecentStats(Terms::Activity activities, int count, TimeUnit what)
     KAMD_DBUS_DECL_INTERFACE(scoring, Resources/Scoring, ResourcesScoring);
     for (const auto& activity: activities.values) {
         scoring.call(QStringLiteral("DeleteRecentStats"), activity, count,
-                what == Hours  ? "h" :
-                what == Days   ? "d" :
-                                 "m"
+                what == Hours  ? QStringLiteral("h") :
+                what == Days   ? QStringLiteral("d") :
+                                 QStringLiteral("m")
             );
     }
 }

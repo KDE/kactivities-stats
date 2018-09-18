@@ -166,8 +166,8 @@ public:
             if (!database) return QString();
 
             auto query
-                = database->execQuery("SELECT mimetype FROM ResourceInfo WHERE "
-                                      "targettedResource = '" + resource + "'");
+                = database->execQuery(QStringLiteral("SELECT mimetype FROM ResourceInfo WHERE "
+                                      "targettedResource = '") + resource + QStringLiteral("'"));
 
             for (const auto &item : query) {
                 return item[0].toString();
@@ -241,7 +241,7 @@ public:
                                 const QString &resource, double score,
                                 uint lastUpdate, uint firstUpdate)
     {
-        Q_ASSERT_X(activity == "00000000-0000-0000-0000-000000000000" ||
+        Q_ASSERT_X(activity == QLatin1String("00000000-0000-0000-0000-000000000000") ||
                    !QUuid(activity).isNull(),
                    "ResultWatcher::onResourceScoreUpdated",
                    "The activity should be always specified here, no magic values");
@@ -278,7 +278,7 @@ public:
         if (query.selection() == Terms::LinkedResources) return;
 
         if (activityMatches(activity) && agentMatches(agent)) {
-            if (resource.contains('*')) {
+            if (resource.contains(QLatin1Char('*'))) {
                 scheduleResultsInvalidation();
 
             } else if (typeMatches(resource)) {

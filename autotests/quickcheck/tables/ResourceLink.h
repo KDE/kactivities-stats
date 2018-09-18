@@ -46,8 +46,8 @@ namespace ResourceLink {
     {
         return groupBy(range, &Item::targettedResource,
                        [](Item &acc, const Item &item) {
-                           acc.usedActivity += item.usedActivity + ' ';
-                           acc.initiatingAgent += item.initiatingAgent + ' ';
+                           acc.usedActivity += item.usedActivity + QLatin1Char(' ');
+                           acc.initiatingAgent += item.initiatingAgent + QLatin1Char(' ');
                        });
     }
 

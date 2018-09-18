@@ -71,11 +71,11 @@ public:
         : m_open(false)
     {
         m_connectionName =
-                "kactivities_db_resources_"
+                QStringLiteral("kactivities_db_resources_")
                     // Adding the thread number to the database name
                     + QString::number((quintptr)info.thread)
                     // And whether it is read-only or read-write
-                    + (info.openMode == Database::ReadOnly ? "_readonly" : "_readwrite");
+                    + (info.openMode == Database::ReadOnly ? QStringLiteral("_readonly") : QStringLiteral("_readwrite"));
 
         m_database =
             QSqlDatabase::contains(m_connectionName)
@@ -201,7 +201,7 @@ Database::Ptr Database::instance(Source source, OpenMode openMode)
     // Maybe we should use the write-ahead log
     auto walResult = ptr->pragma(QStringLiteral("journal_mode = WAL"));
 
-    if (walResult != "wal") {
+    if (walResult != QLatin1String("wal")) {
         qWarning("KActivities: Database can not be opened in WAL mode. Check the "
                  "SQLite version (required >3.7.0). And whether your filesystem "
                  "supports shared memory");
@@ -282,7 +282,7 @@ void Database::setPragma(const QString &pragma)
 
 QVariant Database::pragma(const QString &pragma) const
 {
-    return value("PRAGMA " + pragma);
+    return value(QStringLiteral("PRAGMA ") + pragma);
 }
 
 QVariant Database::value(const QString &query) const
