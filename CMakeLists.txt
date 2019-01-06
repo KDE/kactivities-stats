@@ -6,7 +6,7 @@ set(KF5_VERSION "5.54.0") # handled by release scripts
 set(KF5_DEP_VERSION "5.54.0") # handled by release scripts
 project (KActivitiesStats VERSION ${KF5_VERSION})
 
-set (REQUIRED_QT_VERSION 5.9.0)
+set (REQUIRED_QT_VERSION 5.10.0)
 
 # We don't build in-source
 if ("${CMAKE_SOURCE_DIR}" STREQUAL "${CMAKE_BINARY_DIR}")
