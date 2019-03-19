@@ -81,7 +81,7 @@ ecm_setup_version (
    PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/KF5ActivitiesStatsConfigVersion.cmake"
    SOVERSION 1
    )
-
+add_definitions(-DQT_NO_FOREACH)
 add_subdirectory (src)
 if(BUILD_TESTING)
   add_subdirectory (autotests)

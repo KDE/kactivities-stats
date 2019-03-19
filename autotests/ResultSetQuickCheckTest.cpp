@@ -331,7 +331,7 @@ void ResultSetQuickCheckTest::generateResourcesList()
 
 void ResultSetQuickCheckTest::generateResourceInfos()
 {
-    foreach (const QString &resource, resourcesList) {
+    for (const QString &resource : qAsConst(resourcesList)) {
         // We want every n-th or so to be without the title
         if (qrand() % 3) continue;
 
@@ -363,7 +363,7 @@ void ResultSetQuickCheckTest::generateResourceScoreCaches()
 
 void ResultSetQuickCheckTest::generateResourceLinks()
 {
-    foreach (const QString &resource, resourcesList) {
+    for (const QString &resource : qAsConst(resourcesList)) {
         // We don't want all the resources to be linked
         // to something
         if (qrand() % 2) continue;
@@ -419,7 +419,7 @@ void ResultSetQuickCheckTest::pushToDatabase()
     qDebug() << "Inserting" << resourceScoreCaches.size() << "items into ResourceScoreCache";
     int i = 0;
 
-    foreach (const auto &rsc, resourceScoreCaches) {
+    for (const auto &rsc : qAsConst(resourceScoreCaches)) {
         std::cerr << '.';
 
         if (++i % 10 == 0) std::cerr << i;
@@ -458,7 +458,7 @@ void ResultSetQuickCheckTest::pushToDatabase()
     qDebug() << "Inserting" << resourceInfos.size() << "items into ResourceInfo";
     i = 0;
 
-    foreach (const auto &ri, resourceInfos) {
+    for (const auto &ri : qAsConst(resourceInfos)) {
         std::cerr << '.';
 
         if (++i % 10 == 0) std::cerr << i;
@@ -490,7 +490,7 @@ void ResultSetQuickCheckTest::pushToDatabase()
     qDebug() << "Inserting" << resourceLinks.size() << "items into ResourceLink";
     i = 0;
 
-    foreach (const auto &rl, resourceLinks) {
+    for (const auto &rl : qAsConst(resourceLinks)) {
         std::cerr << '.';
 
         if (++i % 10 == 0) std::cerr << i;
@@ -596,7 +596,7 @@ void ResultSetQuickCheckTest::testUsedResourcesForAgents()
     using boost::sort;
     using boost::adaptors::filtered;
 
-    foreach (const auto &agent, agentsList) {
+    for (const auto &agent : qAsConst(agentsList)) {
         auto memItems = ResourceScoreCache::groupByResource(
                 resourceScoreCaches
                 | filtered(ResourceScoreCache::initiatingAgent() == agent)
@@ -634,7 +634,7 @@ void ResultSetQuickCheckTest::testLinkedResourcesForAgents()
     using boost::sort;
     using boost::adaptors::filtered;
 
-    foreach (const auto &agent, agentsList) {
+    for (const auto &agent : qAsConst(agentsList)) {
         auto memItems = ResourceLink::groupByResource(
                 resourceLinks
                 | filtered(ResourceLink::initiatingAgent() == agent)

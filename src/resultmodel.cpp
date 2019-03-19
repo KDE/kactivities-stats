@@ -137,7 +137,7 @@ public:
             // not others
             QStringList linkedItems;
 
-            foreach (const ResultSet::Result &item, m_items) {
+            for (const ResultSet::Result &item : qAsConst(m_items)) {
                 if (item.linkStatus() == ResultSet::Result::NotLinked) break;
                 linkedItems << item.resource();
             }
@@ -1041,8 +1041,10 @@ bool ResultModel::canFetchMore(const QModelIndex &parent) const
 
 void ResultModel::forgetResource(const QString &resource)
 {
-    foreach (const QString &activity, d->query.activities()) {
-        foreach (const QString &agent, d->query.agents()) {
+    const auto lstActivities = d->query.activities();
+    for (const QString &activity : lstActivities) {
+        const auto lstAgents = d->query.agents();
+        for (const QString &agent : lstAgents) {
             Stats::forgetResource(
                     activity,
                     agent == CURRENT_AGENT_TAG ?
@@ -1055,9 +1057,10 @@ void ResultModel::forgetResource(const QString &resource)
 void ResultModel::forgetResource(int row)
 {
     if (row >= d->cache.size()) return;
-
-    foreach (const QString &activity, d->query.activities()) {
-        foreach (const QString &agent, d->query.agents()) {
+    const auto lstActivities = d->query.activities();
+    for (const QString &activity : lstActivities) {
+        const auto lstAgents = d->query.agents();
+        for (const QString &agent : lstAgents) {
             Stats::forgetResource(
                     activity,
                     agent == CURRENT_AGENT_TAG ?

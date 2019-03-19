@@ -140,7 +140,8 @@ Window::Window()
         ui->comboActivity->addItem(activity);
     }
 
-    foreach (const auto &arg, QCoreApplication::arguments()) {
+    const auto argumentsList = QCoreApplication::arguments();
+    for (const auto &arg : argumentsList) {
         if (arg == QLatin1String("--used")) {
             ui->radioSelectUsedResources->setChecked(true);
 
