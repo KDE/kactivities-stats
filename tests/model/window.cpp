@@ -294,14 +294,11 @@ void Window::setQuery(const KActivities::Stats::Query &query)
     ui->viewResults->setModel(nullptr);
 
     // Log results
-    using boost::accumulate;
-
-    ui->textLog->setText(
-        accumulate(ResultSet(query), QString(),
-            [] (const QString &acc, const ResultSet::Result &result) {
-                return acc + result.title() + QStringLiteral(" (") + result.resource() + QStringLiteral(")\n");
-            })
-        );
+    QString buffer;
+    for (const ResultSet::Result &result : ResultSet(query)) {
+        buffer += result.title() + QStringLiteral(" (") + result.resource() + QStringLiteral(")\n");
+    }
+    ui->textLog->setText(buffer);
 
     model.reset(new ResultModel(query));
 
