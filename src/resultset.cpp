@@ -442,12 +442,11 @@ public:
         result.setTitle(query.value(QStringLiteral("title")).toString());
         result.setMimetype(query.value(QStringLiteral("mimetype")).toString());
         result.setScore(query.value(QStringLiteral("score")).toDouble());
-        result.setLastUpdate(query.value(QStringLiteral("lastUpdate")).toInt());
-        result.setFirstUpdate(query.value(QStringLiteral("firstUpdate")).toInt());
-
+        result.setLastUpdate(query.value(QStringLiteral("lastUpdate")).toUInt());
+        result.setFirstUpdate(query.value(QStringLiteral("firstUpdate")).toUInt());
 
         result.setLinkStatus(
-            (ResultSet::Result::LinkStatus)query.value(QStringLiteral("linkStatus")).toInt());
+            static_cast<ResultSet::Result::LinkStatus>(query.value(QStringLiteral("linkStatus")).toUInt()));
 
         auto linkedActivitiesQuery = database->createQuery();
 
