@@ -20,6 +20,7 @@
  */
 
 #include "query.h"
+#include <QDate>
 #include <QDebug>
 
 namespace KActivities {
@@ -71,6 +72,7 @@ public:
     QStringList     activities;
     QStringList     urlFilters;
     Terms::Order    ordering;
+    QDate           date;
     int             limit;
     int             offset;
 };
@@ -111,7 +113,8 @@ bool Query::operator== (const Query &right) const
            agents()     == right.agents() &&
            activities() == right.activities() &&
            selection()  == right.selection() &&
-           urlFilters() == right.urlFilters();
+           urlFilters() == right.urlFilters() &&
+           date()       == right.date();
 }
 
 bool Query::operator!= (const Query &right) const
@@ -163,6 +166,11 @@ void Query::setOffset(int offset)
     d->offset = offset;
 }
 
+void Query::setDate(QDate date)
+{
+    d->date = date;
+}
+
 Terms::Order Query::ordering() const
 {
     return d->ordering;
@@ -184,6 +192,11 @@ int Query::offset() const
     return d->offset;
 }
 
+QDate Query::date() const
+{
+    return d->date;
+}
+
 } // namespace Stats
 } // namespace KActivities
 
@@ -200,6 +213,7 @@ QDebug operator<<(QDebug dbg, const KAStats::Query &query)
         << ", " << Agent(query.agents())
         << ", " << Activity(query.activities())
         << ", " << Url(query.urlFilters())
+        << ", " << Date(query.date())
         << ", " << query.ordering()
         << ", Limit: " << query.limit()
         << " }";

@@ -297,6 +297,24 @@ void QueryTest::testFancySyntaxOrderingDefinition()
     }
 }
 
+void QueryTest::testNormalSyntaxDateDefinition()
+{
+    TEST_CHUNK(QStringLiteral("Testing the Date definition"))
+    {
+        auto query = Date::today();
+        QCOMPARE(query.value, QDate::currentDate());
+    }
+    {
+        auto query = Date::yesterday();
+        QDate date = QDate::currentDate();
+        QCOMPARE(query.value, date.addDays(-1));
+    }
+    {
+        auto query = Date(QDate::fromString(QStringLiteral("2019-07-25")));
+        QCOMPARE(query.value, QDate::fromString(QStringLiteral("2019-07-25")));
+    }
+}
+
 void QueryTest::initTestCase()
 {
     // CHECK_CONDITION(isActivityManagerRunning, FailIfTrue);

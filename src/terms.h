@@ -31,6 +31,7 @@
 
 #include <QString>
 #include <QStringList>
+#include <QDate>
 
 #include "kactivitiesstats_export.h"
 
@@ -202,6 +203,18 @@ namespace Terms {
         const QStringList values;
 
     };
+
+    /**
+     * On which start access date do you want to filter ?
+     */
+    struct KACTIVITIESSTATS_EXPORT Date {
+        Date(QDate value);
+        static Date today();
+        static Date yesterday();
+        static Date fromString(QString);
+        QDate value;
+    };
+
 } // namespace Terms
 
 } // namespace Stats
@@ -230,6 +243,9 @@ QDebug operator<<(QDebug dbg, const KActivities::Stats::Terms::Limit &limit);
 
 KACTIVITIESSTATS_EXPORT
 QDebug operator<<(QDebug dbg, const KActivities::Stats::Terms::Offset &offset);
+
+KACTIVITIESSTATS_EXPORT
+QDebug operator<<(QDebug dbg, const KActivities::Stats::Terms::Date &date);
 
 #endif // KACTIVITIES_STATS_TERMS_H
 

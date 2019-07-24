@@ -89,6 +89,7 @@ public:
     Terms::Order ordering() const;
     int offset() const;
     int limit() const;
+    QDate date() const;
 
     void setSelection(Terms::Select selection);
 
@@ -99,6 +100,7 @@ public:
     void setOrdering(Terms::Order ordering);
     void setOffset(int offset);
     void setLimit(int limit);
+    void setDate(QDate date);
 
     void clearTypes();
     void clearAgents();
@@ -149,6 +151,11 @@ private:
     inline void addTerm(Terms::Offset offset)
     {
         setOffset(offset.value);
+    }
+
+    inline void addTerm(Terms::Date date)
+    {
+        setDate(date.value);
     }
 
 public:

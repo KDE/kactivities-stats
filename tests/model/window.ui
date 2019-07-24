@@ -259,20 +259,6 @@
              </property>
             </widget>
            </item>
-           <item row="4" column="0">
-            <widget class="QLabel" name="labelLimitCount">
-             <property name="text">
-              <string>Count</string>
-             </property>
-            </widget>
-           </item>
-           <item row="4" column="1">
-            <widget class="QSpinBox" name="spinLimitCount">
-             <property name="value">
-              <number>10</number>
-             </property>
-            </widget>
-           </item>
            <item row="3" column="0">
             <widget class="QLabel" name="labelUrl">
              <property name="text">
@@ -282,6 +268,30 @@
            </item>
            <item row="3" column="1">
             <widget class="QLineEdit" name="textUrl"/>
+           </item>
+           <item row="4" column="0">
+            <widget class="QLabel" name="labelDate">
+             <property name="text">
+              <string>Date</string>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="1">
+            <widget class="QLineEdit" name="textDate"/>
+           </item>
+           <item row="5" column="0">
+            <widget class="QLabel" name="labelLimitCount">
+             <property name="text">
+              <string>Count</string>
+             </property>
+            </widget>
+           </item>
+           <item row="5" column="1">
+            <widget class="QSpinBox" name="spinLimitCount">
+             <property name="value">
+              <number>10</number>
+             </property>
+            </widget>
            </item>
           </layout>
          </item>

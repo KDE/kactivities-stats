@@ -323,6 +323,8 @@ void Window::updateResults()
 {
     qDebug() << "Updating the results";
 
+    QString textDate = ui->textDate->text();
+
     setQuery(
         // What should we get
         (
@@ -351,6 +353,13 @@ void Window::updateResults()
 
         // And URL filters
         Url(ui->textUrl->text().split(QLatin1Char(','), QString::SkipEmptyParts)) |
+
+        // And date filter
+        (
+            textDate == QStringLiteral("today")     ? Date::today() :
+            textDate == QStringLiteral("yesterday") ? Date::yesterday() :
+                                                      Date(QDate::fromString(textDate, Qt::ISODate))
+        ) |
 
         // And how many items
         Limit(ui->spinLimitCount->value())

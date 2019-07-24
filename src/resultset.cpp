@@ -179,6 +179,21 @@ public:
         return QStringLiteral("mimetype LIKE '") + Common::starPatternToLike(mimetype) + QStringLiteral("' ESCAPE '\\'");
     }
 
+    QString dateClause(QDate date) const {
+        return QStringLiteral("DATE(re.start, 'unixepoch') = '") +
+                               date.toString(Qt::ISODate) + QStringLiteral("' ");
+    }
+
+    QString resourceEventJoinClause() const {
+        return QStringLiteral(R"sql(
+            LEFT JOIN
+                ResourceEvent re
+                ON  from_table.targettedResource = re.targettedResource
+                AND from_table.usedActivity      = re.usedActivity
+                AND from_table.initiatingAgent   = re.initiatingAgent
+        )sql");
+    }
+
     /**
      * Transforms the input list's elements with the f member method,
      * and returns the resulting list
@@ -226,7 +241,6 @@ public:
               : QString()
             );
 
-
         // WHERE clause for filtering on agents
         QStringList agentsFilter = transformedList(
                 queryDefinition.agents(), &ResultSetPrivate::agentClause);
@@ -243,6 +257,14 @@ public:
         QStringList mimetypeFilter = transformedList(
                 queryDefinition.types(), &ResultSetPrivate::mimetypeClause);
 
+        QString dateColumn = QStringLiteral("1"), resourceEventJoin;
+        // WHERE clause for access date filtering and ResourceEvent table Join
+        if (!queryDefinition.date().isNull()) {
+            dateColumn = dateClause(queryDefinition.date());
+
+            resourceEventJoin = resourceEventJoinClause();
+        }
+
         auto queryString = _query;
 
         queryString.replace(QStringLiteral("ORDER_BY_CLAUSE"), QStringLiteral("ORDER BY $orderingColumn resource ASC"))
@@ -255,6 +277,8 @@ public:
                 .replace(QLatin1String("$activitiesFilter"), activitiesFilter.join(QStringLiteral(" OR ")))
                 .replace(QLatin1String("$urlFilter"), urlFilter.join(QStringLiteral(" OR ")))
                 .replace(QLatin1String("$mimetypeFilter"), mimetypeFilter.join(QStringLiteral(" OR ")))
+                .replace(QLatin1String("$resourceEventJoin"), resourceEventJoin)
+                .replace(QLatin1String("$dateFilter"), dateColumn)
             );
     }
 
@@ -266,32 +290,35 @@ public:
         static const QString queryString =
             QStringLiteral(R"sql(
             SELECT
-                rl.targettedResource as resource
-              , SUM(rsc.cachedScore) as score
-              , MIN(rsc.firstUpdate) as firstUpdate
-              , MAX(rsc.lastUpdate)  as lastUpdate
-              , rl.usedActivity      as activity
-              , rl.initiatingAgent   as agent
-              , COALESCE(ri.title, rl.targettedResource) as title
+                from_table.targettedResource as resource
+              , SUM(rsc.cachedScore)         as score
+              , MIN(rsc.firstUpdate)         as firstUpdate
+              , MAX(rsc.lastUpdate)          as lastUpdate
+              , from_table.usedActivity      as activity
+              , from_table.initiatingAgent   as agent
+              , COALESCE(ri.title, from_table.targettedResource) as title
               , ri.mimetype as mimetype
               , 2 as linkStatus
 
             FROM
-                ResourceLink rl
+                ResourceLink from_table
             LEFT JOIN
                 ResourceScoreCache rsc
-                ON rl.targettedResource = rsc.targettedResource
-                AND rl.usedActivity     = rsc.usedActivity
-                AND rl.initiatingAgent  = rsc.initiatingAgent
+                ON  from_table.targettedResource = rsc.targettedResource
+                AND from_table.usedActivity      = rsc.usedActivity
+                AND from_table.initiatingAgent   = rsc.initiatingAgent
             LEFT JOIN
                 ResourceInfo ri
-                ON rl.targettedResource = ri.targettedResource
+                ON from_table.targettedResource = ri.targettedResource
+
+            $resourceEventJoin
 
             WHERE
                 ($agentsFilter)
                 AND ($activitiesFilter)
                 AND ($urlFilter)
                 AND ($mimetypeFilter)
+                AND ($dateFilter)
 
             GROUP BY resource, title
 
@@ -310,27 +337,30 @@ public:
         static const QString queryString =
             QStringLiteral(R"sql(
             SELECT
-                rsc.targettedResource as resource
-              , SUM(rsc.cachedScore)  as score
-              , MIN(rsc.firstUpdate)  as firstUpdate
-              , MAX(rsc.lastUpdate)   as lastUpdate
-              , rsc.usedActivity      as activity
-              , rsc.initiatingAgent   as agent
-              , COALESCE(ri.title, rsc.targettedResource) as title
+                from_table.targettedResource as resource
+              , SUM(from_table.cachedScore)  as score
+              , MIN(from_table.firstUpdate)  as firstUpdate
+              , MAX(from_table.lastUpdate)   as lastUpdate
+              , from_table.usedActivity      as activity
+              , from_table.initiatingAgent   as agent
+              , COALESCE(ri.title, from_table.targettedResource) as title
               , ri.mimetype as mimetype
               , 1 as linkStatus
 
             FROM
-                ResourceScoreCache rsc
+                ResourceScoreCache from_table
             LEFT JOIN
                 ResourceInfo ri
-                ON rsc.targettedResource = ri.targettedResource
+                ON from_table.targettedResource = ri.targettedResource
+
+            $resourceEventJoin
 
             WHERE
                 ($agentsFilter)
                 AND ($activitiesFilter)
                 AND ($urlFilter)
                 AND ($mimetypeFilter)
+                AND ($dateFilter)
 
             GROUP BY resource, title
 
@@ -351,47 +381,53 @@ public:
             QStringLiteral(R"sql(
             WITH
                 LinkedResourcesResults AS (
-                    SELECT rl.targettedResource as resource
-                         , rsc.cachedScore      as score
-                         , rsc.firstUpdate      as firstUpdate
-                         , rsc.lastUpdate       as lastUpdate
-                         , rl.usedActivity      as activity
-                         , rl.initiatingAgent   as agent
+                    SELECT from_table.targettedResource as resource
+                         , rsc.cachedScore              as score
+                         , rsc.firstUpdate              as firstUpdate
+                         , rsc.lastUpdate               as lastUpdate
+                         , from_table.usedActivity      as activity
+                         , from_table.initiatingAgent   as agent
                          , 2 as linkStatus
 
                     FROM
-                        ResourceLink rl
+                        ResourceLink from_table
 
                     LEFT JOIN
                         ResourceScoreCache rsc
-                        ON  rl.targettedResource = rsc.targettedResource
-                        AND rl.usedActivity      = rsc.usedActivity
+                        ON  from_table.targettedResource = rsc.targettedResource
+                        AND from_table.usedActivity      = rsc.usedActivity
                         AND rl.initiatingAgent   = rsc.initiatingAgent
+
+                    $resourceEventJoin
 
                     WHERE
                         ($agentsFilter)
                         AND ($activitiesFilter)
                         AND ($urlFilter)
                         AND ($mimetypeFilter)
+                        AND ($dateFilter)
                 ),
 
                 UsedResourcesResults AS (
-                    SELECT rsc.targettedResource as resource
-                         , rsc.cachedScore       as score
-                         , rsc.firstUpdate       as firstUpdate
-                         , rsc.lastUpdate        as lastUpdate
-                         , rsc.usedActivity      as activity
-                         , rsc.initiatingAgent   as agent
+                    SELECT from_table.targettedResource as resource
+                         , from_table.cachedScore       as score
+                         , from_table.firstUpdate       as firstUpdate
+                         , from_table.lastUpdate        as lastUpdate
+                         , from_table.usedActivity      as activity
+                         , from_table.initiatingAgent   as agent
                          , 0 as linkStatus
 
                     FROM
-                        ResourceScoreCache rsc
+                        ResourceScoreCache from_table
+
+                    $resourceEventJoin
 
                     WHERE
                         ($agentsFilter)
                         AND ($activitiesFilter)
                         AND ($urlFilter)
                         AND ($mimetypeFilter)
+                        AND ($dateFilter)
                 ),
 
                 CollectedResults AS (

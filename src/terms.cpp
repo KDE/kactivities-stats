@@ -76,6 +76,28 @@ Terms::Offset::Offset(int value)
 {
 }
 
+Terms::Date::Date(QDate value)
+    : value(value)
+{
+}
+
+Terms::Date Terms::Date::today()
+{
+    return Date(QDate::currentDate());
+}
+
+Terms::Date Terms::Date::yesterday()
+{
+    auto date = QDate::currentDate();
+    return Date(date.addDays(-1));
+}
+
+Terms::Date Terms::Date::fromString(QString string)
+{
+    auto date = QDate::fromString(string, Qt::ISODate);
+    return Date(date);
+}
+
 Terms::Url Terms::Url::startsWith(const QString &prefix)
 {
     return Url(prefix + QStringLiteral("*"));
@@ -115,6 +137,7 @@ QDEBUG_TERM_OUT(Url,      _.values)
 
 QDEBUG_TERM_OUT(Limit,    _.value)
 QDEBUG_TERM_OUT(Offset,   _.value)
+QDEBUG_TERM_OUT(Date,     _.value)
 
 #undef QDEBUG_TERM_OUT
 

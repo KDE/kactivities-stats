@@ -146,6 +146,18 @@ void ResultSetTest::testUsedResources()
         QCOMPARE(result.at(1).resource(), QStringLiteral("/path/high2_act2_kate"));
         QCOMPARE(result.at(2).resource(), QStringLiteral("/path/high3_act1_kate"));
     }
+
+    TEST_CHUNK(QStringLiteral("Getting the used resources filter by Date"))
+    {
+        ResultSet result(UsedResources
+                        | HighScoredFirst
+                        | Agent::any()
+                        | Activity::any()
+                        | Date::fromString(QStringLiteral("2015-01-15"))
+                        );
+
+        QCOMPARE(result.at(0).resource(), QStringLiteral("/path/high1_act1_gvim"));
+    }
 }
 
 void ResultSetTest::initTestCase()
@@ -192,8 +204,17 @@ void ResultSetTest::initTestCase()
             " , ('activity1' , 'gvim'                 , '/path/low3_act1_gvim'  , '0' , '6'   , '-1' , '1421434704')"
             " , ('activity1' , 'kate'                 , '/path/low2_act1_kate'  , '0' , '3'   , '-1' , '1421433266')"
             " , ('activity1' , 'kate'                 , '/path/low1_act1_kate'  , '0' , '2'   , '-1' , '1421433254')")
-
         );
+
+    database->execQuery(
+            QStringLiteral("INSERT INTO  ResourceEvent (usedActivity, initiatingAgent, targettedResource, start, end ) VALUES"
+             "('activity1' , 'gvim'                 , '/path/high1_act1_gvim' , '1421345799', '1421345799')")
+    );
+
+    database->execQuery(
+            QStringLiteral("INSERT INTO  ResourceInfo (targettedResource, title, mimetype, autoTitle, autoMimetype) VALUES"
+             "('/path/high1_act1_gvim', 'high1_act1_gvim', 'text/plain', 1, 1 )")
+    );
 
     // Renaming the activity1 to the current acitivty
     KActivities::Consumer kamd;
@@ -204,6 +225,11 @@ void ResultSetTest::initTestCase()
 
     database->execQuery(
             QStringLiteral("UPDATE ResourceScoreCache SET usedActivity = '")
+                + kamd.currentActivity()
+                + QStringLiteral("' WHERE usedActivity = 'activity1'"));
+
+    database->execQuery(
+            QStringLiteral("UPDATE ResourceEvent SET usedActivity = '")
                 + kamd.currentActivity()
                 + QStringLiteral("' WHERE usedActivity = 'activity1'"));
 

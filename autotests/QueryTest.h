@@ -44,6 +44,7 @@ private Q_SLOTS:
     void testNormalSyntaxTypeManipulation();
     void testNormalSyntaxActivityManipulation();
     void testNormalSyntaxOrderingManipulation();
+    void testNormalSyntaxDateDefinition();
 
     void testFancySyntaxBasic();
     void testFancySyntaxAgentDefinition();
