@@ -35,6 +35,8 @@
 #include <mutex>
 #include <map>
 
+#include "kactivities-stats-logsettings.h"
+
 namespace Common {
 
 namespace {
@@ -92,7 +94,7 @@ public:
         m_open = m_database.open();
 
         if (!m_open) {
-            qWarning() << "KActivities: Database is not open: "
+            qCWarning(KACTIVITIES_STATS_LOG) << "KActivities: Database is not open: "
                        << m_database.connectionName()
                        << m_database.databaseName()
                        << m_database.lastError();
@@ -105,7 +107,7 @@ public:
 
     ~QSqlDatabaseWrapper()
     {
-        qDebug() << "Closing SQL connection: " << m_connectionName;
+        qCDebug(KACTIVITIES_STATS_LOG) << "Closing SQL connection: " << m_connectionName;
     }
 
     QSqlDatabase &get()
@@ -202,9 +204,9 @@ Database::Ptr Database::instance(Source source, OpenMode openMode)
     auto walResult = ptr->pragma(QStringLiteral("journal_mode = WAL"));
 
     if (walResult != QLatin1String("wal")) {
-        qWarning("KActivities: Database can not be opened in WAL mode. Check the "
+        qCWarning(KACTIVITIES_STATS_LOG) << "KActivities: Database can not be opened in WAL mode. Check the "
                  "SQLite version (required >3.7.0). And whether your filesystem "
-                 "supports shared memory");
+                 "supports shared memory";
 
         return nullptr;
     }
@@ -213,7 +215,7 @@ Database::Ptr Database::instance(Source source, OpenMode openMode)
     // it reaches 400k, not 4M as is default
     ptr->setPragma(QStringLiteral("wal_autocheckpoint = 100"));
 
-    qDebug() << "KActivities: Database connection: " << ptr->d->database->connectionName()
+    qCDebug(KACTIVITIES_STATS_LOG) << "KActivities: Database connection: " << ptr->d->database->connectionName()
         << "\n    query_only:         " << ptr->pragma(QStringLiteral("query_only"))
         << "\n    journal_mode:       " << ptr->pragma(QStringLiteral("journal_mode"))
         << "\n    wal_autocheckpoint: " << ptr->pragma(QStringLiteral("wal_autocheckpoint"))
@@ -255,7 +257,7 @@ QSqlQuery Database::execQuery(const QString &query, bool ignoreErrors) const
     lastExecutedQuery = query;
 
     if (!ignoreErrors && result.lastError().isValid()) {
-        qWarning() << "SQL: "
+        qCWarning(KACTIVITIES_STATS_LOG) << "SQL: "
                    << "\n    error: " << result.lastError()
                    << "\n    query: " << query;
     }

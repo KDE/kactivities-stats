@@ -32,6 +32,7 @@
 // Local
 #include <common/database/Database.h>
 #include <utils/debug_and_return.h>
+#include "kactivities-stats-logsettings.h"
 
 // Boost and STL
 #include <boost/range/algorithm/transform.hpp>
@@ -53,7 +54,7 @@
 
 #include <algorithm>
 
-#define QDBG qDebug() << "KActivitiesStats(" << (void*)this << ")"
+#define QDBG qCDebug(KACTIVITIES_STATS_LOG) << "KActivitiesStats(" << (void*)this << ")"
 
 namespace KActivities {
 namespace Stats {
@@ -101,7 +102,7 @@ public:
     bool activityMatches(const QString &activity) const
     {
         #if DEBUG_MATCHERS
-        qDebug() << "Activity " << activity << "matching against"
+        qCDebug(KACTIVITIES_STATS_LOG) << "Activity " << activity << "matching against"
                  << query.activities();
         #endif
 
@@ -122,7 +123,7 @@ public:
     bool agentMatches(const QString &agent) const
     {
         #if DEBUG_MATCHERS
-        qDebug() << "Agent " << agent << "matching against" << query.agents();
+        qCDebug(KACTIVITIES_STATS_LOG) << "Agent " << agent << "matching against" << query.agents();
         #endif
 
         return kamd::utils::debug_and_return(DEBUG_MATCHERS, " -> returning ",
@@ -142,7 +143,7 @@ public:
     bool urlMatches(const QString &url) const
     {
         #if DEBUG_MATCHERS
-        qDebug() << "Url " << url << "matching against" << urlFilters;
+        qCDebug(KACTIVITIES_STATS_LOG) << "Url " << url << "matching against" << urlFilters;
         #endif
 
         return kamd::utils::debug_and_return(DEBUG_MATCHERS, " -> returning ",
@@ -177,8 +178,8 @@ public:
         });
 
         #if DEBUG_MATCHERS
-        qDebug() << "Type " << "...type..." << "matching against" << query.types();
-        qDebug() << "ANY_TYPE_TAG" << ANY_TYPE_TAG;
+        qCDebug(KACTIVITIES_STATS_LOG) << "Type " << "...type..." << "matching against" << query.types();
+        qCDebug(KACTIVITIES_STATS_LOG) << "ANY_TYPE_TAG" << ANY_TYPE_TAG;
         #endif
 
         return kamd::utils::debug_and_return(DEBUG_MATCHERS, " -> returning ",
@@ -206,7 +207,7 @@ public:
                                     const QString &activity)
     {
         #if DEBUG_MATCHERS
-        qDebug() << "Resource has been linked: " << agent << resource << activity;
+        qCDebug(KACTIVITIES_STATS_LOG) << "Resource has been linked: " << agent << resource << activity;
         #endif
 
         // The used resources do not really care about the linked ones
@@ -224,7 +225,7 @@ public:
                                         const QString &activity)
     {
         #if DEBUG_MATCHERS
-        qDebug() << "Resource unlinked: " << agent << resource << activity;
+        qCDebug(KACTIVITIES_STATS_LOG) << "Resource unlinked: " << agent << resource << activity;
         #endif
 
         // The used resources do not really care about the linked ones
@@ -380,7 +381,7 @@ void ResultWatcher::unlinkFromActivity(const QUrl &resource,
 
     for (const auto &activity : activities) {
         for (const auto &agent : agents) {
-            qDebug() << "Unlink " << agent << resource << activity;
+            qCDebug(KACTIVITIES_STATS_LOG) << "Unlink " << agent << resource << activity;
             d->linking->UnlinkResourceFromActivity(agent, resource.toString(),
                                                    activity);
         }

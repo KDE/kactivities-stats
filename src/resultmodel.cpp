@@ -46,13 +46,14 @@
 #include "resultwatcher.h"
 #include "cleaning.h"
 #include "kactivities/consumer.h"
+#include "kactivities-stats-logsettings.h"
 
 #include <common/specialvalues.h>
 
 #define MAX_CHUNK_LOAD_SIZE 50
 #define MAX_RELOAD_CACHE_SIZE 50
 
-#define QDBG qDebug() << "KActivitiesStats(" << (void*)this << ")"
+#define QDBG qCDebug(KACTIVITIES_STATS_LOG) << "KActivitiesStats(" << (void*)this << ")"
 
 namespace KActivities {
 namespace Stats {
@@ -109,7 +110,7 @@ public:
                                             int position)
         {
             if (!m_orderingConfig.isValid()) {
-                qWarning() << "We can not reorder the results, no clientId was specified";
+                qCWarning(KACTIVITIES_STATS_LOG) << "We can not reorder the results, no clientId was specified";
                 return;
             }
 
@@ -192,14 +193,14 @@ public:
         inline void debug() const
         {
             for (const auto& item: m_items) {
-                qDebug() << "Item: " << item;
+                qCDebug(KACTIVITIES_STATS_LOG) << "Item: " << item;
             }
         }
 
         void loadOrderingConfig(const QString &activityTag)
         {
             if (!m_configFile) {
-                qDebug() << "Nothing to load - the client id is empty";
+                qCDebug(KACTIVITIES_STATS_LOG) << "Nothing to load - the client id is empty";
                 return;
             }
 

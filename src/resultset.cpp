@@ -30,6 +30,7 @@
 #include <common/database/Database.h>
 #include <utils/debug_and_return.h>
 #include <utils/qsqlquery_iterator.h>
+#include "kactivities-stats-logsettings.h"
 
 // Boost and STL
 #include <boost/range/algorithm/transform.hpp>
@@ -134,7 +135,7 @@ public:
               : QString()));
 
         if (query.lastError().isValid()) {
-            qWarning() << "[Error at ResultSetPrivate::initQuery]: " << query.lastError();
+            qCWarning(KACTIVITIES_STATS_LOG) << "[Error at ResultSetPrivate::initQuery]: " << query.lastError();
         }
     }
 
@@ -509,7 +510,7 @@ public:
         }
 
         result.setLinkedActivities(linkedActivities);
-        // qDebug() << result.resource() << "linked to activities" << result.linkedActivities();
+        // qDebug(KACTIVITIES_STATS_LOG) << result.resource() << "linked to activities" << result.linkedActivities();
 
         return result;
     }
@@ -523,7 +524,7 @@ ResultSet::ResultSet(Query queryDefinition)
     d->database = Database::instance(Database::ResourcesDatabase, Database::ReadOnly);
 
     if (!(d->database)) {
-        qWarning() << "KActivities ERROR: There is no database. This probably means "
+        qCWarning(KACTIVITIES_STATS_LOG) << "KActivities ERROR: There is no database. This probably means "
                       "that you do not have the Activity Manager running, or that "
                       "something else is broken on your system. Recent documents and "
                       "alike will not work!";

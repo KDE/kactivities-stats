@@ -16,6 +16,12 @@ set (
    ${KASTATS_CURRENT_ROOT_SOURCE_DIR}/src/utils/qsqlquery_iterator.cpp
    )
 
+ecm_qt_declare_logging_category(KActivitiesStats_LIB_SRCS
+                                HEADER kactivities-stats-logsettings.h
+                                IDENTIFIER KACTIVITIES_STATS_LOG
+CATEGORY_NAME kf5.kactivity.stat)
+
+
 qt5_add_dbus_interface (
    KActivitiesStats_LIB_SRCS
 
@@ -29,7 +35,6 @@ qt5_add_dbus_interface (
    ${KASTATS_CURRENT_ROOT_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.ResourcesLinking.xml
    resourceslinking_interface
    )
-
 
 
 add_library (
@@ -147,5 +152,4 @@ install (
    FILES ${PRI_FILENAME}
    DESTINATION ${ECM_MKSPECS_INSTALL_DIR}
    )
-
 

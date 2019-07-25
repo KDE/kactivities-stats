@@ -32,6 +32,7 @@ include (KDEFrameworkCompilerSettings NO_POLICY_SCOPE)
 include (GenerateExportHeader)
 include (ECMGenerateHeaders)
 include (ECMAddQch)
+include (ECMQtDeclareLoggingCategory)
 
 option(BUILD_QCH "Build API documentation in QCH format (for e.g. Qt Assistant, Qt Creator & KDevelop)" OFF)
 add_feature_info(QCH ${BUILD_QCH} "API documentation in QCH format (for e.g. Qt Assistant, Qt Creator & KDevelop)")
@@ -128,4 +129,7 @@ install (
 
 # Write out the features
 feature_summary (WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
+
+install(FILES kactivities-stats.categories  DESTINATION  ${KDE_INSTALL_LOGGINGCATEGORIESDIR})
+install(FILES kactivities-stats.categories  DESTINATION ${KDE_INSTALL_CONFDIR})
 
