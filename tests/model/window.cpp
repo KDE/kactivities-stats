@@ -358,7 +358,7 @@ void Window::updateResults()
         (
             textDate == QStringLiteral("today")     ? Date::today() :
             textDate == QStringLiteral("yesterday") ? Date::yesterday() :
-                                                      Date(QDate::fromString(textDate, Qt::ISODate))
+                                                      Date::fromString(textDate)
         ) |
 
         // And how many items

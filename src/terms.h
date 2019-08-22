@@ -209,10 +209,15 @@ namespace Terms {
      */
     struct KACTIVITIESSTATS_EXPORT Date {
         Date(QDate value);
+        Date(QDate start, QDate end);
+
         static Date today();
         static Date yesterday();
+        static Date currentWeek();
+        static Date previousWeek();
         static Date fromString(QString);
-        QDate value;
+
+        QDate start, end;
     };
 
 } // namespace Terms

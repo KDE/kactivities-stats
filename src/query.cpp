@@ -72,7 +72,7 @@ public:
     QStringList     activities;
     QStringList     urlFilters;
     Terms::Order    ordering;
-    QDate           date;
+    QDate           start, end;
     int             limit;
     int             offset;
 };
@@ -114,7 +114,8 @@ bool Query::operator== (const Query &right) const
            activities() == right.activities() &&
            selection()  == right.selection() &&
            urlFilters() == right.urlFilters() &&
-           date()       == right.date();
+           dateStart()  == right.dateStart() &&
+           dateEnd()    == right.dateEnd();
 }
 
 bool Query::operator!= (const Query &right) const
@@ -166,9 +167,14 @@ void Query::setOffset(int offset)
     d->offset = offset;
 }
 
-void Query::setDate(QDate date)
+void Query::setDateStart(QDate start)
 {
-    d->date = date;
+    d->start = start;
+}
+
+void Query::setDateEnd(QDate end)
+{
+    d->end = end;
 }
 
 Terms::Order Query::ordering() const
@@ -192,9 +198,14 @@ int Query::offset() const
     return d->offset;
 }
 
-QDate Query::date() const
+QDate Query::dateStart() const
 {
-    return d->date;
+    return d->start;
+}
+
+QDate Query::dateEnd() const
+{
+    return d->end;
 }
 
 } // namespace Stats
@@ -213,7 +224,7 @@ QDebug operator<<(QDebug dbg, const KAStats::Query &query)
         << ", " << Agent(query.agents())
         << ", " << Activity(query.activities())
         << ", " << Url(query.urlFilters())
-        << ", " << Date(query.date())
+        << ", " << Date(query.dateStart(), query.dateEnd())
         << ", " << query.ordering()
         << ", Limit: " << query.limit()
         << " }";

@@ -179,9 +179,17 @@ public:
         return QStringLiteral("mimetype LIKE '") + Common::starPatternToLike(mimetype) + QStringLiteral("' ESCAPE '\\'");
     }
 
-    QString dateClause(QDate date) const {
-        return QStringLiteral("DATE(re.start, 'unixepoch') = '") +
-                               date.toString(Qt::ISODate) + QStringLiteral("' ");
+    QString dateClause(QDate start, QDate end) const {
+        if (end.isNull()) {
+            // only date filtering
+            return QStringLiteral("DATE(re.start, 'unixepoch') = '") +
+                    start.toString(Qt::ISODate) + QStringLiteral("' ");
+        } else {
+            // date range filtering
+            return QStringLiteral("DATE(re.start, 'unixepoch') >= '") +
+                    start.toString(Qt::ISODate) + QStringLiteral("' AND DATE(re.start, 'unixepoch') <= '") +
+                    end.toString(Qt::ISODate) + QStringLiteral("' ");
+        }
     }
 
     QString resourceEventJoinClause() const {
@@ -259,8 +267,8 @@ public:
 
         QString dateColumn = QStringLiteral("1"), resourceEventJoin;
         // WHERE clause for access date filtering and ResourceEvent table Join
-        if (!queryDefinition.date().isNull()) {
-            dateColumn = dateClause(queryDefinition.date());
+        if (!queryDefinition.dateStart().isNull()) {
+            dateColumn = dateClause(queryDefinition.dateStart(), queryDefinition.dateEnd());
 
             resourceEventJoin = resourceEventJoinClause();
         }

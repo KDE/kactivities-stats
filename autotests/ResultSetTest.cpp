@@ -158,6 +158,19 @@ void ResultSetTest::testUsedResources()
 
         QCOMPARE(result.at(0).resource(), QStringLiteral("/path/high1_act1_gvim"));
     }
+
+    TEST_CHUNK(QStringLiteral("Getting the used resources filter by Date range"))
+    {
+        ResultSet result(UsedResources
+                        | HighScoredFirst
+                        | Agent::any()
+                        | Activity::any()
+                        | Date::fromString(QStringLiteral("2015-01-14,2015-01-15"))
+                        );
+
+        QCOMPARE(result.at(0).resource(), QStringLiteral("/path/high1_act1_gvim"));
+        QCOMPARE(result.at(1).resource(), QStringLiteral("/path/high2_act2_kate"));
+    }
 }
 
 void ResultSetTest::initTestCase()
@@ -208,12 +221,17 @@ void ResultSetTest::initTestCase()
 
     database->execQuery(
             QStringLiteral("INSERT INTO  ResourceEvent (usedActivity, initiatingAgent, targettedResource, start, end ) VALUES"
-             "('activity1' , 'gvim'                 , '/path/high1_act1_gvim' , '1421345799', '1421345799')")
+             // 15 january 2015
+             "  ('activity1' , 'gvim'                 , '/path/high1_act1_gvim' , '1421345799', '1421345799')"
+             // 14 january 2015
+             " , ('activity2' , 'kate'                 , '/path/high2_act2_kate' , '1421259377', '1421259377')"
+    )
     );
 
     database->execQuery(
             QStringLiteral("INSERT INTO  ResourceInfo (targettedResource, title, mimetype, autoTitle, autoMimetype) VALUES"
-             "('/path/high1_act1_gvim', 'high1_act1_gvim', 'text/plain', 1, 1 )")
+             "('/path/high1_act1_gvim', 'high1_act1_gvim', 'text/plain', 1, 1 ) ,"
+             "('/path/high2_act2_kate', 'high2_act2_kate', 'text/plain', 1, 1 )")
     );
 
     // Renaming the activity1 to the current acitivty

@@ -77,7 +77,12 @@ Terms::Offset::Offset(int value)
 }
 
 Terms::Date::Date(QDate value)
-    : value(value)
+    : start(value)
+{
+}
+
+Terms::Date::Date(QDate start, QDate end)
+    : start(start), end(end)
 {
 }
 
@@ -92,10 +97,32 @@ Terms::Date Terms::Date::yesterday()
     return Date(date.addDays(-1));
 }
 
+Terms::Date Terms::Date::currentWeek()
+{
+    auto start = QDate::currentDate();
+    auto end = start.addDays(-7);
+    return Date(start, end);
+}
+
+Terms::Date Terms::Date::previousWeek()
+{
+    auto start = QDate::currentDate().addDays(-7);
+    auto end = start.addDays(-7);
+    return Date(start, end);
+}
+
 Terms::Date Terms::Date::fromString(QString string)
 {
-    auto date = QDate::fromString(string, Qt::ISODate);
-    return Date(date);
+    auto splitted = string.split(QStringLiteral(","));
+    if (splitted.count() == 2) {
+        // date range case
+        auto start = QDate::fromString(splitted[0], Qt::ISODate);
+        auto end = QDate::fromString(splitted[1], Qt::ISODate);
+        return Date(start, end);
+    } else {
+        auto date = QDate::fromString(string, Qt::ISODate);
+        return Date(date);
+    }
 }
 
 Terms::Url Terms::Url::startsWith(const QString &prefix)
@@ -137,7 +164,8 @@ QDEBUG_TERM_OUT(Url,      _.values)
 
 QDEBUG_TERM_OUT(Limit,    _.value)
 QDEBUG_TERM_OUT(Offset,   _.value)
-QDEBUG_TERM_OUT(Date,     _.value)
+QDEBUG_TERM_OUT(Date,     _.end.isNull() ? _.start.toString(Qt::ISODate) :
+                          _.start.toString(Qt::ISODate) + QStringLiteral(",") + _.end.toString(Qt::ISODate))
 
 #undef QDEBUG_TERM_OUT
 

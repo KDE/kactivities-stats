@@ -302,16 +302,21 @@ void QueryTest::testNormalSyntaxDateDefinition()
     TEST_CHUNK(QStringLiteral("Testing the Date definition"))
     {
         auto query = Date::today();
-        QCOMPARE(query.value, QDate::currentDate());
+        QCOMPARE(query.start, QDate::currentDate());
     }
     {
         auto query = Date::yesterday();
         QDate date = QDate::currentDate();
-        QCOMPARE(query.value, date.addDays(-1));
+        QCOMPARE(query.start, date.addDays(-1));
     }
     {
         auto query = Date(QDate::fromString(QStringLiteral("2019-07-25")));
-        QCOMPARE(query.value, QDate::fromString(QStringLiteral("2019-07-25")));
+        QCOMPARE(query.start, QDate::fromString(QStringLiteral("2019-07-25")));
+    }
+    {
+        auto query = Date(QDate::fromString(QStringLiteral("2019-07-24,2019-07-25")));
+        QCOMPARE(query.start, QDate::fromString(QStringLiteral("2019-07-24")));
+        QCOMPARE(query.end, QDate::fromString(QStringLiteral("2019-07-25")));
     }
 }
 

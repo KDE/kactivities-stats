@@ -89,7 +89,8 @@ public:
     Terms::Order ordering() const;
     int offset() const;
     int limit() const;
-    QDate date() const;
+    QDate dateStart() const;
+    QDate dateEnd() const;
 
     void setSelection(Terms::Select selection);
 
@@ -100,7 +101,8 @@ public:
     void setOrdering(Terms::Order ordering);
     void setOffset(int offset);
     void setLimit(int limit);
-    void setDate(QDate date);
+    void setDateStart(QDate date);
+    void setDateEnd(QDate date);
 
     void clearTypes();
     void clearAgents();
@@ -155,7 +157,8 @@ private:
 
     inline void addTerm(Terms::Date date)
     {
-        setDate(date.value);
+        setDateStart(date.start);
+        setDateEnd(date.end);
     }
 
 public:
@@ -174,7 +177,7 @@ public:
     inline Query operator| (Query &&query, Term &&term)
     {
         query.addTerm(term);
-        return query;
+        return std::move(query);
     }
 
 private:
