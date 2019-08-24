@@ -20,6 +20,8 @@
  */
 
 #include "terms.h"
+#include "common/specialvalues.h"
+
 #include <QDebug>
 
 namespace KActivities {
@@ -42,17 +44,17 @@ namespace Stats {
     }
 
 IMPLEMENT_TERM_CONSTRUCTORS(Type)
-IMPLEMENT_SPECIAL_TERM_VALUE(Type, any, QStringLiteral(":any"))
+IMPLEMENT_SPECIAL_TERM_VALUE(Type, any, ANY_TYPE_TAG)
 
 IMPLEMENT_TERM_CONSTRUCTORS(Agent)
-IMPLEMENT_SPECIAL_TERM_VALUE(Agent, any, QStringLiteral(":any"))
-IMPLEMENT_SPECIAL_TERM_VALUE(Agent, global, QStringLiteral(":global"))
-IMPLEMENT_SPECIAL_TERM_VALUE(Agent, current, QStringLiteral(":current"))
+IMPLEMENT_SPECIAL_TERM_VALUE(Agent, any,     ANY_AGENT_TAG)
+IMPLEMENT_SPECIAL_TERM_VALUE(Agent, global,  GLOBAL_AGENT_TAG)
+IMPLEMENT_SPECIAL_TERM_VALUE(Agent, current, CURRENT_AGENT_TAG)
 
 IMPLEMENT_TERM_CONSTRUCTORS(Activity)
-IMPLEMENT_SPECIAL_TERM_VALUE(Activity, any, QStringLiteral(":any"))
-IMPLEMENT_SPECIAL_TERM_VALUE(Activity, global, QStringLiteral(":global"))
-IMPLEMENT_SPECIAL_TERM_VALUE(Activity, current, QStringLiteral(":current"))
+IMPLEMENT_SPECIAL_TERM_VALUE(Activity, any,     ANY_ACTIVITY_TAG)
+IMPLEMENT_SPECIAL_TERM_VALUE(Activity, global,  GLOBAL_ACTIVITY_TAG)
+IMPLEMENT_SPECIAL_TERM_VALUE(Activity, current, CURRENT_ACTIVITY_TAG)
 
 IMPLEMENT_TERM_CONSTRUCTORS(Url)
 IMPLEMENT_SPECIAL_TERM_VALUE(Url, localFile, QStringLiteral("/*"))
