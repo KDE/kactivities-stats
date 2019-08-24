@@ -20,6 +20,7 @@
  */
 
 #include "query.h"
+#include "common/specialvalues.h"
 #include <QDate>
 #include <QDebug>
 
@@ -123,10 +124,16 @@ bool Query::operator!= (const Query &right) const
     return !(*this == right);
 }
 
-#define IMPLEMENT_QUERY_LIST_FIELD(WHAT, What, Default)                        \
+#define IMPLEMENT_QUERY_LIST_FIELD(WHAT, What, Term, Default)                  \
     void Query::add##WHAT(const QStringList &What)                             \
     {                                                                          \
         d->What << What;                                                       \
+        details::validate##WHAT(d->What);                                      \
+    }                                                                          \
+                                                                               \
+    void Query::set##WHAT(const Terms::Term &What)                             \
+    {                                                                          \
+        d->What = What.values;                                                 \
         details::validate##WHAT(d->What);                                      \
     }                                                                          \
                                                                                \
@@ -140,10 +147,10 @@ bool Query::operator!= (const Query &right) const
         d->What.clear();                                                       \
     }
 
-IMPLEMENT_QUERY_LIST_FIELD(Types,      types,      QStringList(QStringLiteral(":any")))
-IMPLEMENT_QUERY_LIST_FIELD(Agents,     agents,     QStringList(QStringLiteral(":current")))
-IMPLEMENT_QUERY_LIST_FIELD(Activities, activities, QStringList(QStringLiteral(":current")))
-IMPLEMENT_QUERY_LIST_FIELD(UrlFilters, urlFilters, QStringList(QStringLiteral("*")))
+IMPLEMENT_QUERY_LIST_FIELD(Types,      types,      Type,     QStringList(ANY_TYPE_TAG))
+IMPLEMENT_QUERY_LIST_FIELD(Agents,     agents,     Agent,    QStringList(CURRENT_AGENT_TAG))
+IMPLEMENT_QUERY_LIST_FIELD(Activities, activities, Activity, QStringList(CURRENT_ACTIVITY_TAG))
+IMPLEMENT_QUERY_LIST_FIELD(UrlFilters, urlFilters, Url,      QStringList(QStringLiteral("*")))
 
 #undef IMPLEMENT_QUERY_LIST_FIELD
 
@@ -165,6 +172,12 @@ void Query::setLimit(int limit)
 void Query::setOffset(int offset)
 {
     d->offset = offset;
+}
+
+void Query::setDate(const Terms::Date &date)
+{
+    d->start = date.start;
+    d->end = date.end;
 }
 
 void Query::setDateStart(QDate start)

@@ -98,9 +98,14 @@ public:
     void addAgents(const QStringList &agents);
     void addActivities(const QStringList &activities);
     void addUrlFilters(const QStringList &urlFilters);
+    void setTypes(const Terms::Type &types);
+    void setAgents(const Terms::Agent &agents);
+    void setActivities(const Terms::Activity &activities);
+    void setUrlFilters(const Terms::Url &urlFilters);
     void setOrdering(Terms::Order ordering);
     void setOffset(int offset);
     void setLimit(int limit);
+    void setDate(const Terms::Date &date);
     void setDateStart(QDate date);
     void setDateEnd(QDate date);
 
