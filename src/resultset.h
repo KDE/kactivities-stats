@@ -47,12 +47,12 @@ class ResultSet_IteratorPrivate;
  * ResultSet is meant to be used when you just need to fetch a few results
  * like this:
  *
- * <code>
+ * @code
  * auto results = ResultSet(AllResources | Agent("org.kde.kate"));
  * for (const auto &result: results) {
  *     // ...
  * }
- * </code>
+ * @endcode
  */
 class KACTIVITIESSTATS_EXPORT ResultSet {
 public:

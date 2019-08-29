@@ -60,13 +60,13 @@ class QueryPrivate;
  * While it can be explicitly instantiated, a preferred approach
  * is to use the pipe syntax like this:
  *
- * <code>
+ * @code
  * auto query = UsedResources
  *                 | RecentlyUsedFirst
  *                 | Agent::any()
  *                 | Type::any()
  *                 | Activity::current();
- * </code>
+ * @endcode
  */
 class KACTIVITIESSTATS_EXPORT Query {
 public:
