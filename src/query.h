@@ -53,7 +53,7 @@ class QueryPrivate;
  *
  * It allows filtering the results depending on the resource type,
  * the agent (application that reported the usage event,
- * @see KActivities::ResourceInstance) and the activity the resource
+ * see KActivities::ResourceInstance) and the activity the resource
  * has been used in, or linked to. It also allows filtering
  * on the URL of the resource.
  *
