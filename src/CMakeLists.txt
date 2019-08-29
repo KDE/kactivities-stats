@@ -120,6 +120,7 @@ if(BUILD_QCH)
         MD_MAINPAGE "${CMAKE_SOURCE_DIR}/README.md"
         LINK_QCHS
             Qt5Core_QCH
+            KF5Activities_QCH # while not in API symbols, some classes are referenced in comments
         BLANK_MACROS
             KACTIVITIESSTATS_EXPORT
             KACTIVITIESSTATS_DEPRECATED
