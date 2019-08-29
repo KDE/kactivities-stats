@@ -38,6 +38,10 @@
 namespace KActivities {
 namespace Stats {
 
+/**
+ * @namespace KActivities::Stats::Terms
+ * Provides enums and strucss to use.for building queries with @c Query.
+ */
 namespace Terms {
     /**
      * Enumerator specifying the ordering in which the
