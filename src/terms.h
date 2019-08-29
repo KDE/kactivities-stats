@@ -61,6 +61,8 @@ namespace Terms {
     };
 
     /**
+     * @struct KActivities::Stats::Terms::Limit terms.h <KActivities/Stats/Terms>
+     *
      * How many items do you need?
      */
     struct KACTIVITIESSTATS_EXPORT Limit {
@@ -70,6 +72,8 @@ namespace Terms {
     };
 
     /**
+     * @struct KActivities::Stats::Terms::Offset terms.h <KActivities/Stats/Terms>
+     *
      * How many items to skip?
      * This can be specified only if limit is also set to a finite value.
      */
@@ -79,6 +83,8 @@ namespace Terms {
     };
 
     /**
+     * @struct KActivities::Stats::Terms::Type terms.h <KActivities/Stats/Terms>
+     *
      * Term to filter the resources according to their types
      */
     struct KACTIVITIESSTATS_EXPORT Type {
@@ -101,6 +107,8 @@ namespace Terms {
     };
 
     /**
+     * @struct KActivities::Stats::Terms::Agent terms.h <KActivities/Stats/Terms>
+     *
      * Term to filter the resources according the agent (application) which
      * accessed it
      */
@@ -134,6 +142,8 @@ namespace Terms {
     };
 
     /**
+     * @struct KActivities::Stats::Terms::Activity terms.h <KActivities/Stats/Terms>
+     *
      * Term to filter the resources according the activity in which they
      * were accessed
      */
@@ -167,6 +177,8 @@ namespace Terms {
     };
 
     /**
+     * @struct KActivities::Stats::Terms::Url terms.h <KActivities/Stats/Terms>
+     *
      * Url filtering.
      */
     struct KACTIVITIESSTATS_EXPORT Url {
@@ -205,6 +217,8 @@ namespace Terms {
     };
 
     /**
+     * @struct KActivities::Stats::Terms::Date terms.h <KActivities/Stats/Terms>
+     *
      * On which start access date do you want to filter ?
      */
     struct KACTIVITIESSTATS_EXPORT Date {

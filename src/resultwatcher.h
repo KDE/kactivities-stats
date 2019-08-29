@@ -34,6 +34,8 @@ namespace Stats {
 class ResultWatcherPrivate;
 
 /**
+ * @class KActivities::Stats::ResultWatcher resultwatcher.h <KActivities/Stats/ResultWatcher>
+ *
  * A very thin class that sends signals when new resources matching
  * a predefined query are available.
  */

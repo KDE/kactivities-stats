@@ -41,6 +41,8 @@ namespace Stats {
 class QueryPrivate;
 
 /**
+ * @class KActivities::Stats::Query query.h <KActivities/Stats/Query>
+ *
  * The activities system tracks resources (documents, contacts, etc.)
  * that the user has used. It also allows linking resources to
  * specific activities (like bookmarks, favorites, etc.).

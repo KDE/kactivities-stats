@@ -34,6 +34,8 @@ class ResultSet_ResultPrivate;
 class ResultSet_IteratorPrivate;
 
 /**
+ * @class KActivities::Stats::ResultSet resultset.h <KActivities/Stats/ResultSet>
+ *
  * Class that can query the KActivities usage tracking mechanism
  * for resources.
  *

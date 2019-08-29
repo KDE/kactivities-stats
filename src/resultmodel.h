@@ -40,6 +40,8 @@ namespace Stats {
 class ResultModelPrivate;
 
 /**
+ * @class KActivities::Stats::ResultModel resultmodel.h <KActivities/Stats/ResultModel>
+ *
  * Provides a model which displays the resources matching
  * the specified Query.
  */
