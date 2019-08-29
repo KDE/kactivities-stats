@@ -16,14 +16,14 @@ querying mechanism.
 
 The library provides the following important classes:
 
-- `ResultSet` is a low level class that provides a forward iterator to the
+- `KActivities::Stats::ResultSet` is a low level class that provides a forward iterator to the
   list of results that match the specified query
-- `ResultWatcher` provides signals when a new resource that matches a query
+- `KActivities::Stats::ResultWatcher` provides signals when a new resource that matches a query
   arrives, or when an existing one is gone (usage statistics cleared or some
   for other reason)
-- `ResultModel` provides a Qt data model that shows the resources that
+- `KActivities::Stats::ResultModel` provides a Qt data model that shows the resources that
   match the specified query. This model should be subclassed to teach it
   to handle the different resource types that you want to show as the results.
 
-Queries are defined by the `Query` class using a simple range-like syntax.
+Queries are defined by the `KActivities::Stats::Query` class using a simple range-like syntax.
 
