@@ -28,6 +28,7 @@
 
 // Local
 #include <common/database/Database.h>
+#include <common/specialvalues.h>
 #include <utils/debug_and_return.h>
 #include <utils/qsqlquery_iterator.h>
 #include "kactivities-stats-logsettings.h"
@@ -175,7 +176,10 @@ public:
 
     QString mimetypeClause(const QString &mimetype) const
     {
-        if (mimetype == QLatin1String(":any") || mimetype == QLatin1String("*")) return QStringLiteral("1");
+        if (mimetype == ANY_TYPE_TAG || mimetype == QLatin1String("*")) return QStringLiteral("1");
+
+        else if (mimetype == FILES_TYPE_TAG) return QStringLiteral("mimetype != 'inode/directory' AND mimetype != ''");
+        else if (mimetype == DIRECTORIES_TYPE_TAG) return QStringLiteral("mimetype = 'inode/directory'");
 
         return QStringLiteral("mimetype LIKE '") + Common::starPatternToLike(mimetype) + QStringLiteral("' ESCAPE '\\'");
     }

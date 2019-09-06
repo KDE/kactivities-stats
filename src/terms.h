@@ -96,6 +96,14 @@ namespace Terms {
          * Show resources of any type
          */
         static Type any();
+        /**
+         * Show non-directory resources
+         */
+        static Type files();
+        /**
+         * Show directory resources aka folders
+         */
+        static Type directories();
 
         #ifdef Q_COMPILER_INITIALIZER_LISTS
         inline Type(std::initializer_list<QString> types)

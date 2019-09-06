@@ -31,6 +31,8 @@
 #define CURRENT_AGENT_TAG    QStringLiteral(":current")
 
 #define ANY_TYPE_TAG         QStringLiteral(":any")
+#define FILES_TYPE_TAG       QStringLiteral(":files")
+#define DIRECTORIES_TYPE_TAG QStringLiteral(":directories")
 
 
 #endif // SPECIALVALUES_H
