@@ -130,6 +130,5 @@ install (
 # Write out the features
 feature_summary (WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
 
-install(FILES kactivities-stats.categories  DESTINATION  ${KDE_INSTALL_LOGGINGCATEGORIESDIR})
-install(FILES kactivities-stats.categories  DESTINATION ${KDE_INSTALL_CONFDIR})
+install(FILES kactivities-stats.categories  DESTINATION ${KDE_INSTALL_LOGGINGCATEGORIESDIR})
 
