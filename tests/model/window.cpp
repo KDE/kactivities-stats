@@ -89,8 +89,8 @@ public:
                           index.data(ResultModel::ResourceRole).toString()
                           );
 
-        auto firstUpdate = QDateTime::fromTime_t(index.data(ResultModel::FirstUpdateRole).toUInt());
-        auto lastUpdate = QDateTime::fromTime_t(index.data(ResultModel::LastUpdateRole).toUInt());
+        auto firstUpdate = QDateTime::fromSecsSinceEpoch(index.data(ResultModel::FirstUpdateRole).toUInt());
+        auto lastUpdate = QDateTime::fromSecsSinceEpoch(index.data(ResultModel::LastUpdateRole).toUInt());
 
         titleRect.moveTop(titleRect.top() + lineHeight);
 
