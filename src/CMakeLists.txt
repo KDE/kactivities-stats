@@ -121,6 +121,8 @@ if(BUILD_QCH)
         LINK_QCHS
             Qt5Core_QCH
             KF5Activities_QCH # while not in API symbols, some classes are referenced in comments
+        INCLUDE_DIRS
+            ${CMAKE_CURRENT_BINARY_DIR}
         BLANK_MACROS
             KACTIVITIESSTATS_EXPORT
             KACTIVITIESSTATS_DEPRECATED
