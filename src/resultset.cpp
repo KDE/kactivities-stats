@@ -25,6 +25,8 @@
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QCoreApplication>
+#include <QDir>
+#include <QUrl>
 
 // Local
 #include <common/database/Database.h>
@@ -112,6 +114,14 @@ CREATE_GETTER_AND_SETTER(QStringList, linkedActivities, setLinkedActivities)
 
 #undef CREATE_GETTER_AND_SETTER
 
+QUrl ResultSet::Result::url() const
+{
+    if (QDir::isAbsolutePath(d->resource)) {
+        return QUrl::fromLocalFile(d->resource);
+    } else {
+        return QUrl(d->resource);
+    }
+}
 
 class ResultSetPrivate {
 public:

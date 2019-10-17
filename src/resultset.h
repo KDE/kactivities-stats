@@ -74,7 +74,9 @@ public:
             Linked    = 2
         };
 
-        QString resource() const;             ///< URL of the resource
+        // TODO: KF6 rething the function names, and maybe their signature, perhaps leverage std::variant or std::optional to add semantics to the API
+        QString resource() const;             ///< String representation of resource (can represent an url or a path)
+        QUrl url() const;                     ///< Url representation of a resource based on internal resource, readonly, @since 5.64
         QString title() const;                ///< Title of the resource, or URL if title is not known
         QString mimetype() const;             ///< Mimetype of the resource, or URL if title is not known
         double score() const;                 ///< The score calculated based on the usage statistics
