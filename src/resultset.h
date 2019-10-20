@@ -166,16 +166,16 @@ public:
 
         reference operator[](difference_type n) const;
 
-        friend bool operator==(const const_iterator &left, const const_iterator &right);
-        friend bool operator!=(const const_iterator &left, const const_iterator &right);
+        KACTIVITIESSTATS_EXPORT friend bool operator==(const const_iterator &left, const const_iterator &right);
+        KACTIVITIESSTATS_EXPORT friend bool operator!=(const const_iterator &left, const const_iterator &right);
 
-        friend bool operator<(const const_iterator &left, const const_iterator &right);
-        friend bool operator>(const const_iterator &left, const const_iterator &right);
+        KACTIVITIESSTATS_EXPORT friend bool operator<(const const_iterator &left, const const_iterator &right);
+        KACTIVITIESSTATS_EXPORT friend bool operator>(const const_iterator &left, const const_iterator &right);
 
-        friend bool operator<=(const const_iterator &left, const const_iterator &right);
-        friend bool operator>=(const const_iterator &left, const const_iterator &right);
+        KACTIVITIESSTATS_EXPORT friend bool operator<=(const const_iterator &left, const const_iterator &right);
+        KACTIVITIESSTATS_EXPORT friend bool operator>=(const const_iterator &left, const const_iterator &right);
 
-        friend difference_type operator-(const const_iterator &left, const const_iterator &right);
+        KACTIVITIESSTATS_EXPORT friend difference_type operator-(const const_iterator &left, const const_iterator &right);
 
     private:
         const_iterator(const ResultSet *resultSet, int currentRow);

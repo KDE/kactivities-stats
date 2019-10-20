@@ -72,10 +72,9 @@ public:
     friend void swap(ResultSet_IteratorPrivate &left,
                      ResultSet_IteratorPrivate &right)
     {
-        using namespace std;
-        swap(left.resultSet,    right.resultSet);
-        swap(left.currentRow,   right.currentRow);
-        swap(left.currentValue, right.currentValue);
+        std::swap(left.resultSet,    right.resultSet);
+        std::swap(left.currentRow,   right.currentRow);
+        std::swap(left.currentValue, right.currentValue);
     }
 
     bool operator==(const ResultSet_IteratorPrivate &other) const

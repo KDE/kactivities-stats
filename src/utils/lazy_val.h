@@ -38,7 +38,11 @@ private:
     mutable bool valueRetrieved;
 
 public:
+#ifdef _MSC_VER
+    operator auto() const -> decltype(_f())
+#else
     operator decltype(_f()) () const
+#endif
     {
         if (!valueRetrieved) {
             valueRetrieved = true;
