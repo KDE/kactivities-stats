@@ -27,6 +27,7 @@
 #include <QTest>
 #include <QCoreApplication>
 #include <QTemporaryDir>
+#include <QRandomGenerator>
 
 #include <boost/range/algorithm.hpp>
 #include <boost/range/numeric.hpp>
@@ -189,8 +190,6 @@ namespace {
 //_ Data init
 void ResultSetQuickCheckTest::initTestCase()
 {
-    qsrand(time(nullptr));
-
     QString databaseFile;
 
     int dbArgIndex = QCoreApplication::arguments().indexOf(QStringLiteral("--ResultSetQuickCheckDatabase"));
@@ -331,13 +330,14 @@ void ResultSetQuickCheckTest::generateResourcesList()
 
 void ResultSetQuickCheckTest::generateResourceInfos()
 {
+    auto *generator = QRandomGenerator::global();
     for (const QString &resource : qAsConst(resourcesList)) {
         // We want every n-th or so to be without the title
-        if (qrand() % 3) continue;
+        if (generator->bounded(3)) continue;
 
         ResourceInfo::Item ri;
         ri.targettedResource = resource;
-        ri.title = QStringLiteral("Title_") + QString::number(qrand() % 100);
+        ri.title = QStringLiteral("Title_") + QString::number(generator->bounded(100));
         ri.mimetype = randItem(typesList);
 
         resourceInfos.insert(ri);
@@ -346,6 +346,7 @@ void ResultSetQuickCheckTest::generateResourceInfos()
 
 void ResultSetQuickCheckTest::generateResourceScoreCaches()
 {
+    auto *generator = QRandomGenerator::global();
     for (int i = 0; i < NUMBER_CACHES; ++i) {
         ResourceScoreCache::Item rsc;
 
@@ -353,9 +354,9 @@ void ResultSetQuickCheckTest::generateResourceScoreCaches()
         rsc.initiatingAgent   = randItem(agentsList);
         rsc.targettedResource = randItem(resourcesList);
 
-        rsc.cachedScore       = qrand() % 1000;
-        rsc.firstUpdate       = qrand();
-        rsc.lastUpdate        = qrand();
+        rsc.cachedScore       = generator->bounded(1000);
+        rsc.firstUpdate       = generator->generate();
+        rsc.lastUpdate        = generator->generate();
 
         resourceScoreCaches.insert(rsc);
     }
@@ -363,10 +364,11 @@ void ResultSetQuickCheckTest::generateResourceScoreCaches()
 
 void ResultSetQuickCheckTest::generateResourceLinks()
 {
+    auto *generator = QRandomGenerator::global();
     for (const QString &resource : qAsConst(resourcesList)) {
         // We don't want all the resources to be linked
         // to something
-        if (qrand() % 2) continue;
+        if (generator->bounded(2)) continue;
 
         ResourceLink::Item rl;
 
@@ -585,7 +587,7 @@ void ResultSetQuickCheckTest::cleanupTestCase()
 
 QString ResultSetQuickCheckTest::randItem(const QStringList &choices) const
 {
-    return choices[qrand() % choices.size()];
+    return choices[QRandomGenerator::global()->bounded(choices.size())];
 }
 //^ Data init
 
