@@ -419,7 +419,7 @@ public:
                         ResourceScoreCache rsc
                         ON  from_table.targettedResource = rsc.targettedResource
                         AND from_table.usedActivity      = rsc.usedActivity
-                        AND rl.initiatingAgent   = rsc.initiatingAgent
+                        AND from_table.initiatingAgent   = rsc.initiatingAgent
 
                     $resourceEventJoin
 
