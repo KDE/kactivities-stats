@@ -17,9 +17,12 @@ set (
    )
 
 ecm_qt_declare_logging_category(KActivitiesStats_LIB_SRCS
-                                HEADER kactivities-stats-logsettings.h
-                                IDENTIFIER KACTIVITIES_STATS_LOG
-CATEGORY_NAME kf5.kactivity.stat)
+    HEADER kactivities-stats-logsettings.h
+    IDENTIFIER KACTIVITIES_STATS_LOG
+    CATEGORY_NAME kf5.kactivity.stat
+    DESCRIPTION "KActivities Stats"
+    EXPORT KACTIVITIES_STATS
+)
 
 
 qt5_add_dbus_interface (
@@ -107,6 +110,12 @@ install (
    DESTINATION ${KDE_INSTALL_INCLUDEDIR_KF5}/KActivitiesStats/kactivitiesstats
    COMPONENT Devel
    )
+
+ecm_qt_install_logging_categories(
+    EXPORT KACTIVITIES_STATS
+    FILE kactivities-stats.categories
+    DESTINATION ${KDE_INSTALL_LOGGINGCATEGORIESDIR}
+)
 
 if(BUILD_QCH)
     ecm_add_qch(
