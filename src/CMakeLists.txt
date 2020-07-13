@@ -19,7 +19,8 @@ set (
 ecm_qt_declare_logging_category(KActivitiesStats_LIB_SRCS
     HEADER kactivities-stats-logsettings.h
     IDENTIFIER KACTIVITIES_STATS_LOG
-    CATEGORY_NAME kf5.kactivity.stat
+    CATEGORY_NAME kf.activitiesstats
+    OLD_CATEGORY_NAMES kf5.kactivity.stat
     DESCRIPTION "KActivities Stats"
     EXPORT KACTIVITIES_STATS
 )
