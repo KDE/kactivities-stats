@@ -49,7 +49,6 @@ add_library(KF5::ActivitiesStats ALIAS KF5ActivitiesStats)
 
 include_directories (
    ${KASTATS_CURRENT_ROOT_SOURCE_DIR}/src
-   ${Boost_INCLUDE_DIR}
    )
 
 set_target_properties (
@@ -65,6 +64,7 @@ target_link_libraries (
    PUBLIC
       Qt5::Core
    PRIVATE
+      Boost::headers
       Qt5::DBus
       Qt5::Sql
       KF5::Activities

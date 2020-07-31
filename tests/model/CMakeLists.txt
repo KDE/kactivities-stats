@@ -7,7 +7,6 @@ include_directories (
    ${KASTATS_CURRENT_ROOT_SOURCE_DIR}/src
    ${KASTATS_CURRENT_ROOT_SOURCE_DIR}/autotests
    ${CMAKE_BINARY_DIR}/src
-   ${Boost_INCLUDE_DIR}
    )
 
 set (

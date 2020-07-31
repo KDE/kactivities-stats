@@ -47,6 +47,7 @@ find_package (Qt5 ${REQUIRED_QT_VERSION} CONFIG REQUIRED COMPONENTS Core DBus Sq
 find_package (KF5Config ${KF5_DEP_VERSION} CONFIG REQUIRED)
 find_package (KF5Activities ${KF5_DEP_VERSION} CONFIG REQUIRED)
 
+set(Boost_NO_BOOST_CMAKE ON)
 find_package (Boost 1.49 REQUIRED)
 
 # Basic includes
