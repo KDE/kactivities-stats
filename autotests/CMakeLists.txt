@@ -36,6 +36,8 @@ if (NOT WIN32)
    target_link_libraries (
       KActivitiesStatsTest
 
+      Boost::headers
+
       Qt5::Core
       Qt5::Test
       Qt5::DBus

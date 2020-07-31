@@ -35,6 +35,8 @@ if (NOT WIN32)
 
    target_link_libraries (
       KActivitiesStatsTestApp
+      Boost::headers
+
       Qt5::Core
       Qt5::Gui
       Qt5::Widgets
