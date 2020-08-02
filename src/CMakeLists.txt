@@ -64,7 +64,7 @@ target_link_libraries (
    PUBLIC
       Qt5::Core
    PRIVATE
-      Boost::headers
+      Boost::boost
       Qt5::DBus
       Qt5::Sql
       KF5::Activities
