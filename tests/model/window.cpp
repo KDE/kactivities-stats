@@ -7,8 +7,8 @@
 #include "window.h"
 
 #include "ui_window.h"
-#include "modeltest.h"
 
+#include <QAbstractItemModelTester>
 #include <QAction>
 #include <QListView>
 #include <QDebug>
@@ -291,7 +291,7 @@ void Window::setQuery(const KActivities::Stats::Query &query)
 
     if (QCoreApplication::arguments().contains(QLatin1String("--enable-model-test"))) {
         modelTest.reset();
-        modelTest.reset(new ModelTest(new ResultModel(query)));
+        modelTest.reset(new QAbstractItemModelTester(new ResultModel(query)));
     }
 
     ui->viewResults->setModel(model.get());

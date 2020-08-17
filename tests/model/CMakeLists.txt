@@ -13,7 +13,6 @@ set (
    KActivitiesStatsTestApp_SRCS
    window.cpp
    main.cpp
-   modeltest.cpp
    )
 
 qt5_wrap_ui(

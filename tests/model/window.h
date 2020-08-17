@@ -13,7 +13,7 @@
 
 #include <memory>
 
-class ModelTest;
+class QAbstractItemModelTester;
 namespace Ui {
     class MainWindow;
 }
@@ -42,7 +42,7 @@ private:
 
     std::unique_ptr<Ui::MainWindow> ui;
     std::unique_ptr<KActivities::Stats::ResultModel> model;
-    std::unique_ptr<ModelTest> modelTest;
+    std::unique_ptr<QAbstractItemModelTester> modelTest;
     std::unique_ptr<KActivities::Consumer> activities;
 
     QMap<QString, KActivities::Stats::Query> presets;
