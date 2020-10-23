@@ -13,7 +13,6 @@
 #include <QTest>
 
 #include <query.h>
-#include <common/test.h>
 
 namespace KAStats = KActivities::Stats;
 using namespace KAStats;

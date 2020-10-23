@@ -28,7 +28,6 @@
 
 #include <common/database/schema/ResourcesDatabaseSchema.h>
 #include <common/database/Database.h>
-#include <common/test.h>
 
 #include <utils/qsqlquery_iterator.h>
 

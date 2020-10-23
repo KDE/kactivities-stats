@@ -27,7 +27,6 @@
 
 #include <common/database/schema/ResourcesDatabaseSchema.h>
 #include <common/database/Database.h>
-#include <common/test.h>
 
 namespace KAStats = KActivities::Stats;
 
