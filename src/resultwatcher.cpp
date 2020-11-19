@@ -169,7 +169,16 @@ public:
 
         return kamd::utils::debug_and_return(DEBUG_MATCHERS, " -> returning ",
             any_of(query.types(), [&] (const QString &matcher) {
-                return matcher == ANY_TYPE_TAG || matcher == type;
+                qCDebug(KACTIVITIES_STATS_LOG) << "mime type" << type;
+                if (matcher == ANY_TYPE_TAG) {
+                    return true;
+                }
+
+                const QString _type = type;
+                return matcher == ANY_TYPE_TAG
+                    || (matcher == FILES_TYPE_TAG && !_type.isEmpty() && _type != QStringLiteral("inode/directory"))
+                    || (matcher == DIRECTORIES_TYPE_TAG && _type == QLatin1String("inode/directory"))
+                    || matcher == type;
             }
         ));
     }
