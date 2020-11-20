@@ -12,7 +12,7 @@
 #include <QSqlError>
 #include <QCoreApplication>
 #include <QList>
-#include <QRegExp>
+#include <QRegularExpression>
 
 // Local
 #include <common/database/Database.h>
@@ -49,7 +49,7 @@ namespace Stats {
 class ResultWatcherPrivate {
 public:
     mutable ActivitiesSync::ConsumerPtr activities;
-    QList<QRegExp> urlFilters;
+    QList<QRegularExpression> urlFilters;
 
     ResultWatcherPrivate(ResultWatcher *parent, Query query)
         : linking(new KAMD_DBUS_CLASS_INTERFACE(Resources/Linking, ResourcesLinking, nullptr))
@@ -132,8 +132,8 @@ public:
         #endif
 
         return kamd::utils::debug_and_return(DEBUG_MATCHERS, " -> returning ",
-            any_of(urlFilters, [&] (const QRegExp &matcher) {
-                return matcher.exactMatch(url);
+            any_of(urlFilters, [&] (const QRegularExpression &matcher) {
+                return matcher.match(url).hasMatch();
             }
         ));
     }

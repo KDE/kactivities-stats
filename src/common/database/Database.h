@@ -10,7 +10,7 @@
 #include <utils/d_ptr.h>
 #include <memory>
 #include <QSqlQuery>
-#include <QRegExp>
+#include <QRegularExpression>
 
 namespace Common {
 
@@ -127,9 +127,11 @@ inline QString starPatternToLike(const QString &pattern)
     return parseStarPattern(pattern, QStringLiteral("%"), escapeSqliteLikePattern);
 }
 
-inline QRegExp starPatternToRegex(const QString &pattern)
+inline QRegularExpression starPatternToRegex(const QString &pattern)
 {
-    return QRegExp(parseStarPattern(pattern, QStringLiteral(".*"), QRegExp::escape));
+    const QString parsed = parseStarPattern(pattern, QStringLiteral(".*"),
+                                            QOverload<const QString &>::of(&QRegularExpression::escape));
+    return QRegularExpression(QRegularExpression::anchoredPattern(parsed));
 }
 
 } // namespace Common
