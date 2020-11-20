@@ -169,7 +169,6 @@ public:
 
         return kamd::utils::debug_and_return(DEBUG_MATCHERS, " -> returning ",
             any_of(query.types(), [&] (const QString &matcher) {
-                qCDebug(KACTIVITIES_STATS_LOG) << "mime type" << type;
                 if (matcher == ANY_TYPE_TAG) {
                     return true;
                 }
