@@ -967,7 +967,8 @@ QHash<int, QByteArray> ResultModel::roleNames() const
         { FirstUpdateRole      , "created" },
         { LastUpdateRole       , "modified" },
         { LinkStatusRole       , "linkStatus" },
-        { LinkedActivitiesRole , "linkedActivities" }
+        { LinkedActivitiesRole , "linkedActivities" },
+        { MimeType             , "mimeType" },
     };
 }
 
@@ -994,6 +995,7 @@ QVariant ResultModel::data(const QModelIndex &item, int role) const
          : role == LastUpdateRole       ? result.lastUpdate()
          : role == LinkStatusRole       ? result.linkStatus()
          : role == LinkedActivitiesRole ? result.linkedActivities()
+         : role == MimeType             ? result.mimetype()
          : QVariant()
          ;
 }
