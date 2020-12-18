@@ -6,7 +6,7 @@ set(KF5_VERSION "5.78.0") # handled by release scripts
 set(KF5_DEP_VERSION "5.77.0") # handled by release scripts
 project (KActivitiesStats VERSION ${KF5_VERSION})
 
-set (REQUIRED_QT_VERSION 5.13.0)
+set (REQUIRED_QT_VERSION 5.14.0)
 
 # We don't build in-source
 if ("${CMAKE_SOURCE_DIR}" STREQUAL "${CMAKE_BINARY_DIR}")
@@ -84,7 +84,7 @@ ecm_setup_version (
    SOVERSION 1
    )
 add_definitions(-DQT_NO_FOREACH)
-add_definitions(-DQT_DISABLE_DEPRECATED_BEFORE=0x050d00)
+add_definitions(-DQT_DISABLE_DEPRECATED_BEFORE=0x050e00)
 add_definitions(-DKF_DISABLE_DEPRECATED_BEFORE_AND_AT=0x054B00)
 
 add_subdirectory (src)
