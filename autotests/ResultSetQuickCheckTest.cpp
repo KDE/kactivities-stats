@@ -159,10 +159,6 @@ namespace {
         }
 
         if (!equal) {
-            // FIXME: This really needs to return the last query :)
-            // qDebug() << "SQL query was this:" <<
-            //     database->lastQuery()
-            //     ;
             qDebug() << "Ranges differ:\n"
                      << "MEM: " << leftLine << '\n'
                      << "SQL: " << rightLine;

@@ -127,8 +127,7 @@ void initSchema(Database &database)
     QString dbSchemaVersion;
 
     auto query = database.execQuery(
-        QStringLiteral("SELECT value FROM SchemaInfo WHERE key = 'version'"),
-        /* ignore error */ true);
+        QStringLiteral("SELECT value FROM SchemaInfo WHERE key = 'version'"));
 
     if (query.next()) {
         dbSchemaVersion = query.value(0).toString();
@@ -147,11 +146,9 @@ void initSchema(Database &database)
     // queries from being executed.
     if (dbSchemaVersion < QStringLiteral("2014.04.14")) {
         database.execQuery(
-            QStringLiteral("ALTER TABLE nuao_DesktopEvent RENAME TO ResourceEvent"),
-            /* ignore error */ true);
+            QStringLiteral("ALTER TABLE nuao_DesktopEvent RENAME TO ResourceEvent"));
         database.execQuery(
-            QStringLiteral("ALTER TABLE kext_ResourceScoreCache RENAME TO ResourceScoreCache"),
-            /* ignore error */ true);
+            QStringLiteral("ALTER TABLE kext_ResourceScoreCache RENAME TO ResourceScoreCache"));
     }
 
     database.execQueries(ResourcesDatabaseSchema::schema());

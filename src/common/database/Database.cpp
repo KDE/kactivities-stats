@@ -24,10 +24,6 @@
 namespace Common {
 
 namespace {
-#ifdef QT_DEBUG
-    QString lastExecutedQuery;
-#endif
-
     std::mutex databases_mutex;
 
     struct DatabaseInfo {
@@ -222,32 +218,9 @@ QSqlQuery Database::createQuery() const
     return d->query();
 }
 
-QString Database::lastQuery() const
+QSqlQuery Database::execQuery(const QString &query) const
 {
-#ifdef QT_DEBUG
-    return lastExecutedQuery;
-#endif
-    return QString();
-}
-
-QSqlQuery Database::execQuery(const QString &query, bool ignoreErrors) const
-{
-#ifdef QT_NO_DEBUG
-    Q_UNUSED(ignoreErrors);
     return d->query(query);
-#else
-    auto result = d->query(query);
-
-    lastExecutedQuery = query;
-
-    if (!ignoreErrors && result.lastError().isValid()) {
-        qCWarning(KACTIVITIES_STATS_LOG) << "SQL: "
-                   << "\n    error: " << result.lastError()
-                   << "\n    query: " << query;
-    }
-
-    return result;
-#endif
 }
 
 QSqlQuery Database::execQueries(const QStringList &queries) const
