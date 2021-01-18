@@ -564,7 +564,7 @@ void ResultSetQuickCheckTest::pullFromDatabase()
 
 void ResultSetQuickCheckTest::cleanupTestCase()
 {
-    emit testFinished();
+    Q_EMIT testFinished();
 }
 
 QString ResultSetQuickCheckTest::randItem(const QStringList &choices) const

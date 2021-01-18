@@ -64,7 +64,7 @@ public:
         m_resultInvalidationTimer.setSingleShot(true);
         m_resultInvalidationTimer.setInterval(200);
         QObject::connect(&m_resultInvalidationTimer, &QTimer::timeout,
-                         q, emit &ResultWatcher::resultsInvalidated);
+                         q, Q_EMIT &ResultWatcher::resultsInvalidated);
     }
 
     // Like boost any_of, but returning true if the range is empty
@@ -210,7 +210,7 @@ public:
 
         // TODO: See whether it makes sense to have
         //       lastUpdate/firstUpdate here as well
-        emit q->resultLinked(resource);
+        Q_EMIT q->resultLinked(resource);
     }
 
     void onResourceUnlinkedFromActivity(const QString &agent,
@@ -226,7 +226,7 @@ public:
 
         if (!eventMatches(agent, resource, activity)) return;
 
-        emit q->resultUnlinked(resource);
+        Q_EMIT q->resultUnlinked(resource);
     }
 
 #undef DEBUG_MATCHERS
@@ -245,7 +245,7 @@ public:
 
         if (!eventMatches(agent, resource, activity)) return;
 
-        emit q->resultScoreUpdated(resource, score, lastUpdate, firstUpdate);
+        Q_EMIT q->resultScoreUpdated(resource, score, lastUpdate, firstUpdate);
     }
 
 

@@ -255,6 +255,6 @@ void ResultSetTest::initTestCase()
 
 void ResultSetTest::cleanupTestCase()
 {
-    emit testFinished();
+    Q_EMIT testFinished();
 }
 

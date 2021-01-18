@@ -313,6 +313,6 @@ void QueryTest::initTestCase()
 
 void QueryTest::cleanupTestCase()
 {
-    emit testFinished();
+    Q_EMIT testFinished();
 }
 

@@ -119,6 +119,6 @@ void ResultWatcherTest::initTestCase()
 
 void ResultWatcherTest::cleanupTestCase()
 {
-    emit testFinished();
+    Q_EMIT testFinished();
 }
 
