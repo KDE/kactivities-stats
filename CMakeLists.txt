@@ -116,7 +116,6 @@ configure_package_config_file (
    "${CMAKE_CURRENT_SOURCE_DIR}/KF5ActivitiesStatsConfig.cmake.in"
    "${CMAKE_CURRENT_BINARY_DIR}/KF5ActivitiesStatsConfig.cmake"
    INSTALL_DESTINATION  ${CMAKECONFIG_INSTALL_DIR}
-   PATH_VARS  KF5_INCLUDE_INSTALL_DIR CMAKE_INSTALL_PREFIX
    )
 
 install (
