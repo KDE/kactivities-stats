@@ -159,7 +159,7 @@ ecm_generate_pri_file (
    BASE_NAME KActivitiesStats
    LIB_NAME KF5ActivitiesStats
    DEPS "KActivities"
-   FILENAME_VAR PRI_FILENAME INCLUDE_INSTALL_DIR ${KF5_INCLUDE_INSTALL_DIR}/KActivitiesStats
+   FILENAME_VAR PRI_FILENAME INCLUDE_INSTALL_DIR ${KDE_INSTALL_INCLUDEDIR_KF5}/KActivitiesStats
    )
 install (
    FILES ${PRI_FILENAME}
