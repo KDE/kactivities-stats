@@ -2,9 +2,9 @@
 
 cmake_minimum_required(VERSION 3.5)
 
-set(KF5_VERSION "5.79.0") # handled by release scripts
-set(KF5_DEP_VERSION "5.79.0") # handled by release scripts
-project (KActivitiesStats VERSION ${KF5_VERSION})
+set(KF_VERSION "5.79.0") # handled by release scripts
+set(KF_DEP_VERSION "5.79.0") # handled by release scripts
+project (KActivitiesStats VERSION ${KF_VERSION})
 
 set (REQUIRED_QT_VERSION 5.14.0)
 
@@ -42,10 +42,10 @@ set (CMAKE_AUTOMOC ON)
 find_package (Qt5 ${REQUIRED_QT_VERSION} CONFIG REQUIRED COMPONENTS Core DBus Sql)
 
 # KDE Frameworks
-# find_package (KF5DBusAddons ${KF5_DEP_VERSION} CONFIG REQUIRED)
-# find_package (KF5I18n ${KF5_DEP_VERSION} CONFIG REQUIRED)
-find_package (KF5Config ${KF5_DEP_VERSION} CONFIG REQUIRED)
-find_package (KF5Activities ${KF5_DEP_VERSION} CONFIG REQUIRED)
+# find_package (KF5DBusAddons ${KF_DEP_VERSION} CONFIG REQUIRED)
+# find_package (KF5I18n ${KF_DEP_VERSION} CONFIG REQUIRED)
+find_package (KF5Config ${KF_DEP_VERSION} CONFIG REQUIRED)
+find_package (KF5Activities ${KF_DEP_VERSION} CONFIG REQUIRED)
 
 set(Boost_NO_BOOST_CMAKE ON)
 find_package (Boost 1.49 REQUIRED)
