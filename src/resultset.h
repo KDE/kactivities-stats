@@ -56,7 +56,7 @@ public:
         enum LinkStatus {
             NotLinked = 0,
             Unknown   = 1,
-            Linked    = 2
+            Linked    = 2,
         };
 
         // TODO: KF6 rething the function names, and maybe their signature, perhaps leverage std::variant or std::optional to add semantics to the API

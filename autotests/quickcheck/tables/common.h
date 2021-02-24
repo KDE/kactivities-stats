@@ -99,7 +99,7 @@ public:
         LessOrEqual,
         Equal,
         GreaterOrEqual,
-        Greater
+        Greater,
     };
 
     template <typename T>

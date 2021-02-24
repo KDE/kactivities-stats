@@ -24,7 +24,7 @@ void KACTIVITIESSTATS_EXPORT forgetResource(Terms::Activity activity,
 enum KACTIVITIESSTATS_EXPORT TimeUnit {
     Hours,
     Days,
-    Months
+    Months,
 };
 
 /**

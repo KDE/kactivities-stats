@@ -36,7 +36,7 @@ namespace Terms {
         RecentlyUsedFirst,    ///< Recently used resources first
         RecentlyCreatedFirst, ///< Recently created resources first
         OrderByUrl,           ///< Order by uri, alphabetically
-        OrderByTitle          ///< Order by uri, alphabetically
+        OrderByTitle,          ///< Order by uri, alphabetically
     };
 
     /**
@@ -45,7 +45,7 @@ namespace Terms {
     enum KACTIVITIESSTATS_EXPORT Select {
         LinkedResources, ///< Resources linked to an activity, or globally
         UsedResources,   ///< Resources that have been accessed
-        AllResources     ///< Combined set of accessed and linked resources
+        AllResources,     ///< Combined set of accessed and linked resources
     };
 
     /**

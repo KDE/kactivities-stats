@@ -65,7 +65,7 @@ public:
     enum Fetch {
         FetchReset,   // Remove old data and reload
         FetchReload,  // Update all data
-        FetchMore     // Load more data if there is any
+        FetchMore,     // Load more data if there is any
     };
 
     class Cache { //_
@@ -524,7 +524,7 @@ public:
 
         enum Ordering {
             PartialOrdering,
-            FullOrdering
+            FullOrdering,
         };
 
         FixedItemsLessThan(Ordering ordering,

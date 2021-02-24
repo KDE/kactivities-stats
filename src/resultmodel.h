@@ -46,7 +46,7 @@ public:
         LastUpdateRole       = Qt::UserRole + 4,
         LinkStatusRole       = Qt::UserRole + 5,
         LinkedActivitiesRole = Qt::UserRole + 6,
-        MimeType             = Qt::UserRole + 7 // @since 5.77
+        MimeType             = Qt::UserRole + 7, // @since 5.77
     };
 
     int rowCount(const QModelIndex &parent
