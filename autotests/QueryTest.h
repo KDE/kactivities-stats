@@ -13,7 +13,8 @@
 
 #include <QScopedPointer>
 
-class QueryTest : public Test {
+class QueryTest : public Test
+{
     Q_OBJECT
 public:
     QueryTest(QObject *parent = nullptr);
@@ -42,9 +43,6 @@ private Q_SLOTS:
     void cleanupTestCase();
 
 private:
-
 };
 
-
 #endif /* OFFLINETEST_H */
-

@@ -14,7 +14,8 @@
 
 #include <QScopedPointer>
 
-class ResultSetTest : public Test {
+class ResultSetTest : public Test
+{
     Q_OBJECT
 public:
     ResultSetTest(QObject *parent = nullptr);
@@ -26,9 +27,6 @@ private Q_SLOTS:
     void testUsedResources();
 
     void cleanupTestCase();
-
 };
 
-
 #endif /* RESULTSETTEST_H */
-

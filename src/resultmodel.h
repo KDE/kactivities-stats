@@ -8,8 +8,8 @@
 #define KACTIVITIES_STATS_RESULTMODEL_H
 
 // Qt
-#include <QObject>
 #include <QAbstractListModel>
+#include <QObject>
 
 // Local
 #include "query.h"
@@ -19,9 +19,10 @@ class QDBusPendingCallWatcher;
 
 class KConfigGroup;
 
-namespace KActivities {
-namespace Stats {
-
+namespace KActivities
+{
+namespace Stats
+{
 class ResultModelPrivate;
 
 /**
@@ -30,7 +31,8 @@ class ResultModelPrivate;
  * Provides a model which displays the resources matching
  * the specified Query.
  */
-class KACTIVITIESSTATS_EXPORT ResultModel : public QAbstractListModel {
+class KACTIVITIESSTATS_EXPORT ResultModel : public QAbstractListModel
+{
     Q_OBJECT
 
 public:
@@ -39,39 +41,32 @@ public:
     ~ResultModel() override;
 
     enum Roles {
-        ResourceRole         = Qt::UserRole,
-        TitleRole            = Qt::UserRole + 1,
-        ScoreRole            = Qt::UserRole + 2,
-        FirstUpdateRole      = Qt::UserRole + 3,
-        LastUpdateRole       = Qt::UserRole + 4,
-        LinkStatusRole       = Qt::UserRole + 5,
+        ResourceRole = Qt::UserRole,
+        TitleRole = Qt::UserRole + 1,
+        ScoreRole = Qt::UserRole + 2,
+        FirstUpdateRole = Qt::UserRole + 3,
+        LastUpdateRole = Qt::UserRole + 4,
+        LinkStatusRole = Qt::UserRole + 5,
         LinkedActivitiesRole = Qt::UserRole + 6,
-        MimeType             = Qt::UserRole + 7, // @since 5.77
+        MimeType = Qt::UserRole + 7, // @since 5.77
     };
 
-    int rowCount(const QModelIndex &parent
-                 = QModelIndex()) const override;
-    QVariant data(const QModelIndex &item,
-                  int role = Qt::DisplayRole) const override;
+    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
+    QVariant data(const QModelIndex &item, int role = Qt::DisplayRole) const override;
     QHash<int, QByteArray> roleNames() const override;
 
-    QVariant headerData(int section, Qt::Orientation orientation,
-                        int role = Qt::DisplayRole) const override;
+    QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
 
     void fetchMore(const QModelIndex &parent) override;
     bool canFetchMore(const QModelIndex &parent) const override;
 
     void linkToActivity(const QUrl &resource,
-                        const Terms::Activity &activity
-                            = Terms::Activity(QStringList()),
-                        const Terms::Agent &agent
-                            = Terms::Agent(QStringList()));
+                        const Terms::Activity &activity = Terms::Activity(QStringList()),
+                        const Terms::Agent &agent = Terms::Agent(QStringList()));
 
     void unlinkFromActivity(const QUrl &resource,
-                            const Terms::Activity &activity
-                                = Terms::Activity(QStringList()),
-                            const Terms::Agent &agent
-                                = Terms::Agent(QStringList()));
+                            const Terms::Activity &activity = Terms::Activity(QStringList()),
+                            const Terms::Agent &agent = Terms::Agent(QStringList()));
 
 public Q_SLOTS:
     /**
@@ -121,4 +116,3 @@ private:
 } // namespace KActivities
 
 #endif // KACTIVITIES_STATS_RESULTMODEL_H
-

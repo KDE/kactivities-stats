@@ -4,18 +4,19 @@
     SPDX-License-Identifier: GPL-2.0-or-later
 */
 
-#include <QTest>
 #include <QCoreApplication>
 #include <QList>
+#include <QTest>
 
 #include <common/test.h>
 
 #include "QueryTest.h"
-#include "ResultSetTest.h"
 #include "ResultSetQuickCheckTest.h"
+#include "ResultSetTest.h"
 #include "ResultWatcherTest.h"
 
-class TestRunner: public QObject {
+class TestRunner : public QObject
+{
 public:
     TestRunner()
         : m_nextToStart(0)
@@ -59,18 +60,14 @@ private:
 
         Test *test = m_tests[m_nextToStart++];
 
-        QObject::connect(test, &Test::testFinished,
-                this, &TestRunner::next,
-                Qt::QueuedConnection);
+        QObject::connect(test, &Test::testFinished, this, &TestRunner::next, Qt::QueuedConnection);
 
         QTest::qExec(test);
-
     }
 
 private:
-    QList<Test*> m_tests;
+    QList<Test *> m_tests;
     int m_nextToStart;
-
 };
 
 int main(int argc, char *argv[])
@@ -83,11 +80,10 @@ int main(int argc, char *argv[])
 
     bool all = (app.arguments().size() <= 1);
 
-#define ADD_TEST(TestName)                                                     \
-    qDebug() << "Test " << #TestName << " is enabled "                         \
-             << (all || app.arguments().contains(QLatin1String(#TestName)));   \
-    if (all || app.arguments().contains(QLatin1String(#TestName))) {           \
-        runner << new TestName##Test();                                        \
+#define ADD_TEST(TestName)                                                                                                                                     \
+    qDebug() << "Test " << #TestName << " is enabled " << (all || app.arguments().contains(QLatin1String(#TestName)));                                         \
+    if (all || app.arguments().contains(QLatin1String(#TestName))) {                                                                                           \
+        runner << new TestName##Test();                                                                                                                        \
     }
 
     ADD_TEST(Query)
@@ -101,4 +97,3 @@ int main(int argc, char *argv[])
     return app.exec();
     // QTest::qExec(&tc, argc, argv);
 }
-

@@ -7,14 +7,15 @@
 #ifndef COMMON_DATABASE_H
 #define COMMON_DATABASE_H
 
-#include <utils/d_ptr.h>
-#include <memory>
-#include <QSqlQuery>
 #include <QRegularExpression>
+#include <QSqlQuery>
+#include <memory>
+#include <utils/d_ptr.h>
 
-namespace Common {
-
-class Database {
+namespace Common
+{
+class Database
+{
 public:
     typedef std::shared_ptr<Database> Ptr;
 
@@ -41,7 +42,8 @@ public:
     Database();
 
     friend class Locker;
-    class Locker {
+    class Locker
+    {
     public:
         Locker(Database &database);
         ~Locker();
@@ -50,32 +52,28 @@ public:
         QSqlDatabase &m_database;
     };
 
-    #define DATABASE_TRANSACTION(A) \
-        /* enable this for debugging only: qDebug() << "Location:" << __FILE__ << __LINE__; */ \
-        Common::Database::Locker lock(A)
+#define DATABASE_TRANSACTION(A)                                                                                                                                \
+    /* enable this for debugging only: qDebug() << "Location:" << __FILE__ << __LINE__; */                                                                     \
+    Common::Database::Locker lock(A)
 
 private:
     D_PTR;
 };
 
-template <typename EscapeFunction>
-QString parseStarPattern(const QString &pattern, const QString &joker,
-                                   EscapeFunction escape)
+template<typename EscapeFunction>
+QString parseStarPattern(const QString &pattern, const QString &joker, EscapeFunction escape)
 {
-    const auto begin     = pattern.constBegin();
-    const auto end       = pattern.constEnd();
+    const auto begin = pattern.constBegin();
+    const auto end = pattern.constEnd();
 
-    auto currentStart    = pattern.constBegin();
+    auto currentStart = pattern.constBegin();
     auto currentPosition = pattern.constBegin();
 
     bool isEscaped = false;
 
     // This should be available in the QString class...
-    auto stringFromIterators = [&](const QString::const_iterator &currentStart,
-                                   const QString::const_iterator &currentPosition) {
-        return pattern.mid(
-                std::distance(begin, currentStart),
-                std::distance(currentStart, currentPosition));
+    auto stringFromIterators = [&](const QString::const_iterator &currentStart, const QString::const_iterator &currentPosition) {
+        return pattern.mid(std::distance(begin, currentStart), std::distance(currentStart, currentPosition));
     };
 
     // Escaping % and _ for sql like
@@ -97,8 +95,7 @@ QString parseStarPattern(const QString &pattern, const QString &joker,
 
         } else if (*currentPosition == QLatin1Char('*')) {
             // Replacing the star with the sql like joker - %
-            resultPattern.append(escape(stringFromIterators(
-                                    currentStart, currentPosition)) + joker);
+            resultPattern.append(escape(stringFromIterators(currentStart, currentPosition)) + joker);
             currentStart = currentPosition + 1;
 
         } else {
@@ -107,8 +104,7 @@ QString parseStarPattern(const QString &pattern, const QString &joker,
     }
 
     if (currentStart != currentPosition) {
-        resultPattern.append(escape(stringFromIterators(
-                                currentStart, currentPosition)));
+        resultPattern.append(escape(stringFromIterators(currentStart, currentPosition)));
     }
 
     return resultPattern;
@@ -126,12 +122,10 @@ inline QString starPatternToLike(const QString &pattern)
 
 inline QRegularExpression starPatternToRegex(const QString &pattern)
 {
-    const QString parsed = parseStarPattern(pattern, QStringLiteral(".*"),
-                                            QOverload<const QString &>::of(&QRegularExpression::escape));
+    const QString parsed = parseStarPattern(pattern, QStringLiteral(".*"), QOverload<const QString &>::of(&QRegularExpression::escape));
     return QRegularExpression(QRegularExpression::anchoredPattern(parsed));
 }
 
 } // namespace Common
 
 #endif // COMMON_DATABASE_H
-

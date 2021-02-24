@@ -6,16 +6,18 @@
 
 #include <boost/optional.hpp>
 
-namespace KActivities {
-namespace Stats {
-
+namespace KActivities
+{
+namespace Stats
+{
 using namespace Terms;
 
 typedef ResultSet::const_iterator iterator;
 
 // Iterator
 
-class ResultSet_IteratorPrivate {
+class ResultSet_IteratorPrivate
+{
 public:
     ResultSet_IteratorPrivate(const ResultSet *resultSet, int currentRow = -1)
         : resultSet(resultSet)
@@ -30,7 +32,8 @@ public:
 
     inline void moveTo(int row)
     {
-        if (row == currentRow) return;
+        if (row == currentRow)
+            return;
         currentRow = row;
         updateValue();
     }
@@ -50,21 +53,19 @@ public:
         } else {
             auto value = resultSet->d->currentResult();
             currentValue = make_optional(std::move(value));
-
         }
     }
 
-    friend void swap(ResultSet_IteratorPrivate &left,
-                     ResultSet_IteratorPrivate &right)
+    friend void swap(ResultSet_IteratorPrivate &left, ResultSet_IteratorPrivate &right)
     {
-        std::swap(left.resultSet,    right.resultSet);
-        std::swap(left.currentRow,   right.currentRow);
+        std::swap(left.resultSet, right.resultSet);
+        std::swap(left.currentRow, right.currentRow);
         std::swap(left.currentValue, right.currentValue);
     }
 
     bool operator==(const ResultSet_IteratorPrivate &other) const
     {
-        bool thisValid  = currentValue.is_initialized();
+        bool thisValid = currentValue.is_initialized();
         bool otherValid = other.currentValue.is_initialized();
 
         return
@@ -72,12 +73,12 @@ public:
             // they are not equal
             thisValid != otherValid ? false :
 
-            // If both are invalid, they are equal
-            !thisValid              ? true  :
+                                    // If both are invalid, they are equal
+            !thisValid ? true
+                       :
 
-            // Otherwise, really compare
-            resultSet  == other.resultSet &&
-                currentRow == other.currentRow;
+                       // Otherwise, really compare
+            resultSet == other.resultSet && currentRow == other.currentRow;
     }
 
     bool isValid() const
@@ -85,13 +86,10 @@ public:
         return currentValue.is_initialized();
     }
 
-    static bool sameSource(const ResultSet_IteratorPrivate &left,
-                           const ResultSet_IteratorPrivate &right)
+    static bool sameSource(const ResultSet_IteratorPrivate &left, const ResultSet_IteratorPrivate &right)
     {
-        return left.resultSet == right.resultSet &&
-               left.resultSet != nullptr;
+        return left.resultSet == right.resultSet && left.resultSet != nullptr;
     }
-
 };
 
 iterator::const_iterator(const ResultSet *resultSet, int currentRow)
@@ -105,8 +103,7 @@ iterator::const_iterator()
 }
 
 iterator::const_iterator(const const_iterator &source)
-    : d(new ResultSet_IteratorPrivate(source.d->resultSet,
-                                      source.d->currentRow))
+    : d(new ResultSet_IteratorPrivate(source.d->resultSet, source.d->currentRow))
 {
 }
 
@@ -138,7 +135,7 @@ iterator::pointer iterator::operator->() const
 }
 
 // prefix
-iterator& iterator::operator++()
+iterator &iterator::operator++()
 {
     d->currentRow++;
     d->updateValue();
@@ -153,7 +150,7 @@ iterator iterator::operator++(int)
 }
 
 // prefix
-iterator& iterator::operator--()
+iterator &iterator::operator--()
 {
     d->currentRow--;
     d->updateValue();
@@ -224,12 +221,10 @@ bool operator!=(const iterator &left, const iterator &right)
     return !(*left.d == *right.d);
 }
 
-#define COMPARATOR_IMPL(OP)                                                    \
-    bool operator OP(const iterator &left, const iterator &right)              \
-    {                                                                          \
-        return ResultSet_IteratorPrivate::sameSource(*left.d, *right.d)        \
-                   ? left.d->currentRow OP right.d->currentRow                 \
-                   : false;                                                    \
+#define COMPARATOR_IMPL(OP)                                                                                                                                    \
+    bool operator OP(const iterator &left, const iterator &right)                                                                                              \
+    {                                                                                                                                                          \
+        return ResultSet_IteratorPrivate::sameSource(*left.d, *right.d) ? left.d->currentRow OP right.d->currentRow : false;                                   \
     }
 
 COMPARATOR_IMPL(<)
@@ -241,11 +236,8 @@ COMPARATOR_IMPL(>=)
 
 iterator::difference_type operator-(const iterator &left, const iterator &right)
 {
-    return ResultSet_IteratorPrivate::sameSource(*left.d, *right.d)
-               ? left.d->currentRow - right.d->currentRow
-               : 0;
+    return ResultSet_IteratorPrivate::sameSource(*left.d, *right.d) ? left.d->currentRow - right.d->currentRow : 0;
 }
 
 } // namespace Stats
 } // namespace KActivities
-

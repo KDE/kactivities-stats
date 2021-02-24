@@ -9,41 +9,44 @@
 #include <QDate>
 #include <QDebug>
 
-namespace KActivities {
-namespace Stats {
+namespace KActivities
+{
+namespace Stats
+{
+namespace details
+{
+inline void validateTypes(QStringList &types)
+{
+    // Nothing at the moment
+    Q_UNUSED(types);
+}
 
-namespace details {
-    inline void validateTypes(QStringList &types)
-    {
-        // Nothing at the moment
-        Q_UNUSED(types);
+inline void validateAgents(QStringList &agents)
+{
+    // Nothing at the moment
+    Q_UNUSED(agents);
+}
+
+inline void validateActivities(QStringList &activities)
+{
+    // Nothing at the moment
+    Q_UNUSED(activities);
+}
+
+inline void validateUrlFilters(QStringList &urlFilters)
+{
+    auto i = urlFilters.begin();
+    const auto end = urlFilters.end();
+
+    for (; i != end; ++i) {
+        i->replace(QLatin1String("'"), QLatin1String(""));
     }
-
-    inline void validateAgents(QStringList &agents)
-    {
-        // Nothing at the moment
-        Q_UNUSED(agents);
-    }
-
-    inline void validateActivities(QStringList &activities)
-    {
-        // Nothing at the moment
-        Q_UNUSED(activities);
-    }
-
-    inline void validateUrlFilters(QStringList &urlFilters)
-    {
-        auto i = urlFilters.begin();
-        const auto end = urlFilters.end();
-
-        for (; i != end ; ++i) {
-            i->replace(QLatin1String("'"), QLatin1String(""));
-        }
-    }
+}
 
 } // namespace details
 
-class QueryPrivate {
+class QueryPrivate
+{
 public:
     QueryPrivate()
         : ordering(Terms::HighScoredFirst)
@@ -52,15 +55,15 @@ public:
     {
     }
 
-    Terms::Select   selection;
-    QStringList     types;
-    QStringList     agents;
-    QStringList     activities;
-    QStringList     urlFilters;
-    Terms::Order    ordering;
-    QDate           start, end;
-    int             limit;
-    int             offset;
+    Terms::Select selection;
+    QStringList types;
+    QStringList agents;
+    QStringList activities;
+    QStringList urlFilters;
+    Terms::Order ordering;
+    QDate start, end;
+    int limit;
+    int offset;
 };
 
 Query::Query(Terms::Select selection)
@@ -80,62 +83,55 @@ Query::Query(const Query &source)
 {
 }
 
-Query &Query::operator= (Query source)
+Query &Query::operator=(Query source)
 {
     std::swap(d, source.d);
     return *this;
 }
-
 
 Query::~Query()
 {
     delete d;
 }
 
-bool Query::operator== (const Query &right) const
+bool Query::operator==(const Query &right) const
 {
-    return selection()  == right.selection() &&
-           types()      == right.types() &&
-           agents()     == right.agents() &&
-           activities() == right.activities() &&
-           selection()  == right.selection() &&
-           urlFilters() == right.urlFilters() &&
-           dateStart()  == right.dateStart() &&
-           dateEnd()    == right.dateEnd();
+    return selection() == right.selection() && types() == right.types() && agents() == right.agents() && activities() == right.activities()
+        && selection() == right.selection() && urlFilters() == right.urlFilters() && dateStart() == right.dateStart() && dateEnd() == right.dateEnd();
 }
 
-bool Query::operator!= (const Query &right) const
+bool Query::operator!=(const Query &right) const
 {
     return !(*this == right);
 }
 
-#define IMPLEMENT_QUERY_LIST_FIELD(WHAT, What, Term, Default)                  \
-    void Query::add##WHAT(const QStringList &What)                             \
-    {                                                                          \
-        d->What << What;                                                       \
-        details::validate##WHAT(d->What);                                      \
-    }                                                                          \
-                                                                               \
-    void Query::set##WHAT(const Terms::Term &What)                             \
-    {                                                                          \
-        d->What = What.values;                                                 \
-        details::validate##WHAT(d->What);                                      \
-    }                                                                          \
-                                                                               \
-    QStringList Query::What() const                                            \
-    {                                                                          \
-        return d->What.size() ? d->What : Default;                             \
-    }                                                                          \
-                                                                               \
-    void Query::clear##WHAT()                                                  \
-    {                                                                          \
-        d->What.clear();                                                       \
+#define IMPLEMENT_QUERY_LIST_FIELD(WHAT, What, Term, Default)                                                                                                  \
+    void Query::add##WHAT(const QStringList &What)                                                                                                             \
+    {                                                                                                                                                          \
+        d->What << What;                                                                                                                                       \
+        details::validate##WHAT(d->What);                                                                                                                      \
+    }                                                                                                                                                          \
+                                                                                                                                                               \
+    void Query::set##WHAT(const Terms::Term &What)                                                                                                             \
+    {                                                                                                                                                          \
+        d->What = What.values;                                                                                                                                 \
+        details::validate##WHAT(d->What);                                                                                                                      \
+    }                                                                                                                                                          \
+                                                                                                                                                               \
+    QStringList Query::What() const                                                                                                                            \
+    {                                                                                                                                                          \
+        return d->What.size() ? d->What : Default;                                                                                                             \
+    }                                                                                                                                                          \
+                                                                                                                                                               \
+    void Query::clear##WHAT()                                                                                                                                  \
+    {                                                                                                                                                          \
+        d->What.clear();                                                                                                                                       \
     }
 
-IMPLEMENT_QUERY_LIST_FIELD(Types,      types,      Type,     QStringList(ANY_TYPE_TAG))
-IMPLEMENT_QUERY_LIST_FIELD(Agents,     agents,     Agent,    QStringList(CURRENT_AGENT_TAG))
+IMPLEMENT_QUERY_LIST_FIELD(Types, types, Type, QStringList(ANY_TYPE_TAG))
+IMPLEMENT_QUERY_LIST_FIELD(Agents, agents, Agent, QStringList(CURRENT_AGENT_TAG))
 IMPLEMENT_QUERY_LIST_FIELD(Activities, activities, Activity, QStringList(CURRENT_ACTIVITY_TAG))
-IMPLEMENT_QUERY_LIST_FIELD(UrlFilters, urlFilters, Url,      QStringList(QStringLiteral("*")))
+IMPLEMENT_QUERY_LIST_FIELD(UrlFilters, urlFilters, Url, QStringList(QStringLiteral("*")))
 
 #undef IMPLEMENT_QUERY_LIST_FIELD
 
@@ -215,16 +211,8 @@ QDebug operator<<(QDebug dbg, const KAStats::Query &query)
 {
     using namespace KAStats::Terms;
 
-    dbg.nospace()
-        << "Query { "
-        << query.selection()
-        << ", " << Type(query.types())
-        << ", " << Agent(query.agents())
-        << ", " << Activity(query.activities())
-        << ", " << Url(query.urlFilters())
-        << ", " << Date(query.dateStart(), query.dateEnd())
-        << ", " << query.ordering()
-        << ", Limit: " << query.limit()
-        << " }";
+    dbg.nospace() << "Query { " << query.selection() << ", " << Type(query.types()) << ", " << Agent(query.agents()) << ", " << Activity(query.activities())
+                  << ", " << Url(query.urlFilters()) << ", " << Date(query.dateStart(), query.dateEnd()) << ", " << query.ordering()
+                  << ", Limit: " << query.limit() << " }";
     return dbg;
 }

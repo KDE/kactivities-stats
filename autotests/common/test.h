@@ -7,14 +7,15 @@
 #ifndef COMMON_TEST_H
 #define COMMON_TEST_H
 
-#include <QObject>
+#include <QCoreApplication>
+#include <QDate>
 #include <QFuture>
 #include <QFutureWatcher>
-#include <QDate>
-#include <QCoreApplication>
+#include <QObject>
 #include <QTest>
 
-class Test: public QObject {
+class Test : public QObject
+{
     Q_OBJECT
 public:
     Test(QObject *parent = nullptr);
@@ -26,55 +27,52 @@ protected:
         FailIfFalse = 2,
     };
 
-    template <typename _ReturnType, typename _Continuation>
-    void continue_future(const QFuture<_ReturnType> &future,
-                         _Continuation &&continuation)
+    template<typename _ReturnType, typename _Continuation>
+    void continue_future(const QFuture<_ReturnType> &future, _Continuation &&continuation)
     {
         if (!future.isFinished()) {
             auto watcher = new QFutureWatcher<decltype(future.result())>();
-            QObject::connect(watcher, &QFutureWatcherBase::finished,
+            QObject::connect(
+                watcher,
+                &QFutureWatcherBase::finished,
                 watcher,
                 [=] {
                     continuation(watcher->result());
                     watcher->deleteLater();
                 },
-                Qt::QueuedConnection
-            );
+                Qt::QueuedConnection);
 
             watcher->setFuture(future);
 
         } else {
             continuation(future.result());
-
         }
     }
 
-    template <typename _Continuation>
-    void continue_future(const QFuture<void> &future,
-                         _Continuation &&continuation)
+    template<typename _Continuation>
+    void continue_future(const QFuture<void> &future, _Continuation &&continuation)
     {
         if (!future.isFinished()) {
             auto watcher = new QFutureWatcher<void>();
-            QObject::connect(watcher, &QFutureWatcherBase::finished,
+            QObject::connect(
+                watcher,
+                &QFutureWatcherBase::finished,
                 watcher,
                 [=] {
                     continuation();
                     watcher->deleteLater();
                 },
-                Qt::QueuedConnection
-            );
+                Qt::QueuedConnection);
 
             watcher->setFuture(future);
 
         } else {
             continuation();
-
         }
     }
 
-    template <typename T>
-    static inline
-    void wait_until(T condition, const char * msg, int msecs = 300)
+    template<typename T>
+    static inline void wait_until(T condition, const char *msg, int msecs = 300)
     {
         auto start = QTime::currentTime();
 
@@ -83,33 +81,38 @@ protected:
 
             auto now = QTime::currentTime();
             QVERIFY2(start.msecsTo(now) < msecs, msg);
-            if (start.msecsTo(now) >= msecs) break;
+            if (start.msecsTo(now) >= msecs)
+                break;
         }
     }
 
-#define TEST_WAIT_UNTIL(C)                                                     \
-    wait_until([&] () -> bool { return C; }, "Timeout waiting for: " #C);
-#define TEST_WAIT_UNTIL_WITH_TIMEOUT(C, T)                                     \
-    wait_until([&] () ->bool { return C; }, "Timeout waiting for: " #C, T);
+#define TEST_WAIT_UNTIL(C)                                                                                                                                     \
+    wait_until(                                                                                                                                                \
+        [&]() -> bool {                                                                                                                                        \
+            return C;                                                                                                                                          \
+        },                                                                                                                                                     \
+        "Timeout waiting for: " #C);
+#define TEST_WAIT_UNTIL_WITH_TIMEOUT(C, T)                                                                                                                     \
+    wait_until(                                                                                                                                                \
+        [&]() -> bool {                                                                                                                                        \
+            return C;                                                                                                                                          \
+        },                                                                                                                                                     \
+        "Timeout waiting for: " #C,                                                                                                                            \
+        T);
 
-
-    template <typename T>
-    static bool check(T what, WhenToFail wtf = DontFail,
-                      const char *msg = nullptr)
+    template<typename T>
+    static bool check(T what, WhenToFail wtf = DontFail, const char *msg = nullptr)
     {
         bool result = what();
 
-        if (
-            (wtf == FailIfTrue && result) ||
-            (wtf == FailIfFalse && !result)
-        ) {
+        if ((wtf == FailIfTrue && result) || (wtf == FailIfFalse && !result)) {
             qFatal(
                 "\n"
                 "\n"
                 "!!! > \n"
                 "!!! > %s\n"
-                "!!! > \n"
-                ,  msg);
+                "!!! > \n",
+                msg);
         }
 
         return result;
@@ -128,19 +131,13 @@ Q_SIGNALS:
 #include <iostream>
 
 #if defined(Q_NO_DEBUG) || !defined(Q_OS_LINUX)
-    #define TEST_CHUNK(Name)
+#define TEST_CHUNK(Name)
 #else
-    inline
-    void _test_chunk(const QString &message)
-    {
-        std::cerr
-            << '\n'
-            << message.toStdString() << "\n"
-            << std::string(message.length(), '-') << '\n'
-            ;
-    }
-    #define TEST_CHUNK(Name) _test_chunk(Name);
+inline void _test_chunk(const QString &message)
+{
+    std::cerr << '\n' << message.toStdString() << "\n" << std::string(message.length(), '-') << '\n';
+}
+#define TEST_CHUNK(Name) _test_chunk(Name);
 #endif
 
 #endif /* TEST_H */
-

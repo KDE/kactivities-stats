@@ -8,8 +8,8 @@
 
 #include <QDBusConnection>
 #include <QDBusConnectionInterface>
-#include <QString>
 #include <QDebug>
+#include <QString>
 #include <QTest>
 
 #include <query.h>
@@ -29,11 +29,11 @@ void QueryTest::testDefaults()
 
     Query query;
 
-    QCOMPARE(query.selection(),  AllResources);
-    QCOMPARE(query.types(),      {QStringLiteral(":any")});
-    QCOMPARE(query.agents(),     {QStringLiteral(":current")});
+    QCOMPARE(query.selection(), AllResources);
+    QCOMPARE(query.types(), {QStringLiteral(":any")});
+    QCOMPARE(query.agents(), {QStringLiteral(":current")});
     QCOMPARE(query.activities(), {QStringLiteral(":current")});
-    QCOMPARE(query.ordering(),   HighScoredFirst);
+    QCOMPARE(query.ordering(), HighScoredFirst);
 }
 
 void QueryTest::testDebuggingOutput()
@@ -51,11 +51,11 @@ void QueryTest::testDerivationFromDefault()
     TEST_CHUNK(QStringLiteral("Testing query derivation from default"))
 
     Query queryDefault;
-    auto  queryDerived = queryDefault | LinkedResources;
+    auto queryDerived = queryDefault | LinkedResources;
 
     // queryDefault should not have been modified
-    QCOMPARE(queryDefault.selection(),  AllResources);
-    QCOMPARE(queryDerived.selection(),  LinkedResources);
+    QCOMPARE(queryDefault.selection(), AllResources);
+    QCOMPARE(queryDerived.selection(), LinkedResources);
 
     // Changing queryDerived back to AllResources, should be == to queryDefault
     queryDerived.setSelection(AllResources);
@@ -67,11 +67,11 @@ void QueryTest::testDerivationFromCustom()
     TEST_CHUNK(QStringLiteral("Testing query derivation from custom"))
 
     Query queryCustom;
-    auto  queryDerived = queryCustom | LinkedResources;
+    auto queryDerived = queryCustom | LinkedResources;
 
     // q1 should not have been modified
-    QCOMPARE(queryCustom.selection(),  AllResources);
-    QCOMPARE(queryDerived.selection(),  LinkedResources);
+    QCOMPARE(queryCustom.selection(), AllResources);
+    QCOMPARE(queryDerived.selection(), LinkedResources);
 
     // Changing queryDerived back to AllResources, should be == to queryDefault
     queryDerived.setSelection(AllResources);
@@ -153,29 +153,22 @@ void QueryTest::testFancySyntaxBasic()
 {
     TEST_CHUNK(QStringLiteral("Testing the fancy syntax, non c++11"))
 
-    auto query = LinkedResources
-                    | Type(QStringLiteral("text"))
-                    | Type(QStringLiteral("image"))
-                    | Agent(QStringLiteral("test"))
-                    | RecentlyCreatedFirst;
+    auto query = LinkedResources | Type(QStringLiteral("text")) | Type(QStringLiteral("image")) | Agent(QStringLiteral("test")) | RecentlyCreatedFirst;
 
-    QCOMPARE(query.selection(),  LinkedResources);
-    QCOMPARE(query.types(),      QStringList() << QStringLiteral("text") << QStringLiteral("image"));
-    QCOMPARE(query.agents(),     QStringList() << QStringLiteral("test"));
+    QCOMPARE(query.selection(), LinkedResources);
+    QCOMPARE(query.types(), QStringList() << QStringLiteral("text") << QStringLiteral("image"));
+    QCOMPARE(query.agents(), QStringList() << QStringLiteral("test"));
     QCOMPARE(query.activities(), QStringList() << QStringLiteral(":current"));
-    QCOMPARE(query.ordering(),   RecentlyCreatedFirst);
+    QCOMPARE(query.ordering(), RecentlyCreatedFirst);
 
-    #ifdef Q_COMPILER_INITIALIZER_LISTS
+#ifdef Q_COMPILER_INITIALIZER_LISTS
     TEST_CHUNK(QStringLiteral("Testing the fancy syntax, c++11"))
 
     // Testing the fancy c++11 syntax
-    auto queryCXX11 = LinkedResources
-                | Type{QStringLiteral("text"), QStringLiteral("image")}
-                | Agent{QStringLiteral("test")}
-                | RecentlyCreatedFirst;
+    auto queryCXX11 = LinkedResources | Type{QStringLiteral("text"), QStringLiteral("image")} | Agent{QStringLiteral("test")} | RecentlyCreatedFirst;
 
     QCOMPARE(query, queryCXX11);
-    #endif
+#endif
 }
 
 void QueryTest::testFancySyntaxAgentDefinition()
@@ -315,4 +308,3 @@ void QueryTest::cleanupTestCase()
 {
     Q_EMIT testFinished();
 }
-

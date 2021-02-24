@@ -11,9 +11,10 @@
 
 #include <QDebug>
 
-namespace KActivities {
-namespace Stats {
-
+namespace KActivities
+{
+namespace Stats
+{
 class ResultSetPrivate;
 class ResultSet_ResultPrivate;
 class ResultSet_IteratorPrivate;
@@ -39,12 +40,14 @@ class ResultSet_IteratorPrivate;
  * }
  * @endcode
  */
-class KACTIVITIESSTATS_EXPORT ResultSet {
+class KACTIVITIESSTATS_EXPORT ResultSet
+{
 public:
     /**
      * Structure containing data of one of the results
      */
-    class Result {
+    class Result
+    {
     public:
         Result();
         ~Result();
@@ -55,19 +58,19 @@ public:
 
         enum LinkStatus {
             NotLinked = 0,
-            Unknown   = 1,
-            Linked    = 2,
+            Unknown = 1,
+            Linked = 2,
         };
 
         // TODO: KF6 rething the function names, and maybe their signature, perhaps leverage std::variant or std::optional to add semantics to the API
-        QString resource() const;             ///< String representation of resource (can represent an url or a path)
-        QUrl url() const;                     ///< Url representation of a resource based on internal resource, readonly, @since 5.64
-        QString title() const;                ///< Title of the resource, or URL if title is not known
-        QString mimetype() const;             ///< Mimetype of the resource, or URL if title is not known
-        double score() const;                 ///< The score calculated based on the usage statistics
-        uint lastUpdate() const;              ///< Timestamp of the last update
-        uint firstUpdate() const;             ///< Timestamp of the first update
-        LinkStatus linkStatus() const;        ///< Differentiates between linked and non-linked resources in mixed queries
+        QString resource() const; ///< String representation of resource (can represent an url or a path)
+        QUrl url() const; ///< Url representation of a resource based on internal resource, readonly, @since 5.64
+        QString title() const; ///< Title of the resource, or URL if title is not known
+        QString mimetype() const; ///< Mimetype of the resource, or URL if title is not known
+        double score() const; ///< The score calculated based on the usage statistics
+        uint lastUpdate() const; ///< Timestamp of the last update
+        uint firstUpdate() const; ///< Timestamp of the first update
+        LinkStatus linkStatus() const; ///< Differentiates between linked and non-linked resources in mixed queries
         QStringList linkedActivities() const; ///< Contains the activities this resource is linked to for the queries that care about resource linking
 
         void setResource(QString resource);
@@ -80,7 +83,7 @@ public:
         void setLinkedActivities(QStringList activities);
 
     private:
-        ResultSet_ResultPrivate * d;
+        ResultSet_ResultPrivate *d;
     };
 
     /**
@@ -94,9 +97,9 @@ public:
      */
     ResultSet(Query query);
 
-    ResultSet(ResultSet && source);
+    ResultSet(ResultSet &&source);
     ResultSet(const ResultSet &source);
-    ResultSet &operator= (ResultSet source);
+    ResultSet &operator=(ResultSet source);
     ~ResultSet();
 
     /**
@@ -113,14 +116,15 @@ public:
      * TODO: Consider making this to be more than just forward iterator.
      *       Maybe even a random-access one.
      */
-    class const_iterator {
+    class const_iterator
+    {
     public:
         typedef std::random_access_iterator_tag iterator_category;
         typedef int difference_type;
 
         typedef const Result value_type;
-        typedef const Result& reference;
-        typedef const Result* pointer;
+        typedef const Result &reference;
+        typedef const Result *pointer;
 
         const_iterator();
         const_iterator(const const_iterator &source);
@@ -131,23 +135,23 @@ public:
         bool isSourceValid() const;
 
         reference operator*() const;
-        pointer   operator->() const;
+        pointer operator->() const;
 
         // prefix
-        const_iterator& operator++();
+        const_iterator &operator++();
         // postfix
         const_iterator operator++(int);
 
         // prefix
-        const_iterator& operator--();
+        const_iterator &operator--();
         // postfix
         const_iterator operator--(int);
 
         const_iterator operator+(difference_type n) const;
-        const_iterator& operator+=(difference_type n);
+        const_iterator &operator+=(difference_type n);
 
         const_iterator operator-(difference_type n) const;
-        const_iterator& operator-=(difference_type n);
+        const_iterator &operator-=(difference_type n);
 
         reference operator[](difference_type n) const;
 
@@ -167,7 +171,7 @@ public:
 
         friend class ResultSet;
 
-        ResultSet_IteratorPrivate* const d;
+        ResultSet_IteratorPrivate *const d;
     };
 
     /**
@@ -186,59 +190,58 @@ public:
     /**
      * Alias for begin
      */
-    inline const_iterator cbegin() const { return begin(); }
+    inline const_iterator cbegin() const
+    {
+        return begin();
+    }
     /**
      * Alias for end
      */
-    inline const_iterator cend() const   { return end(); }
+    inline const_iterator cend() const
+    {
+        return end();
+    }
 
     /**
      * Alias for begin
      */
-    inline const_iterator constBegin() const { return cbegin(); }
+    inline const_iterator constBegin() const
+    {
+        return cbegin();
+    }
     /**
      * Alias for end
      */
-    inline const_iterator constEnd() const   { return cend(); }
+    inline const_iterator constEnd() const
+    {
+        return cend();
+    }
 
 private:
     friend class ResultSet_IteratorPrivate;
     ResultSetPrivate *d;
 };
 
-bool KACTIVITIESSTATS_EXPORT operator==(const ResultSet::const_iterator &left,
-                                        const ResultSet::const_iterator &right);
-bool KACTIVITIESSTATS_EXPORT operator!=(const ResultSet::const_iterator &left,
-                                        const ResultSet::const_iterator &right);
+bool KACTIVITIESSTATS_EXPORT operator==(const ResultSet::const_iterator &left, const ResultSet::const_iterator &right);
+bool KACTIVITIESSTATS_EXPORT operator!=(const ResultSet::const_iterator &left, const ResultSet::const_iterator &right);
 
-bool KACTIVITIESSTATS_EXPORT operator<(const ResultSet::const_iterator &left,
-                                       const ResultSet::const_iterator &right);
-bool KACTIVITIESSTATS_EXPORT operator>(const ResultSet::const_iterator &left,
-                                       const ResultSet::const_iterator &right);
+bool KACTIVITIESSTATS_EXPORT operator<(const ResultSet::const_iterator &left, const ResultSet::const_iterator &right);
+bool KACTIVITIESSTATS_EXPORT operator>(const ResultSet::const_iterator &left, const ResultSet::const_iterator &right);
 
-bool KACTIVITIESSTATS_EXPORT operator<=(const ResultSet::const_iterator &left,
-                                        const ResultSet::const_iterator &right);
-bool KACTIVITIESSTATS_EXPORT operator>=(const ResultSet::const_iterator &left,
-                                        const ResultSet::const_iterator &right);
+bool KACTIVITIESSTATS_EXPORT operator<=(const ResultSet::const_iterator &left, const ResultSet::const_iterator &right);
+bool KACTIVITIESSTATS_EXPORT operator>=(const ResultSet::const_iterator &left, const ResultSet::const_iterator &right);
 
-ResultSet::const_iterator::difference_type KACTIVITIESSTATS_EXPORT
-operator-(const ResultSet::const_iterator &left,
-          const ResultSet::const_iterator &right);
+ResultSet::const_iterator::difference_type KACTIVITIESSTATS_EXPORT operator-(const ResultSet::const_iterator &left, const ResultSet::const_iterator &right);
 
-inline QDebug operator<< (QDebug out, const ResultSet::Result &result)
+inline QDebug operator<<(QDebug out, const ResultSet::Result &result)
 {
-    return out
-        << (result.linkStatus() == ResultSet::Result::Linked ? "⊤" :
-            result.linkStatus() == ResultSet::Result::NotLinked ? "⊥" : "?")
-        << result.score()
-        << (result.title() != result.resource() ? result.title() : QString())
-        << result.lastUpdate()
-        << result.resource().rightRef(20)
-        ;
+    return out << (result.linkStatus() == ResultSet::Result::Linked          ? "⊤"
+                       : result.linkStatus() == ResultSet::Result::NotLinked ? "⊥"
+                                                                             : "?")
+               << result.score() << (result.title() != result.resource() ? result.title() : QString()) << result.lastUpdate() << result.resource().rightRef(20);
 }
 
 } // namespace Stats
 } // namespace KActivities
 
 #endif // KACTIVITIES_STATS_RESULTSET
-

@@ -20,9 +20,10 @@
 
 #include "terms.h"
 
-namespace KActivities {
-namespace Stats {
-
+namespace KActivities
+{
+namespace Stats
+{
 class QueryPrivate;
 
 /**
@@ -53,19 +54,20 @@ class QueryPrivate;
  *                 | Activity::current();
  * @endcode
  */
-class KACTIVITIESSTATS_EXPORT Query {
+class KACTIVITIESSTATS_EXPORT Query
+{
 public:
     Query(Terms::Select selection = Terms::AllResources);
 
     // The damned rule of five minus one :)
-    Query(Query && source);
+    Query(Query &&source);
     Query(const Query &source);
-    Query &operator= (Query source);
+    Query &operator=(Query source);
     ~Query();
 
     // Not all are born equal
-    bool operator== (const Query &right) const;
-    bool operator!= (const Query &right) const;
+    bool operator==(const Query &right) const;
+    bool operator!=(const Query &right) const;
 
     Terms::Select selection() const;
     QStringList types() const;
@@ -169,34 +171,30 @@ private:
     }
 
 public:
-
-    template <typename Term>
-    friend
-    inline Query operator| (const Query &query, Term &&term)
+    template<typename Term>
+    friend inline Query operator|(const Query &query, Term &&term)
     {
         Query result(query);
         result.addTerm(term);
         return result;
     }
 
-    template <typename Term>
-    friend
-    inline Query operator| (Query &&query, Term &&term)
+    template<typename Term>
+    friend inline Query operator|(Query &&query, Term &&term)
     {
         query.addTerm(term);
         return std::move(query);
     }
 
 private:
-    QueryPrivate* d;
+    QueryPrivate *d;
 };
 
-template <typename Term>
-inline Query operator| (Terms::Select selection, Term &&term)
+template<typename Term>
+inline Query operator|(Terms::Select selection, Term &&term)
 {
     return Query(selection) | term;
 }
-
 
 } // namespace Stats
 } // namespace KActivities
@@ -205,4 +203,3 @@ KACTIVITIESSTATS_EXPORT
 QDebug operator<<(QDebug dbg, const KActivities::Stats::Query &query);
 
 #endif // KACTIVITIES_STATS_QUERY_H
-

@@ -6,43 +6,42 @@
 
 #include "Database.h"
 
-#include <utils/d_ptr_implementation.h>
 #include <common/database/schema/ResourcesDatabaseSchema.h>
+#include <utils/d_ptr_implementation.h>
 
-#include <QSqlDatabase>
-#include <QSqlField>
-#include <QSqlError>
-#include <QSqlDriver>
-#include <QThread>
 #include <QDebug>
+#include <QSqlDatabase>
+#include <QSqlDriver>
+#include <QSqlError>
+#include <QSqlField>
+#include <QThread>
 
-#include <mutex>
 #include <map>
+#include <mutex>
 
 #include "kactivities-stats-logsettings.h"
 
-namespace Common {
+namespace Common
+{
+namespace
+{
+std::mutex databases_mutex;
 
-namespace {
-    std::mutex databases_mutex;
+struct DatabaseInfo {
+    Qt::HANDLE thread;
+    Database::OpenMode openMode;
+};
 
-    struct DatabaseInfo {
-        Qt::HANDLE thread;
-        Database::OpenMode openMode;
-    };
-
-    bool operator<(const DatabaseInfo &left, const DatabaseInfo &right)
-    {
-        return
-            left.thread < right.thread     ? true  :
-            left.thread > right.thread     ? false :
-            left.openMode < right.openMode;
-    }
-
-    std::map<DatabaseInfo, std::weak_ptr<Database>> databases;
+bool operator<(const DatabaseInfo &left, const DatabaseInfo &right)
+{
+    return left.thread < right.thread ? true : left.thread > right.thread ? false : left.openMode < right.openMode;
 }
 
-class QSqlDatabaseWrapper {
+std::map<DatabaseInfo, std::weak_ptr<Database>> databases;
+}
+
+class QSqlDatabaseWrapper
+{
 private:
     QSqlDatabase m_database;
     bool m_open;
@@ -52,17 +51,14 @@ public:
     QSqlDatabaseWrapper(const DatabaseInfo &info)
         : m_open(false)
     {
-        m_connectionName =
-                QStringLiteral("kactivities_db_resources_")
-                    // Adding the thread number to the database name
-                    + QString::number((quintptr)info.thread)
-                    // And whether it is read-only or read-write
-                    + (info.openMode == Database::ReadOnly ? QStringLiteral("_readonly") : QStringLiteral("_readwrite"));
+        m_connectionName = QStringLiteral("kactivities_db_resources_")
+            // Adding the thread number to the database name
+            + QString::number((quintptr)info.thread)
+            // And whether it is read-only or read-write
+            + (info.openMode == Database::ReadOnly ? QStringLiteral("_readonly") : QStringLiteral("_readwrite"));
 
-        m_database =
-            QSqlDatabase::contains(m_connectionName)
-                ? QSqlDatabase::database(m_connectionName)
-                : QSqlDatabase::addDatabase(QStringLiteral("QSQLITE"), m_connectionName);
+        m_database = QSqlDatabase::contains(m_connectionName) ? QSqlDatabase::database(m_connectionName)
+                                                              : QSqlDatabase::addDatabase(QStringLiteral("QSQLITE"), m_connectionName);
 
         if (info.openMode == Database::ReadOnly) {
             m_database.setConnectOptions(QStringLiteral("QSQLITE_OPEN_READONLY"));
@@ -74,10 +70,8 @@ public:
         m_open = m_database.open();
 
         if (!m_open) {
-            qCWarning(KACTIVITIES_STATS_LOG) << "KActivities: Database is not open: "
-                       << m_database.connectionName()
-                       << m_database.databaseName()
-                       << m_database.lastError();
+            qCWarning(KACTIVITIES_STATS_LOG) << "KActivities: Database is not open: " << m_database.connectionName() << m_database.databaseName()
+                                             << m_database.lastError();
 
             if (info.openMode == Database::ReadWrite) {
                 qFatal("KActivities: Opening the database in RW mode should always succeed");
@@ -106,7 +100,8 @@ public:
     }
 };
 
-class Database::Private {
+class Database::Private
+{
 public:
     Private()
     {
@@ -144,7 +139,7 @@ Database::Ptr Database::instance(Source source, OpenMode openMode)
 
     // We are saving instances per thread and per read/write mode
     DatabaseInfo info;
-    info.thread   = QThread::currentThreadId();
+    info.thread = QThread::currentThreadId();
     info.openMode = openMode;
 
     // Do we have an instance matching the request?
@@ -185,8 +180,8 @@ Database::Ptr Database::instance(Source source, OpenMode openMode)
 
     if (walResult != QLatin1String("wal")) {
         qCWarning(KACTIVITIES_STATS_LOG) << "KActivities: Database can not be opened in WAL mode. Check the "
-                 "SQLite version (required >3.7.0). And whether your filesystem "
-                 "supports shared memory";
+                                            "SQLite version (required >3.7.0). And whether your filesystem "
+                                            "supports shared memory";
 
         return nullptr;
     }
@@ -196,11 +191,10 @@ Database::Ptr Database::instance(Source source, OpenMode openMode)
     ptr->setPragma(QStringLiteral("wal_autocheckpoint = 100"));
 
     qCDebug(KACTIVITIES_STATS_LOG) << "KActivities: Database connection: " << ptr->d->database->connectionName()
-        << "\n    query_only:         " << ptr->pragma(QStringLiteral("query_only"))
-        << "\n    journal_mode:       " << ptr->pragma(QStringLiteral("journal_mode"))
-        << "\n    wal_autocheckpoint: " << ptr->pragma(QStringLiteral("wal_autocheckpoint"))
-        << "\n    synchronous:        " << ptr->pragma(QStringLiteral("synchronous"))
-        ;
+                                   << "\n    query_only:         " << ptr->pragma(QStringLiteral("query_only"))
+                                   << "\n    journal_mode:       " << ptr->pragma(QStringLiteral("journal_mode"))
+                                   << "\n    wal_autocheckpoint: " << ptr->pragma(QStringLiteral("wal_autocheckpoint"))
+                                   << "\n    synchronous:        " << ptr->pragma(QStringLiteral("synchronous"));
 
     return ptr;
 }
@@ -227,7 +221,7 @@ QSqlQuery Database::execQueries(const QStringList &queries) const
 {
     QSqlQuery result;
 
-    for (const auto &query: queries) {
+    for (const auto &query : queries) {
         result = execQuery(query);
     }
 
@@ -251,4 +245,3 @@ QVariant Database::value(const QString &query) const
 }
 
 } // namespace Common
-

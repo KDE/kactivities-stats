@@ -8,45 +8,44 @@
 
 #include <QCoreApplication>
 
-namespace ActivitiesSync {
-    typedef std::shared_ptr<KActivities::Consumer> ConsumerPtr;
+namespace ActivitiesSync
+{
+typedef std::shared_ptr<KActivities::Consumer> ConsumerPtr;
 
-    ConsumerPtr instance()
-    {
-        static std::mutex s_instanceMutex;
-        static std::weak_ptr<KActivities::Consumer> s_instance;
+ConsumerPtr instance()
+{
+    static std::mutex s_instanceMutex;
+    static std::weak_ptr<KActivities::Consumer> s_instance;
 
-        std::unique_lock<std::mutex> locker;
+    std::unique_lock<std::mutex> locker;
 
-        auto ptr = s_instance.lock();
+    auto ptr = s_instance.lock();
 
-        if (!ptr) {
-            ptr = std::make_shared<KActivities::Consumer>();
-            s_instance = ptr;
-        }
-
-        return ptr;
-
+    if (!ptr) {
+        ptr = std::make_shared<KActivities::Consumer>();
+        s_instance = ptr;
     }
 
-    QString currentActivity(ConsumerPtr &activities)
-    {
-        // We need to get the current activity synchonously,
-        // this means waiting for the service to be available.
-        // It should not introduce blockages since there usually
-        // is a global activity cache in applications that care
-        // about activities.
+    return ptr;
+}
 
-        if (!activities) {
-            activities = instance();
-        }
+QString currentActivity(ConsumerPtr &activities)
+{
+    // We need to get the current activity synchonously,
+    // this means waiting for the service to be available.
+    // It should not introduce blockages since there usually
+    // is a global activity cache in applications that care
+    // about activities.
 
-        while (activities->serviceStatus() == KActivities::Consumer::Unknown) {
-            QCoreApplication::instance()->processEvents();
-        }
-
-        return activities->currentActivity();
+    if (!activities) {
+        activities = instance();
     }
+
+    while (activities->serviceStatus() == KActivities::Consumer::Unknown) {
+        QCoreApplication::instance()->processEvents();
+    }
+
+    return activities->currentActivity();
+}
 
 } // namespace ActivitiesSync
-

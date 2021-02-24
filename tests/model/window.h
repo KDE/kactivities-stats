@@ -8,24 +8,28 @@
 
 #include <QMainWindow>
 
-#include <resultset.h>
 #include <resultmodel.h>
+#include <resultset.h>
 
 #include <memory>
 
 class QAbstractItemModelTester;
-namespace Ui {
-    class MainWindow;
+namespace Ui
+{
+class MainWindow;
 }
 
-namespace KActivities {
-    class Consumer;
-namespace Stats {
-    class ResultModel;
+namespace KActivities
+{
+class Consumer;
+namespace Stats
+{
+class ResultModel;
 }
 }
 
-class Window: public QMainWindow {
+class Window : public QMainWindow
+{
     Q_OBJECT
 
 public:
@@ -47,4 +51,3 @@ private:
 
     QMap<QString, KActivities::Stats::Query> presets;
 };
-

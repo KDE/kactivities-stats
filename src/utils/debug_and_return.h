@@ -11,11 +11,13 @@
 #include <QDebug>
 #endif
 
-namespace kamd {
-namespace utils {
-
+namespace kamd
+{
+namespace utils
+{
 template<typename T>
-T debug_and_return(bool debug, const char * message, T && value) {
+T debug_and_return(bool debug, const char *message, T &&value)
+{
     if (debug) {
         qDebug().noquote() << message << " " << value;
     }
@@ -27,4 +29,3 @@ T debug_and_return(bool debug, const char * message, T && value) {
 } // namespace kamd
 
 #endif // DEBUG_AND_RETURN_H
-

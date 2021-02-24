@@ -11,32 +11,31 @@
 
 #include "common.h"
 
-namespace ResourceLink {
-    struct Item {
-        QString usedActivity;
-        QString initiatingAgent;
-        QString targettedResource;
+namespace ResourceLink
+{
+struct Item {
+    QString usedActivity;
+    QString initiatingAgent;
+    QString targettedResource;
 
-        inline std::tuple<const QString &, const QString &, const QString &>
-        primaryKey() const
-        {
-            return std::tie(targettedResource, usedActivity, initiatingAgent);
-        }
-    };
-
-    DECL_COLUMN(QString, usedActivity)
-    DECL_COLUMN(QString, initiatingAgent)
-    DECL_COLUMN(QString, targettedResource)
-
-    template <typename Range>
-    inline std::vector<Item> groupByResource(const Range &range)
+    inline std::tuple<const QString &, const QString &, const QString &> primaryKey() const
     {
-        return groupBy(range, &Item::targettedResource,
-                       [](Item &acc, const Item &item) {
-                           acc.usedActivity += item.usedActivity + QLatin1Char(' ');
-                           acc.initiatingAgent += item.initiatingAgent + QLatin1Char(' ');
-                       });
+        return std::tie(targettedResource, usedActivity, initiatingAgent);
     }
+};
+
+DECL_COLUMN(QString, usedActivity)
+DECL_COLUMN(QString, initiatingAgent)
+DECL_COLUMN(QString, targettedResource)
+
+template<typename Range>
+inline std::vector<Item> groupByResource(const Range &range)
+{
+    return groupBy(range, &Item::targettedResource, [](Item &acc, const Item &item) {
+        acc.usedActivity += item.usedActivity + QLatin1Char(' ');
+        acc.initiatingAgent += item.initiatingAgent + QLatin1Char(' ');
+    });
+}
 
 } // namespace ResourceLink
 

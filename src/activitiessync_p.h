@@ -12,13 +12,12 @@
 
 #include <KActivities/Consumer>
 
-namespace ActivitiesSync {
+namespace ActivitiesSync
+{
+typedef std::shared_ptr<KActivities::Consumer> ConsumerPtr;
 
-    typedef std::shared_ptr<KActivities::Consumer> ConsumerPtr;
-
-    QString currentActivity(ConsumerPtr &activities);
+QString currentActivity(ConsumerPtr &activities);
 
 } // namespace ActivitiesSync
 
 #endif // ACTIVITIES_SYNC_P_H
-

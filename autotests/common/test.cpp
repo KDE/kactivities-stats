@@ -14,18 +14,14 @@
 Test::Test(QObject *parent)
     : QObject(parent)
 {
-
 }
 
 bool Test::inEmptySession()
 {
-    const QStringList services =
-        QDBusConnection::sessionBus().interface()->registeredServiceNames();
+    const QStringList services = QDBusConnection::sessionBus().interface()->registeredServiceNames();
 
-    for (const QString & service : services) {
-        bool kdeServiceAndNotKAMD =
-            service.startsWith(QStringLiteral("org.kde")) &&
-            service != KAMD_DBUS_SERVICE;
+    for (const QString &service : services) {
+        bool kdeServiceAndNotKAMD = service.startsWith(QStringLiteral("org.kde")) && service != KAMD_DBUS_SERVICE;
 
         if (kdeServiceAndNotKAMD) {
             return false;
@@ -37,7 +33,5 @@ bool Test::inEmptySession()
 
 bool Test::isActivityManagerRunning()
 {
-    return QDBusConnection::sessionBus().interface()->isServiceRegistered(
-        KAMD_DBUS_SERVICE);
+    return QDBusConnection::sessionBus().interface()->isServiceRegistered(KAMD_DBUS_SERVICE);
 }
-

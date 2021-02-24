@@ -11,24 +11,23 @@
 
 #include "common.h"
 
-namespace ResourceInfo {
-    struct Item {
-        QString targettedResource;
-        QString title;
-        QString mimetype;
+namespace ResourceInfo
+{
+struct Item {
+    QString targettedResource;
+    QString title;
+    QString mimetype;
 
-        const QString &primaryKey() const
-        {
-            return targettedResource;
-        }
+    const QString &primaryKey() const
+    {
+        return targettedResource;
+    }
+};
 
-    };
-
-    DECL_COLUMN(QString, targettedResource)
-    DECL_COLUMN(QString, title)
-    DECL_COLUMN(QString, mimetype)
+DECL_COLUMN(QString, targettedResource)
+DECL_COLUMN(QString, title)
+DECL_COLUMN(QString, mimetype)
 
 }
 
 #endif // RESOURCEINFO_TABLE_H
-

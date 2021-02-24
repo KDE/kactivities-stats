@@ -9,43 +9,49 @@
 
 #include <QDebug>
 
-namespace KActivities {
-namespace Stats {
-
+namespace KActivities
+{
+namespace Stats
+{
 // Term classes
-#define IMPLEMENT_TERM_CONSTRUCTORS(TYPE)                     \
-    Terms::TYPE::TYPE(QStringList values)                     \
-        : values(values)                                      \
-    {}                                                        \
-                                                              \
-    Terms::TYPE::TYPE(QString value)                          \
-        : values(QStringList() << value)                      \
-    {}
+#define IMPLEMENT_TERM_CONSTRUCTORS(TYPE)                                                                                                                      \
+    Terms::TYPE::TYPE(QStringList values)                                                                                                                      \
+        : values(values)                                                                                                                                       \
+    {                                                                                                                                                          \
+    }                                                                                                                                                          \
+                                                                                                                                                               \
+    Terms::TYPE::TYPE(QString value)                                                                                                                           \
+        : values(QStringList() << value)                                                                                                                       \
+    {                                                                                                                                                          \
+    }
 
-#define IMPLEMENT_SPECIAL_TERM_VALUE(TYPE, VALUE_NAME, VALUE) \
-    Terms::TYPE Terms::TYPE::VALUE_NAME()                     \
-    {                                                         \
-        return Terms::TYPE(VALUE);                            \
+#define IMPLEMENT_SPECIAL_TERM_VALUE(TYPE, VALUE_NAME, VALUE)                                                                                                  \
+    Terms::TYPE Terms::TYPE::VALUE_NAME()                                                                                                                      \
+    {                                                                                                                                                          \
+        return Terms::TYPE(VALUE);                                                                                                                             \
     }
 
 IMPLEMENT_TERM_CONSTRUCTORS(Type)
-IMPLEMENT_SPECIAL_TERM_VALUE(Type, any,         ANY_TYPE_TAG)
-IMPLEMENT_SPECIAL_TERM_VALUE(Type, files,       FILES_TYPE_TAG)
+IMPLEMENT_SPECIAL_TERM_VALUE(Type, any, ANY_TYPE_TAG)
+IMPLEMENT_SPECIAL_TERM_VALUE(Type, files, FILES_TYPE_TAG)
 IMPLEMENT_SPECIAL_TERM_VALUE(Type, directories, DIRECTORIES_TYPE_TAG)
 
 IMPLEMENT_TERM_CONSTRUCTORS(Agent)
-IMPLEMENT_SPECIAL_TERM_VALUE(Agent, any,     ANY_AGENT_TAG)
-IMPLEMENT_SPECIAL_TERM_VALUE(Agent, global,  GLOBAL_AGENT_TAG)
+IMPLEMENT_SPECIAL_TERM_VALUE(Agent, any, ANY_AGENT_TAG)
+IMPLEMENT_SPECIAL_TERM_VALUE(Agent, global, GLOBAL_AGENT_TAG)
 IMPLEMENT_SPECIAL_TERM_VALUE(Agent, current, CURRENT_AGENT_TAG)
 
 IMPLEMENT_TERM_CONSTRUCTORS(Activity)
-IMPLEMENT_SPECIAL_TERM_VALUE(Activity, any,     ANY_ACTIVITY_TAG)
-IMPLEMENT_SPECIAL_TERM_VALUE(Activity, global,  GLOBAL_ACTIVITY_TAG)
+IMPLEMENT_SPECIAL_TERM_VALUE(Activity, any, ANY_ACTIVITY_TAG)
+IMPLEMENT_SPECIAL_TERM_VALUE(Activity, global, GLOBAL_ACTIVITY_TAG)
 IMPLEMENT_SPECIAL_TERM_VALUE(Activity, current, CURRENT_ACTIVITY_TAG)
 
 IMPLEMENT_TERM_CONSTRUCTORS(Url)
 IMPLEMENT_SPECIAL_TERM_VALUE(Url, localFile, QStringLiteral("/*"))
-IMPLEMENT_SPECIAL_TERM_VALUE(Url, file, QStringList() << QStringLiteral("/*") << QStringLiteral("smb:*") << QStringLiteral("fish:*") << QStringLiteral("sftp:*") << QStringLiteral("ftp:*"))
+IMPLEMENT_SPECIAL_TERM_VALUE(Url,
+                             file,
+                             QStringList() << QStringLiteral("/*") << QStringLiteral("smb:*") << QStringLiteral("fish:*") << QStringLiteral("sftp:*")
+                                           << QStringLiteral("ftp:*"))
 
 #undef IMPLEMENT_TERM_CONSTRUCTORS
 #undef IMPLEMENT_SPECIAL_TERM_VALUE
@@ -71,7 +77,8 @@ Terms::Date::Date(QDate value)
 }
 
 Terms::Date::Date(QDate start, QDate end)
-    : start(start), end(end)
+    : start(start)
+    , end(end)
 {
 }
 
@@ -129,32 +136,29 @@ Terms::Url Terms::Url::contains(const QString &infix)
 
 namespace KAStats = KActivities::Stats;
 
-#define QDEBUG_TERM_OUT(TYPE, OUT)                               \
-    QDebug operator<<(QDebug dbg, const KAStats::Terms::TYPE &_) \
-    {                                                            \
-        using namespace KAStats::Terms;                          \
-        dbg.nospace() << #TYPE << ": " << (OUT);                 \
-        return dbg;                                              \
+#define QDEBUG_TERM_OUT(TYPE, OUT)                                                                                                                             \
+    QDebug operator<<(QDebug dbg, const KAStats::Terms::TYPE &_)                                                                                               \
+    {                                                                                                                                                          \
+        using namespace KAStats::Terms;                                                                                                                        \
+        dbg.nospace() << #TYPE << ": " << (OUT);                                                                                                               \
+        return dbg;                                                                                                                                            \
     }
 
-QDEBUG_TERM_OUT(Order,    _ == HighScoredFirst      ? "HighScore"       :
-                          _ == RecentlyUsedFirst    ? "RecentlyUsed"    :
-                          _ == RecentlyCreatedFirst ? "RecentlyCreated" :
-                                                      "Alphabetical"    )
+QDEBUG_TERM_OUT(Order,
+                _ == HighScoredFirst            ? "HighScore"
+                    : _ == RecentlyUsedFirst    ? "RecentlyUsed"
+                    : _ == RecentlyCreatedFirst ? "RecentlyCreated"
+                                                : "Alphabetical")
 
-QDEBUG_TERM_OUT(Select,   _ == LinkedResources ? "LinkedResources" :
-                          _ == UsedResources   ? "UsedResources"   :
-                                                 "AllResources"    )
+QDEBUG_TERM_OUT(Select, _ == LinkedResources ? "LinkedResources" : _ == UsedResources ? "UsedResources" : "AllResources")
 
-QDEBUG_TERM_OUT(Type,     _.values)
-QDEBUG_TERM_OUT(Agent,    _.values)
+QDEBUG_TERM_OUT(Type, _.values)
+QDEBUG_TERM_OUT(Agent, _.values)
 QDEBUG_TERM_OUT(Activity, _.values)
-QDEBUG_TERM_OUT(Url,      _.values)
+QDEBUG_TERM_OUT(Url, _.values)
 
-QDEBUG_TERM_OUT(Limit,    _.value)
-QDEBUG_TERM_OUT(Offset,   _.value)
-QDEBUG_TERM_OUT(Date,     _.end.isNull() ? _.start.toString(Qt::ISODate) :
-                          _.start.toString(Qt::ISODate) + QStringLiteral(",") + _.end.toString(Qt::ISODate))
+QDEBUG_TERM_OUT(Limit, _.value)
+QDEBUG_TERM_OUT(Offset, _.value)
+QDEBUG_TERM_OUT(Date, _.end.isNull() ? _.start.toString(Qt::ISODate) : _.start.toString(Qt::ISODate) + QStringLiteral(",") + _.end.toString(Qt::ISODate))
 
 #undef QDEBUG_TERM_OUT
-

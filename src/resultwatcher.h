@@ -12,9 +12,10 @@
 #include "query.h"
 #include "resultset.h"
 
-namespace KActivities {
-namespace Stats {
-
+namespace KActivities
+{
+namespace Stats
+{
 class ResultWatcherPrivate;
 
 /**
@@ -23,7 +24,8 @@ class ResultWatcherPrivate;
  * A very thin class that sends signals when new resources matching
  * a predefined query are available.
  */
-class KACTIVITIESSTATS_EXPORT ResultWatcher: public QObject {
+class KACTIVITIESSTATS_EXPORT ResultWatcher : public QObject
+{
     Q_OBJECT
 
 public:
@@ -37,8 +39,7 @@ Q_SIGNALS:
      * a previously existing one has some of the attributes changed.
      * @param result new data for the resource defined by result.resource
      */
-    void resultScoreUpdated(const QString &resource, double score,
-                            uint lastUpdate, uint firstUpdate);
+    void resultScoreUpdated(const QString &resource, double score, uint lastUpdate, uint firstUpdate);
 
     /**
      * Emitted when a result has been added or updated. This either means
@@ -89,25 +90,18 @@ Q_SIGNALS:
 
 public:
     void linkToActivity(const QUrl &resource,
-                        const Terms::Activity &activity
-                            = Terms::Activity(QStringList()),
-                        const Terms::Agent &agent
-                            = Terms::Agent(QStringList()));
+                        const Terms::Activity &activity = Terms::Activity(QStringList()),
+                        const Terms::Agent &agent = Terms::Agent(QStringList()));
 
     void unlinkFromActivity(const QUrl &resource,
-                            const Terms::Activity &activity
-                                = Terms::Activity(QStringList()),
-                            const Terms::Agent &agent
-                                = Terms::Agent(QStringList()));
-
+                            const Terms::Activity &activity = Terms::Activity(QStringList()),
+                            const Terms::Agent &agent = Terms::Agent(QStringList()));
 
 private:
     ResultWatcherPrivate *const d;
-
 };
 
 } // namespace Stats
 } // namespace KActivities
 
 #endif // KACTIVITIES_STATS_RESULTWATCHER
-

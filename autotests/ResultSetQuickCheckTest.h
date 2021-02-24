@@ -12,17 +12,18 @@
 #include <KActivities/Controller>
 #include <memory>
 
-#include <set>
-#include <boost/container/flat_set.hpp>
 #include <QScopedPointer>
+#include <boost/container/flat_set.hpp>
+#include <set>
 
-#include "quickcheck/tables/ResourceScoreCache.h"
 #include "quickcheck/tables/ResourceInfo.h"
 #include "quickcheck/tables/ResourceLink.h"
+#include "quickcheck/tables/ResourceScoreCache.h"
 
 using boost::container::flat_set;
 
-class ResultSetQuickCheckTest : public Test {
+class ResultSetQuickCheckTest : public Test
+{
     Q_OBJECT
 public:
     ResultSetQuickCheckTest(QObject *parent = nullptr);
@@ -41,17 +42,16 @@ public:
     QScopedPointer<KActivities::Consumer> activities;
 
     struct PrimaryKeyOrder {
-        template <typename T>
-        bool operator() (const T &left,
-                         const T &right) const
+        template<typename T>
+        bool operator()(const T &left, const T &right) const
         {
             return left.primaryKey() < right.primaryKey();
         }
     };
 
     TABLE(ResourceScoreCache) resourceScoreCaches;
-    TABLE(ResourceInfo)       resourceInfos;
-    TABLE(ResourceLink)       resourceLinks;
+    TABLE(ResourceInfo) resourceInfos;
+    TABLE(ResourceLink) resourceLinks;
 
     QString randItem(const QStringList &choices) const;
 
@@ -71,9 +71,6 @@ public:
 
     void pushToDatabase();
     void pullFromDatabase();
-
 };
 
-
 #endif /* RESULTSET_QUICKCHECK_TEST_H */
-
