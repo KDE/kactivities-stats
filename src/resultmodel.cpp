@@ -8,44 +8,42 @@
 #include "resultmodel.h"
 
 // Qt
-#include <QCoreApplication>
-#include <QDateTime>
 #include <QDebug>
+#include <QDateTime>
+#include <QCoreApplication>
 #include <QFile>
 
 // STL and Boost
-#include <boost/range/algorithm/count_if.hpp>
-#include <boost/range/algorithm/find_if.hpp>
 #include <functional>
+#include <boost/range/algorithm/find_if.hpp>
+#include <boost/range/algorithm/count_if.hpp>
 
 // KDE
-#include <KConfigGroup>
 #include <KSharedConfig>
+#include <KConfigGroup>
 
 // Local
-#include "cleaning.h"
-#include "kactivities-stats-logsettings.h"
-#include "kactivities/consumer.h"
-#include "resultset.h"
-#include "resultwatcher.h"
 #include <common/database/Database.h>
-#include <utils/member_matcher.h>
 #include <utils/qsqlquery_iterator.h>
 #include <utils/slide.h>
+#include <utils/member_matcher.h>
+#include "resultset.h"
+#include "resultwatcher.h"
+#include "cleaning.h"
+#include "kactivities/consumer.h"
+#include "kactivities-stats-logsettings.h"
 
 #include <common/specialvalues.h>
 
 #define MAX_CHUNK_LOAD_SIZE 50
 #define MAX_RELOAD_CACHE_SIZE 50
 
-#define QDBG qCDebug(KACTIVITIES_STATS_LOG) << "KActivitiesStats(" << (void *)this << ")"
+#define QDBG qCDebug(KACTIVITIES_STATS_LOG) << "KActivitiesStats(" << (void*)this << ")"
 
-namespace KActivities
-{
-namespace Stats
-{
-class ResultModelPrivate
-{
+namespace KActivities {
+namespace Stats {
+
+class ResultModelPrivate {
 public:
     ResultModelPrivate(Query query, const QString &clientId, ResultModel *parent)
         : cache(this, clientId, query.limit())
@@ -65,13 +63,12 @@ public:
     }
 
     enum Fetch {
-        FetchReset, // Remove old data and reload
-        FetchReload, // Update all data
-        FetchMore, // Load more data if there is any
+        FetchReset,   // Remove old data and reload
+        FetchReload,  // Update all data
+        FetchMore,     // Load more data if there is any
     };
 
-    class Cache
-    { //_
+    class Cache { //_
     public:
         typedef QList<ResultSet::Result> Items;
 
@@ -94,7 +91,8 @@ public:
             return m_items.size();
         }
 
-        inline void setLinkedResultPosition(const QString &resourcePath, int position)
+        inline void setLinkedResultPosition(const QString &resourcePath,
+                                            int position)
         {
             if (!m_orderingConfig.isValid()) {
                 qCWarning(KACTIVITIES_STATS_LOG) << "We can not reorder the results, no clientId was specified";
@@ -126,8 +124,7 @@ public:
             QStringList linkedItems;
 
             for (const ResultSet::Result &item : qAsConst(m_items)) {
-                if (item.linkStatus() == ResultSet::Result::NotLinked)
-                    break;
+                if (item.linkStatus() == ResultSet::Result::NotLinked) break;
                 linkedItems << item.resource();
             }
 
@@ -135,7 +132,9 @@ public:
             //  - we are planning to add an item to the desired position,
             //    but the item is not yet in the model
             //  - we want to move an existing item
-            if (!resourcePosition || resourcePosition.iterator->linkStatus() == ResultSet::Result::NotLinked) {
+            if (!resourcePosition
+                    || resourcePosition.iterator->linkStatus() == ResultSet::Result::NotLinked) {
+
                 linkedItems.insert(position, resourcePath);
 
                 m_fixedOrderedItems = linkedItems;
@@ -152,21 +151,24 @@ public:
 
                 const auto oldLinkedItems = linkedItems;
 
-                kamd::utils::move_one(linkedItems.begin() + oldPosition, linkedItems.begin() + position);
+                kamd::utils::move_one(
+                        linkedItems.begin() + oldPosition,
+                        linkedItems.begin() + position);
 
                 // When we change this, the cache is not valid anymore,
                 // destinationFor will fail and we can not use it
                 m_fixedOrderedItems = linkedItems;
 
                 // We are prepared to reorder the cache
-                d->repositionResult(resourcePosition, d->destinationFor(*resourcePosition));
+                d->repositionResult(resourcePosition,
+                                    d->destinationFor(*resourcePosition));
             }
 
             m_orderingConfig.writeEntry("kactivitiesLinkedItemsOrder", m_fixedOrderedItems);
             m_orderingConfig.sync();
 
             // We need to notify others to reload
-            for (const auto &other : s_privates) {
+            for (const auto& other: s_privates) {
                 if (other != d && other->cache.m_clientId == m_clientId) {
                     other->fetch(FetchReset);
                 }
@@ -175,7 +177,7 @@ public:
 
         inline void debug() const
         {
-            for (const auto &item : m_items) {
+            for (const auto& item: m_items) {
                 qCDebug(KACTIVITIES_STATS_LOG) << "Item: " << item;
             }
         }
@@ -187,15 +189,19 @@ public:
                 return;
             }
 
-            m_orderingConfig = KConfigGroup(m_configFile, QStringLiteral("ResultModel-OrderingFor-") + m_clientId + activityTag);
+            m_orderingConfig =
+                KConfigGroup(m_configFile,
+                             QStringLiteral("ResultModel-OrderingFor-") + m_clientId + activityTag);
 
             if (m_orderingConfig.hasKey("kactivitiesLinkedItemsOrder")) {
                 // If we have the ordering defined, use it
-                m_fixedOrderedItems = m_orderingConfig.readEntry("kactivitiesLinkedItemsOrder", QStringList());
+                m_fixedOrderedItems = m_orderingConfig.readEntry("kactivitiesLinkedItemsOrder",
+                                                                 QStringList());
             } else {
                 // Otherwise, copy the order from the previous activity to this one
                 m_orderingConfig.writeEntry("kactivitiesLinkedItemsOrder", m_fixedOrderedItems);
                 m_orderingConfig.sync();
+
             }
         }
 
@@ -210,9 +216,9 @@ public:
         KConfigGroup m_orderingConfig;
         QStringList m_fixedOrderedItems;
 
-        friend QDebug operator<<(QDebug out, const Cache &cache)
+        friend QDebug operator<< (QDebug out, const Cache &cache)
         {
-            for (const auto &item : cache.m_items) {
+            for (const auto& item: cache.m_items) {
                 out << "Cache item: " << item << "\n";
             }
 
@@ -259,18 +265,22 @@ public:
             using namespace kamd::utils::member_matcher;
             using boost::find_if;
 
-            return FindCacheResult(this, find_if(m_items, member(&ResultSet::Result::resource) == resource));
+            return FindCacheResult(
+                this, find_if(m_items, member(&ResultSet::Result::resource)
+                                           == resource));
         }
 
-        template<typename Predicate>
+        template <typename Predicate>
         inline FindCacheResult lowerBoundWithSkippedResource(Predicate &&lessThanPredicate)
         {
             using namespace kamd::utils::member_matcher;
-            const int count = boost::count_if(m_items, [&](const ResultSet::Result &result) {
-                return lessThanPredicate(result, _);
-            });
+            const int count = boost::count_if(m_items,
+                    [&] (const ResultSet::Result &result) {
+                        return lessThanPredicate(result, _);
+                    });
 
             return FindCacheResult(this, m_items.begin() + count);
+
 
             // using namespace kamd::utils::member_matcher;
             //
@@ -299,7 +309,8 @@ public:
         }
         //^
 
-        inline void insertAt(const FindCacheResult &at, const ResultSet::Result &result)
+        inline void insertAt(const FindCacheResult &at,
+                             const ResultSet::Result &result)
         {
             m_items.insert(at.iterator, result);
         }
@@ -309,15 +320,14 @@ public:
             m_items.removeAt(at.index);
         }
 
-        inline const ResultSet::Result &operator[](int index) const
+        inline const ResultSet::Result &operator[] (int index) const
         {
             return m_items[index];
         }
 
         inline void clear()
         {
-            if (m_items.size() == 0)
-                return;
+            if (m_items.size() == 0) return;
 
             d->q->beginRemoveRows(QModelIndex(), 0, m_items.size() - 1);
             m_items.clear();
@@ -344,6 +354,7 @@ public:
             }
             QDBG << "}";
 #endif
+
 
             // Based on 'The string to string correction problem
             // with block moves' paper by Walter F. Tichy
@@ -380,10 +391,12 @@ public:
             // in the case where somebody called this with too much new items.
             const int maxToReplace = m_countLimit - from;
 
-            if (maxToReplace <= 0)
-                return;
+            if (maxToReplace <= 0) return;
 
-            const auto newItemsEnd = newItems.size() <= maxToReplace ? newItems.cend() : newItems.cbegin() + maxToReplace;
+            const auto newItemsEnd =
+                newItems.size() <= maxToReplace ? newItems.cend() :
+                                                  newItems.cbegin() + maxToReplace;
+
 
             // Finding the blocks until we reach the end of the newItems list
             //
@@ -398,16 +411,20 @@ public:
             //                      processed (with 'from' offset)
 
             while (newBlockStart != newItemsEnd) {
-                const int newBlockStartIndex = from + std::distance(newItems.cbegin(), newBlockStart);
 
-                const auto oldBlockStart =
-                    std::find_if(m_items.begin() + from, m_items.end(), member(&ResultSet::Result::resource) == newBlockStart->resource());
+                const int newBlockStartIndex
+                    = from + std::distance(newItems.cbegin(), newBlockStart);
+
+                const auto oldBlockStart = std::find_if(
+                    m_items.begin() + from, m_items.end(),
+                    member(&ResultSet::Result::resource) == newBlockStart->resource());
 
                 if (oldBlockStart == m_items.end()) {
                     // This item was not found in the old cache, so we are
                     // inserting a new item at the same position it had in
                     // the newItems array
-                    d->q->beginInsertRows(QModelIndex(), newBlockStartIndex, newBlockStartIndex);
+                    d->q->beginInsertRows(QModelIndex(), newBlockStartIndex,
+                                          newBlockStartIndex);
 
                     m_items.insert(newBlockStartIndex, *newBlockStart);
                     d->q->endInsertRows();
@@ -424,16 +441,20 @@ public:
                     auto newBlockEnd = newBlockStart;
                     auto oldBlockEnd = oldBlockStart;
 
-                    while (newBlockEnd != newItemsEnd && oldBlockEnd != m_items.end() && newBlockEnd->resource() == oldBlockEnd->resource()) {
+                    while (newBlockEnd != newItemsEnd &&
+                           oldBlockEnd != m_items.end() &&
+                           newBlockEnd->resource() == oldBlockEnd->resource()) {
                         ++newBlockEnd;
                         ++oldBlockEnd;
                     }
 
                     // We have found matching blocks
                     // [newBlockStart, newBlockEnd) and [oldBlockStart, newBlockEnd)
-                    const int oldBlockStartIndex = std::distance(m_items.begin() + from, oldBlockStart);
+                    const int oldBlockStartIndex
+                        = std::distance(m_items.begin() + from, oldBlockStart);
 
-                    const int blockSize = std::distance(oldBlockStart, oldBlockEnd);
+                    const int blockSize
+                        = std::distance(oldBlockStart, oldBlockEnd);
 
                     if (oldBlockStartIndex != newBlockStartIndex) {
                         // If these blocks do not have the same start,
@@ -443,10 +464,14 @@ public:
                         // are getting a bad query which has duplicate
                         // results
 
-                        d->q->beginMoveRows(QModelIndex(), oldBlockStartIndex, oldBlockStartIndex + blockSize - 1, QModelIndex(), newBlockStartIndex);
+                        d->q->beginMoveRows(QModelIndex(), oldBlockStartIndex,
+                                            oldBlockStartIndex + blockSize - 1,
+                                            QModelIndex(), newBlockStartIndex);
 
                         // Moving the items from the old location to the new one
-                        kamd::utils::slide(oldBlockStart, oldBlockEnd, m_items.begin() + newBlockStartIndex);
+                        kamd::utils::slide(
+                                oldBlockStart, oldBlockEnd,
+                                m_items.begin() + newBlockStartIndex);
 
                         d->q->endMoveRows();
                     }
@@ -464,7 +489,7 @@ public:
 
             // Check whether we got an item representing a non-existent file,
             // if so, schedule its removal from the database
-            for (const auto &item : newItems) {
+            for (const auto &item: newItems) {
                 if (item.resource().startsWith(QLatin1Char('/')) && !QFile(item.resource()).exists()) {
                     d->q->forgetResource(item.resource());
                 }
@@ -479,8 +504,7 @@ public:
 
         inline void trim(int limit)
         {
-            if (m_items.size() <= limit)
-                return;
+            if (m_items.size() <= limit) return;
 
             // Example:
             //   limit is 5,
@@ -503,10 +527,10 @@ public:
             FullOrdering,
         };
 
-        FixedItemsLessThan(Ordering ordering, const Cache &cache, const QString &matchResource = QString())
-            : cache(cache)
-            , matchResource(matchResource)
-            , ordering(ordering)
+        FixedItemsLessThan(Ordering ordering,
+                           const Cache &cache,
+                           const QString &matchResource = QString())
+            : cache(cache), matchResource(matchResource), ordering(ordering)
         {
         }
 
@@ -514,32 +538,35 @@ public:
         {
             const auto fixedOrderedItems = cache.fixedOrderedItems();
 
-            const auto indexLeft = fixedOrderedItems.indexOf(leftResource);
+            const auto indexLeft  = fixedOrderedItems.indexOf(leftResource);
             const auto indexRight = fixedOrderedItems.indexOf(rightResource);
 
-            const bool hasLeft = indexLeft != -1;
+            const bool hasLeft  = indexLeft != -1;
             const bool hasRight = indexRight != -1;
 
-            return (hasLeft && !hasRight) ? true
-                : (!hasLeft && hasRight)  ? false
-                : (hasLeft && hasRight)   ? indexLeft < indexRight
-                                          : (ordering == PartialOrdering ? false : leftResource < rightResource);
+            /* clang-format off */
+            return
+                ( hasLeft && !hasRight) ? true :
+                (!hasLeft &&  hasRight) ? false :
+                ( hasLeft &&  hasRight) ? indexLeft < indexRight :
+                (ordering == PartialOrdering ? false : leftResource < rightResource);
+            /* clang-format on */
         }
 
-        template<typename T>
-        bool operator()(const T &left, placeholder) const
+        template <typename T>
+        bool operator() (const T &left, placeholder) const
         {
             return lessThan(left.resource(), matchResource);
         }
 
-        template<typename T>
-        bool operator()(placeholder, const T &right) const
+        template <typename T>
+        bool operator() (placeholder, const T &right) const
         {
             return lessThan(matchResource, right.resource());
         }
 
-        template<typename T, typename V>
-        bool operator()(const T &left, const V &right) const
+        template <typename T, typename V>
+        bool operator() (const T &left, const V &right) const
         {
             return lessThan(left.resource(), right.resource());
         }
@@ -555,27 +582,39 @@ public:
         using namespace kamd::utils::member_matcher;
         using namespace Terms;
 
-        const auto resource = result.resource();
-        const auto score = result.score();
+        const auto resource    = result.resource();
+        const auto score       = result.score();
         const auto firstUpdate = result.firstUpdate();
-        const auto lastUpdate = result.lastUpdate();
-        const auto linkStatus = result.linkStatus();
+        const auto lastUpdate  = result.lastUpdate();
+        const auto linkStatus  = result.linkStatus();
 
-#define FIXED_ITEMS_LESS_THAN FixedItemsLessThan(FixedItemsLessThan::PartialOrdering, cache, resource)
-#define ORDER_BY(Field) member(&ResultSet::Result::Field) > Field
-#define ORDER_BY_FULL(Field)                                                                                                                                   \
-    (query.selection() == Terms::AllResources                                                                                                                  \
-         ? cache.lowerBoundWithSkippedResource(FIXED_ITEMS_LESS_THAN && ORDER_BY(linkStatus) && ORDER_BY(Field) && ORDER_BY(resource))                         \
-         : cache.lowerBoundWithSkippedResource(FIXED_ITEMS_LESS_THAN && ORDER_BY(Field) && ORDER_BY(resource)))
+        /* clang-format off */
+        #define FIXED_ITEMS_LESS_THAN FixedItemsLessThan(FixedItemsLessThan::PartialOrdering, cache, resource)
+        #define ORDER_BY(Field) member(&ResultSet::Result::Field) > Field
+        #define ORDER_BY_FULL(Field)                                           \
+            (query.selection() == Terms::AllResources ?                        \
+                cache.lowerBoundWithSkippedResource(                           \
+                                 FIXED_ITEMS_LESS_THAN                         \
+                                 && ORDER_BY(linkStatus)                       \
+                                 && ORDER_BY(Field)                            \
+                                 && ORDER_BY(resource)) :                      \
+                cache.lowerBoundWithSkippedResource(                           \
+                                 FIXED_ITEMS_LESS_THAN                         \
+                                 && ORDER_BY(Field)                            \
+                                 && ORDER_BY(resource))                        \
+            )
 
-        const auto destination = query.ordering() == HighScoredFirst ? ORDER_BY_FULL(score)
-            : query.ordering() == RecentlyUsedFirst                  ? ORDER_BY_FULL(lastUpdate)
-            : query.ordering() == RecentlyCreatedFirst               ? ORDER_BY_FULL(firstUpdate)
-                                                                     :
-                                                       /* otherwise */ ORDER_BY_FULL(resource);
-#undef ORDER_BY
-#undef ORDER_BY_FULL
-#undef FIXED_ITEMS_LESS_THAN
+        const auto destination =
+            query.ordering() == HighScoredFirst      ? ORDER_BY_FULL(score):
+            query.ordering() == RecentlyUsedFirst    ? ORDER_BY_FULL(lastUpdate):
+            query.ordering() == RecentlyCreatedFirst ? ORDER_BY_FULL(firstUpdate):
+            /* otherwise */                            ORDER_BY_FULL(resource)
+            ;
+        #undef ORDER_BY
+        #undef ORDER_BY_FULL
+        #undef FIXED_ITEMS_LESS_THAN
+
+        /* clang-format on */
 
         return destination;
     }
@@ -591,7 +630,8 @@ public:
         }
     }
 
-    inline void repositionResult(const Cache::FindCacheResult &result, const Cache::FindCacheResult &destination)
+    inline void repositionResult(const Cache::FindCacheResult &result,
+                                 const Cache::FindCacheResult &destination)
     {
         // We already have the resource in the cache
         // So, it is the time for a reshuffle
@@ -608,7 +648,9 @@ public:
             position++;
         }
 
-        bool moving = q->beginMoveRows(QModelIndex(), oldPosition, oldPosition, QModelIndex(), position);
+        bool moving
+            = q->beginMoveRows(QModelIndex(), oldPosition, oldPosition,
+                               QModelIndex(), position);
 
         kamd::utils::move_one(result.iterator, destination.iterator);
 
@@ -626,21 +668,34 @@ public:
     {
         using namespace std::placeholders;
 
-        QObject::connect(&watcher, &ResultWatcher::resultScoreUpdated, q, std::bind(&ResultModelPrivate::onResultScoreUpdated, this, _1, _2, _3, _4));
-        QObject::connect(&watcher, &ResultWatcher::resultRemoved, q, std::bind(&ResultModelPrivate::onResultRemoved, this, _1));
-        QObject::connect(&watcher, &ResultWatcher::resultLinked, q, std::bind(&ResultModelPrivate::onResultLinked, this, _1));
-        QObject::connect(&watcher, &ResultWatcher::resultUnlinked, q, std::bind(&ResultModelPrivate::onResultUnlinked, this, _1));
+        QObject::connect(
+            &watcher, &ResultWatcher::resultScoreUpdated,
+            q, std::bind(&ResultModelPrivate::onResultScoreUpdated, this, _1, _2, _3, _4));
+        QObject::connect(
+            &watcher, &ResultWatcher::resultRemoved,
+            q, std::bind(&ResultModelPrivate::onResultRemoved, this, _1));
+        QObject::connect(
+            &watcher, &ResultWatcher::resultLinked,
+            q, std::bind(&ResultModelPrivate::onResultLinked, this, _1));
+        QObject::connect(
+            &watcher, &ResultWatcher::resultUnlinked,
+            q, std::bind(&ResultModelPrivate::onResultUnlinked, this, _1));
 
-        QObject::connect(&watcher, &ResultWatcher::resourceTitleChanged, q, std::bind(&ResultModelPrivate::onResourceTitleChanged, this, _1, _2));
-        QObject::connect(&watcher, &ResultWatcher::resourceMimetypeChanged, q, std::bind(&ResultModelPrivate::onResourceMimetypeChanged, this, _1, _2));
+        QObject::connect(
+            &watcher, &ResultWatcher::resourceTitleChanged,
+            q, std::bind(&ResultModelPrivate::onResourceTitleChanged, this, _1, _2));
+        QObject::connect(
+            &watcher, &ResultWatcher::resourceMimetypeChanged,
+            q, std::bind(&ResultModelPrivate::onResourceMimetypeChanged, this, _1, _2));
 
-        QObject::connect(&watcher, &ResultWatcher::resultsInvalidated, q, std::bind(&ResultModelPrivate::reload, this));
+        QObject::connect(
+            &watcher, &ResultWatcher::resultsInvalidated,
+            q, std::bind(&ResultModelPrivate::reload, this));
 
         if (query.activities().contains(CURRENT_ACTIVITY_TAG)) {
-            QObject::connect(&activities,
-                             &KActivities::Consumer::currentActivityChanged,
-                             q,
-                             std::bind(&ResultModelPrivate::onCurrentActivityChanged, this, _1));
+            QObject::connect(
+                &activities, &KActivities::Consumer::currentActivityChanged, q,
+                std::bind(&ResultModelPrivate::onCurrentActivityChanged, this, _1));
         }
 
         fetch(FetchReset);
@@ -654,8 +709,7 @@ public:
             count = query.limit() - from;
         }
 
-        if (count <= 0)
-            return;
+        if (count <= 0) return;
 
         // In order to see whether there are more results, we need to pass
         // the count increased by one
@@ -665,7 +719,7 @@ public:
 
         Cache::Items newItems;
 
-        while (count-- > 0 && it != results.end()) {
+        while (count --> 0 && it != results.end()) {
             newItems << *it;
             ++it;
         }
@@ -676,7 +730,9 @@ public:
         // user-defined reordering. This needs only to be a partial sort,
         // the main sorting is done by sqlite
         if (query.selection() != Terms::UsedResources) {
-            std::stable_sort(newItems.begin(), newItems.end(), FixedItemsLessThan(FixedItemsLessThan::PartialOrdering, cache));
+            std::stable_sort(
+                newItems.begin(), newItems.end(),
+                FixedItemsLessThan(FixedItemsLessThan::PartialOrdering, cache));
         }
 
         cache.replace(newItems, from);
@@ -689,8 +745,12 @@ public:
             // and loading all from scratch
             cache.clear();
 
-            const QString activityTag = query.activities().contains(CURRENT_ACTIVITY_TAG) ? (QStringLiteral("-ForActivity-") + activities.currentActivity())
-                                                                                          : QStringLiteral("-ForAllActivities");
+            /* clang-format off */
+            const QString activityTag =
+                query.activities().contains(CURRENT_ACTIVITY_TAG)
+                    ? (QStringLiteral("-ForActivity-") + activities.currentActivity())
+                    : QStringLiteral("-ForAllActivities");
+            /* clang-format on */
 
             cache.loadOrderingConfig(activityTag);
 
@@ -706,6 +766,7 @@ public:
                 // We are only updating the currently
                 // cached items, nothing more
                 fetch(0, cache.size());
+
             }
 
         } else { // FetchMore
@@ -714,20 +775,27 @@ public:
         }
     }
 
-    void onResultScoreUpdated(const QString &resource, double score, uint lastUpdate, uint firstUpdate)
+    void onResultScoreUpdated(const QString &resource, double score,
+                              uint lastUpdate, uint firstUpdate)
     {
         QDBG << "ResultModelPrivate::onResultScoreUpdated "
-             << "result added:" << resource << "score:" << score << "last:" << lastUpdate << "first:" << firstUpdate;
+             << "result added:" << resource
+             << "score:" << score
+             << "last:" << lastUpdate
+             << "first:" << firstUpdate;
 
         // This can also be called when the resource score
         // has been updated, so we need to check whether
         // we already have it in the cache
         const auto result = cache.find(resource);
 
-        ResultSet::Result::LinkStatus linkStatus = result ? result->linkStatus()
-            : query.selection() != Terms::UsedResources   ? ResultSet::Result::Unknown
+        /* clang-format off */
+        ResultSet::Result::LinkStatus linkStatus
+            = result ? result->linkStatus()
+            : query.selection() != Terms::UsedResources ? ResultSet::Result::Unknown
             : query.selection() != Terms::LinkedResources ? ResultSet::Result::Linked
-                                                          : ResultSet::Result::NotLinked;
+            : ResultSet::Result::NotLinked;
+        /* clang-format on */
 
         if (result) {
             // We are only updating a result we already had,
@@ -762,7 +830,8 @@ public:
 
             const auto destination = destinationFor(result);
 
-            q->beginInsertRows(QModelIndex(), destination.index, destination.index);
+            q->beginInsertRows(QModelIndex(), destination.index,
+                               destination.index);
 
             cache.insertAt(destination, result);
 
@@ -776,10 +845,10 @@ public:
     {
         const auto result = cache.find(resource);
 
-        if (!result)
-            return;
+        if (!result) return;
 
-        if (query.selection() == Terms::UsedResources || result->linkStatus() != ResultSet::Result::Linked) {
+        if (query.selection() == Terms::UsedResources
+            || result->linkStatus() != ResultSet::Result::Linked) {
             removeResult(result);
         }
     }
@@ -795,8 +864,7 @@ public:
     {
         const auto result = cache.find(resource);
 
-        if (!result)
-            return;
+        if (!result) return;
 
         if (query.selection() == Terms::LinkedResources) {
             removeResult(result);
@@ -818,19 +886,21 @@ public:
     //_ Title and mimetype functions
     void fillTitleAndMimetype(ResultSet::Result &result)
     {
-        if (!database)
-            return;
+        if (!database) return;
 
-        auto query = database->execQuery(QStringLiteral("SELECT "
-                                                        "title, mimetype "
-                                                        "FROM "
-                                                        "ResourceInfo "
-                                                        "WHERE "
-                                                        "targettedResource = '")
-                                         + result.resource() + QStringLiteral("'"));
+        /* clang-format off */
+        auto query = database->execQuery(
+                QStringLiteral("SELECT "
+                "title, mimetype "
+                "FROM "
+                "ResourceInfo "
+                "WHERE "
+                "targettedResource = '") + result.resource() + QStringLiteral("'")
+                );
+        /* clang-format on */
 
         // Only one item at most
-        for (const auto &item : query) {
+        for (const auto &item: query) {
             result.setTitle(item[QStringLiteral("title")].toString());
             result.setMimetype(item[QStringLiteral("mimetype")].toString());
         }
@@ -840,8 +910,7 @@ public:
     {
         const auto result = cache.find(resource);
 
-        if (!result)
-            return;
+        if (!result) return;
 
         result->setTitle(title);
 
@@ -854,8 +923,7 @@ public:
 
         const auto result = cache.find(resource);
 
-        if (!result)
-            return;
+        if (!result) return;
 
         result->setMimetype(mimetype);
 
@@ -876,10 +944,11 @@ public:
 
 private:
     ResultModel *const q;
-    static QList<ResultModelPrivate *> s_privates;
+    static QList<ResultModelPrivate*> s_privates;
+
 };
 
-QList<ResultModelPrivate *> ResultModelPrivate::s_privates;
+QList<ResultModelPrivate*> ResultModelPrivate::s_privates;
 
 ResultModel::ResultModel(Query query, QObject *parent)
     : QAbstractListModel(parent)
@@ -903,14 +972,14 @@ ResultModel::~ResultModel()
 QHash<int, QByteArray> ResultModel::roleNames() const
 {
     return {
-        {ResourceRole, "resource"},
-        {TitleRole, "title"},
-        {ScoreRole, "score"},
-        {FirstUpdateRole, "created"},
-        {LastUpdateRole, "modified"},
-        {LinkStatusRole, "linkStatus"},
-        {LinkedActivitiesRole, "linkedActivities"},
-        {MimeType, "mimeType"},
+        { ResourceRole         , "resource" },
+        { TitleRole            , "title" },
+        { ScoreRole            , "score" },
+        { FirstUpdateRole      , "created" },
+        { LastUpdateRole       , "modified" },
+        { LinkStatusRole       , "linkStatus" },
+        { LinkedActivitiesRole , "linkedActivities" },
+        { MimeType             , "mimeType" },
     };
 }
 
@@ -924,20 +993,28 @@ QVariant ResultModel::data(const QModelIndex &item, int role) const
 
     const auto &result = d->cache[row];
 
-    return role == Qt::DisplayRole     ? QString(result.title() + QStringLiteral(" ") + result.resource() + QStringLiteral(" - ")
-                                             + QString::number(result.linkStatus()) + QStringLiteral(" - ") + QString::number(result.score()))
-        : role == ResourceRole         ? result.resource()
-        : role == TitleRole            ? result.title()
-        : role == ScoreRole            ? result.score()
-        : role == FirstUpdateRole      ? result.firstUpdate()
-        : role == LastUpdateRole       ? result.lastUpdate()
-        : role == LinkStatusRole       ? result.linkStatus()
-        : role == LinkedActivitiesRole ? result.linkedActivities()
-        : role == MimeType             ? result.mimetype()
-                                       : QVariant();
+    /* clang-format off */
+    return role == Qt::DisplayRole ? QString(
+               result.title() + QStringLiteral(" ") +
+               result.resource() + QStringLiteral(" - ") +
+               QString::number(result.linkStatus()) + QStringLiteral(" - ") +
+               QString::number(result.score())
+           )
+         : role == ResourceRole         ? result.resource()
+         : role == TitleRole            ? result.title()
+         : role == ScoreRole            ? result.score()
+         : role == FirstUpdateRole      ? result.firstUpdate()
+         : role == LastUpdateRole       ? result.lastUpdate()
+         : role == LinkStatusRole       ? result.linkStatus()
+         : role == LinkedActivitiesRole ? result.linkedActivities()
+         : role == MimeType             ? result.mimetype()
+         : QVariant()
+         ;
+    /* clang-format on */
 }
 
-QVariant ResultModel::headerData(int section, Qt::Orientation orientation, int role) const
+QVariant ResultModel::headerData(int section, Qt::Orientation orientation,
+                                 int role) const
 {
     Q_UNUSED(section);
     Q_UNUSED(orientation);
@@ -952,14 +1029,15 @@ int ResultModel::rowCount(const QModelIndex &parent) const
 
 void ResultModel::fetchMore(const QModelIndex &parent)
 {
-    if (parent.isValid())
-        return;
+    if (parent.isValid()) return;
     d->fetch(ResultModelPrivate::FetchMore);
 }
 
 bool ResultModel::canFetchMore(const QModelIndex &parent) const
 {
-    return parent.isValid() ? false : d->cache.size() >= d->query.limit() ? false : d->hasMore;
+    return parent.isValid()                    ? false
+         : d->cache.size() >= d->query.limit() ? false
+         : d->hasMore;
 }
 
 void ResultModel::forgetResource(const QString &resource)
@@ -968,20 +1046,31 @@ void ResultModel::forgetResource(const QString &resource)
     for (const QString &activity : lstActivities) {
         const auto lstAgents = d->query.agents();
         for (const QString &agent : lstAgents) {
-            Stats::forgetResource(activity, agent == CURRENT_AGENT_TAG ? QCoreApplication::applicationName() : agent, resource);
+            /* clang-format off */
+            Stats::forgetResource(
+                    activity,
+                    agent == CURRENT_AGENT_TAG ?
+                        QCoreApplication::applicationName() : agent,
+                    resource);
+            /* clang-format on */
         }
     }
 }
 
 void ResultModel::forgetResource(int row)
 {
-    if (row >= d->cache.size())
-        return;
+    if (row >= d->cache.size()) return;
     const auto lstActivities = d->query.activities();
     for (const QString &activity : lstActivities) {
         const auto lstAgents = d->query.agents();
         for (const QString &agent : lstAgents) {
-            Stats::forgetResource(activity, agent == CURRENT_AGENT_TAG ? QCoreApplication::applicationName() : agent, d->cache[row].resource());
+            /* clang-format off */
+            Stats::forgetResource(
+                    activity,
+                    agent == CURRENT_AGENT_TAG ?
+                        QCoreApplication::applicationName() : agent,
+                    d->cache[row].resource());
+            /* clang-format on */
         }
     }
 }
@@ -1002,12 +1091,16 @@ void ResultModel::sortItems(Qt::SortOrder sortOrder)
     Q_UNUSED(sortOrder);
 }
 
-void ResultModel::linkToActivity(const QUrl &resource, const Terms::Activity &activity, const Terms::Agent &agent)
+void ResultModel::linkToActivity(const QUrl &resource,
+                                 const Terms::Activity &activity,
+                                 const Terms::Agent &agent)
 {
     d->watcher.linkToActivity(resource, activity, agent);
 }
 
-void ResultModel::unlinkFromActivity(const QUrl &resource, const Terms::Activity &activity, const Terms::Agent &agent)
+void ResultModel::unlinkFromActivity(const QUrl &resource,
+                                     const Terms::Activity &activity,
+                                     const Terms::Agent &agent)
 {
     d->watcher.unlinkFromActivity(resource, activity, agent);
 }

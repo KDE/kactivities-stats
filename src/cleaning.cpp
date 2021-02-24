@@ -10,15 +10,16 @@
 #include "cleaning.h"
 #include "common/dbus/common.h"
 
-namespace KActivities
+namespace KActivities {
+namespace Stats {
+
+
+void forgetResource(Terms::Activity activities, Terms::Agent agents,
+                    const QString &resource)
 {
-namespace Stats
-{
-void forgetResource(Terms::Activity activities, Terms::Agent agents, const QString &resource)
-{
-    KAMD_DBUS_DECL_INTERFACE(scoring, Resources / Scoring, ResourcesScoring);
-    for (const auto &activity : activities.values) {
-        for (const auto &agent : agents.values) {
+    KAMD_DBUS_DECL_INTERFACE(scoring, Resources/Scoring, ResourcesScoring);
+    for (const auto& activity: activities.values) {
+        for (const auto& agent: agents.values) {
             scoring.call(QStringLiteral("DeleteStatsForResource"), activity, agent, resource);
         }
     }
@@ -26,10 +27,10 @@ void forgetResource(Terms::Activity activities, Terms::Agent agents, const QStri
 
 void forgetResources(const Query &query)
 {
-    KAMD_DBUS_DECL_INTERFACE(scoring, Resources / Scoring, ResourcesScoring);
-    for (const auto &activity : query.activities()) {
-        for (const auto &agent : query.agents()) {
-            for (const auto &urlFilter : query.urlFilters()) {
+    KAMD_DBUS_DECL_INTERFACE(scoring, Resources/Scoring, ResourcesScoring);
+    for (const auto& activity: query.activities()) {
+        for (const auto& agent: query.agents()) {
+            for (const auto& urlFilter: query.urlFilters()) {
                 scoring.call(QStringLiteral("DeleteStatsForResource"), activity, agent, urlFilter);
             }
         }
@@ -38,24 +39,26 @@ void forgetResources(const Query &query)
 
 void forgetRecentStats(Terms::Activity activities, int count, TimeUnit what)
 {
-    KAMD_DBUS_DECL_INTERFACE(scoring, Resources / Scoring, ResourcesScoring);
-    for (const auto &activity : activities.values) {
-        scoring.call(QStringLiteral("DeleteRecentStats"),
-                     activity,
-                     count,
-                     what == Hours      ? QStringLiteral("h")
-                         : what == Days ? QStringLiteral("d")
-                                        : QStringLiteral("m"));
+    KAMD_DBUS_DECL_INTERFACE(scoring, Resources/Scoring, ResourcesScoring);
+    for (const auto& activity: activities.values) {
+        /* clang-format off */
+        scoring.call(QStringLiteral("DeleteRecentStats"), activity, count,
+                what == Hours  ? QStringLiteral("h") :
+                what == Days   ? QStringLiteral("d") :
+                                 QStringLiteral("m")
+            );
+        /* clang-format on */
     }
 }
 
 void forgetEarlierStats(Terms::Activity activities, int months)
 {
-    KAMD_DBUS_DECL_INTERFACE(scoring, Resources / Scoring, ResourcesScoring);
-    for (const auto &activity : activities.values) {
+    KAMD_DBUS_DECL_INTERFACE(scoring, Resources/Scoring, ResourcesScoring);
+    for (const auto& activity: activities.values) {
         scoring.call(QStringLiteral("DeleteEarlierStats"), activity, months);
     }
 }
 
 } // namespace Stats
 } // namespace KActivities
+

@@ -90,12 +90,18 @@ void ResultSetTest::testUsedResources()
         QCOMPARE(result.at(3).resource(), QString());
 
         // Testing whether range works
-        QCOMPARE(QStringLiteral("|/path/high5_act1_kast|/path/high7_act1_kast|/path/high8_act1_kast|"), concatenateResults(result));
+        QCOMPARE(QStringLiteral("|/path/high5_act1_kast|/path/high7_act1_kast|/path/high8_act1_kast|"), //
+                 concatenateResults(result));
     }
 
     TEST_CHUNK(QStringLiteral("Getting the used resources by the highest score, gvim"))
     {
-        ResultSet result(UsedResources | HighScoredFirst | Agent{QStringLiteral("gvim")});
+        /* clang-format off */
+        ResultSet result(UsedResources
+                        | HighScoredFirst
+                        | Agent{QStringLiteral("gvim")}
+                        );
+        /* clang-format on */
 
         QCOMPARE(result.at(0).resource(), QStringLiteral("/path/high1_act1_gvim"));
         QCOMPARE(result.at(1).resource(), QStringLiteral("/path/high4_act1_gvim"));
@@ -103,7 +109,12 @@ void ResultSetTest::testUsedResources()
 
     TEST_CHUNK(QStringLiteral("Getting the used resources by the highest score, global agent"))
     {
-        ResultSet result(UsedResources | HighScoredFirst | Agent::global());
+        /* clang-format off */
+        ResultSet result(UsedResources
+                        | HighScoredFirst
+                        | Agent::global()
+                        );
+        /* clang-format on */
 
         QCOMPARE(result.at(0).resource(), QStringLiteral("/path/mid6_act1_glob"));
         QCOMPARE(result.at(1).resource(), QStringLiteral("/path/mid7_act1_glob"));
@@ -112,7 +123,13 @@ void ResultSetTest::testUsedResources()
 
     TEST_CHUNK(QStringLiteral("Getting the used resources by the highest score, any agent"))
     {
-        ResultSet result(UsedResources | HighScoredFirst | Agent::any() | Activity::any());
+        /* clang-format off */
+        ResultSet result(UsedResources
+                        | HighScoredFirst
+                        | Agent::any()
+                        | Activity::any()
+                        );
+        /* clang-format on */
 
         QCOMPARE(result.at(0).resource(), QStringLiteral("/path/high1_act1_gvim"));
         QCOMPARE(result.at(1).resource(), QStringLiteral("/path/high2_act2_kate"));
@@ -121,14 +138,28 @@ void ResultSetTest::testUsedResources()
 
     TEST_CHUNK(QStringLiteral("Getting the used resources filter by Date"))
     {
-        ResultSet result(UsedResources | HighScoredFirst | Agent::any() | Activity::any() | Date::fromString(QStringLiteral("2015-01-15")));
+        /* clang-format off */
+        ResultSet result(UsedResources
+                        | HighScoredFirst
+                        | Agent::any()
+                        | Activity::any()
+                        | Date::fromString(QStringLiteral("2015-01-15"))
+                        );
+    /* clang-format on */
 
         QCOMPARE(result.at(0).resource(), QStringLiteral("/path/high1_act1_gvim"));
     }
 
     TEST_CHUNK(QStringLiteral("Getting the used resources filter by Date range"))
     {
-        ResultSet result(UsedResources | HighScoredFirst | Agent::any() | Activity::any() | Date::fromString(QStringLiteral("2015-01-14,2015-01-15")));
+        /* clang-format off */
+        ResultSet result(UsedResources
+                        | HighScoredFirst
+                        | Agent::any()
+                        | Activity::any()
+                        | Date::fromString(QStringLiteral("2015-01-14,2015-01-15"))
+                        );
+        /* clang-format on */
 
         QCOMPARE(result.at(0).resource(), QStringLiteral("/path/high1_act1_gvim"));
         QCOMPARE(result.at(1).resource(), QStringLiteral("/path/high2_act2_kate"));

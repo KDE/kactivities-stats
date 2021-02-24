@@ -64,31 +64,43 @@ QString resourceTitle(const QString &resource)
 
 QString toQString(const ResourceScoreCache::Item &item)
 {
-    return item.targettedResource + QLatin1Char(':') + resourceTitle(item.targettedResource) + QLatin1Char('(') + QString::number(item.cachedScore)
-        + QLatin1Char(')');
+    /* clang-format off */
+    return
+        item.targettedResource
+        + QLatin1Char(':') + resourceTitle(item.targettedResource)
+        + QLatin1Char('(') + QString::number(item.cachedScore) + QLatin1Char(')');
+    /* clang-format on */
 }
 
 QString toQString(const ResourceLink::Item &item)
 {
-    return item.targettedResource + QLatin1Char(':') + resourceTitle(item.targettedResource)
-        // + '(' + QString::number(0/* item.score */) + ')'
-        ;
+    return item.targettedResource + QLatin1Char(':') + resourceTitle(item.targettedResource);
+    // + '(' + QString::number(0/* item.score */) + ')'
 }
 
 QString toQString(const KAStats::ResultSet::Result &item)
 {
-    return item.resource() + QLatin1Char(':') + item.title() + QLatin1Char('(') + QString::number(item.score()) + QLatin1Char(')');
+    /* clang-format off */
+    return
+        item.resource()
+        + QLatin1Char(':') + item.title()
+        + QLatin1Char('(') + QString::number(item.score()) + QLatin1Char(')');
+    /* clang-format on */
 }
 
 bool operator==(const ResourceScoreCache::Item &left, const KAStats::ResultSet::Result &right)
 {
-    return left.targettedResource == right.resource() && resourceTitle(left.targettedResource) == right.title()
+    /* clang-format off */
+    return left.targettedResource == right.resource()
+        && resourceTitle(left.targettedResource) == right.title()
         && qFuzzyCompare(left.cachedScore, right.score());
+    /* clang-format on */
 }
 
 bool operator==(const ResourceLink::Item &left, const KAStats::ResultSet::Result &right)
 {
-    return left.targettedResource == right.resource() && resourceTitle(left.targettedResource) == right.title();
+    return left.targettedResource == right.resource() //
+        && resourceTitle(left.targettedResource) == right.title();
     // && qFuzzyCompare(left.cachedScore, right.score);
 }
 
@@ -202,26 +214,44 @@ void ResultSetQuickCheckTest::initTestCase()
     if (QCoreApplication::arguments().contains(QLatin1String("--show-data"))) {
         QString rscs;
         for (const auto &rsc : resourceScoreCaches) {
-            rscs += QLatin1Char('(') + rsc.targettedResource + QLatin1Char(',') + rsc.usedActivity + QLatin1Char(',') + rsc.initiatingAgent + QLatin1Char(',')
-                + QString::number(rsc.cachedScore) + QLatin1Char(')');
+            /* clang-format off */
+            rscs += QLatin1Char('(') + rsc.targettedResource
+                    + QLatin1Char(',') + rsc.usedActivity
+                    + QLatin1Char(',') + rsc.initiatingAgent
+                    + QLatin1Char(',') + QString::number(rsc.cachedScore) + QLatin1Char(')');
+            /* clang-format on */
         }
 
         QString ris;
         for (const auto &ri : resourceInfos) {
-            ris += QLatin1Char('(') + ri.targettedResource + QLatin1Char(',') + ri.title + QLatin1Char(',') + ri.mimetype + QLatin1Char(')');
+            /* clang-format off */
+            ris += QLatin1Char('(') + ri.targettedResource
+                   + QLatin1Char(',') + ri.title
+                   + QLatin1Char(',') + ri.mimetype + QLatin1Char(')');
+            /* clang-format on*/
         }
 
         QString rls;
         for (const auto &rl : resourceLinks) {
-            rls += QLatin1Char('(') + rl.targettedResource + QLatin1Char(',') + rl.usedActivity + QLatin1Char(',') + rl.initiatingAgent + QLatin1Char(')');
+            /* clang-format off */
+            rls += QLatin1Char('(') + rl.targettedResource
+                   + QLatin1Char(',') + rl.usedActivity
+                   + QLatin1Char(',') + rl.initiatingAgent + QLatin1Char(')');
+            /* clang-format on */
         }
 
+        /* clang-format off */
         qDebug() << "\nUsed data: -----------------------------"
-                 << "\nActivities: " << activitiesList << "\nAgents: " << agentsList << "\nTypes: " << typesList << "\nResources: " << resourcesList
+                 << "\nActivities: " << activitiesList
+                 << "\nAgents: " << agentsList
+                 << "\nTypes: " << typesList
+                 << "\nResources: " << resourcesList
                  << "\n----------------------------------------";
         qDebug() << "\n RSCs: " << rscs;
         qDebug() << "\n RIs:  " << ris;
-        qDebug() << "\n RLs:  " << rls << "\n----------------------------------------";
+        qDebug() << "\n RLs:  " << rls
+                 << "\n----------------------------------------";
+        /* clang-format on */
     }
 }
 
@@ -243,18 +273,38 @@ void ResultSetQuickCheckTest::generateAgentsList()
 
 void ResultSetQuickCheckTest::generateTypesList()
 {
-    typesList << QStringLiteral("application/postscript") << QStringLiteral("application/pdf") << QStringLiteral("image/x-psd") << QStringLiteral("image/x-sgi")
-              << QStringLiteral("image/x-tga") << QStringLiteral("image/x-xbitmap") << QStringLiteral("image/x-xwindowdump") << QStringLiteral("image/x-xcf")
-              << QStringLiteral("image/x-compressed-xcf") << QStringLiteral("image/tiff") << QStringLiteral("image/jpeg") << QStringLiteral("image/x-psp")
-              << QStringLiteral("image/png") << QStringLiteral("image/x-icon") << QStringLiteral("image/x-xpixmap") << QStringLiteral("image/svg+xml")
-              << QStringLiteral("application/pdf") << QStringLiteral("image/x-wmf") << QStringLiteral("image/jp2") << QStringLiteral("image/jpeg2000")
-              << QStringLiteral("image/jpx") << QStringLiteral("image/x-xcursor");
+    /* clang-format off */
+    typesList
+        << QStringLiteral("application/postscript")
+        << QStringLiteral("application/pdf")
+        << QStringLiteral("image/x-psd")
+        << QStringLiteral("image/x-sgi")
+        << QStringLiteral("image/x-tga")
+        << QStringLiteral("image/x-xbitmap")
+        << QStringLiteral("image/x-xwindowdump")
+        << QStringLiteral("image/x-xcf")
+        << QStringLiteral("image/x-compressed-xcf")
+        << QStringLiteral("image/tiff")
+        << QStringLiteral("image/jpeg")
+        << QStringLiteral("image/x-psp")
+        << QStringLiteral("image/png")
+        << QStringLiteral("image/x-icon")
+        << QStringLiteral("image/x-xpixmap")
+        << QStringLiteral("image/svg+xml")
+        << QStringLiteral("application/pdf")
+        << QStringLiteral("image/x-wmf")
+        << QStringLiteral("image/jp2")
+        << QStringLiteral("image/jpeg2000")
+        << QStringLiteral("image/jpx")
+        << QStringLiteral("image/x-xcursor");
+    /* clang-format on */
 }
 
 void ResultSetQuickCheckTest::generateResourcesList()
 {
     for (int i = 0; i < NUMBER_RESOURCES; ++i) {
-        resourcesList << (QStringLiteral("/r") + (i < 10 ? QStringLiteral("0") : QString()) + QString::number(i));
+        resourcesList << (QStringLiteral("/r") //
+                          + (i < 10 ? QStringLiteral("0") : QString()) + QString::number(i));
     }
 }
 
@@ -349,32 +399,37 @@ void ResultSetQuickCheckTest::pushToDatabase()
     for (const auto &rsc : qAsConst(resourceScoreCaches)) {
         std::cerr << '.';
 
-        if (++i % 10 == 0)
-            std::cerr << i;
+        if (++i % 10 == 0) std::cerr << i;
 
-        database->execQuery(QStringLiteral("INSERT INTO ResourceScoreCache ("
-                                           "  usedActivity"
-                                           ", initiatingAgent"
-                                           ", targettedResource"
-                                           ", scoreType"
-                                           ", cachedScore"
-                                           ", firstUpdate"
-                                           ", lastUpdate"
-                                           ") VALUES ("
-                                           "  '%1'" // usedActivity
-                                           ", '%2'" // initiatingAgent
-                                           ", '%3'" // targettedResource
-                                           ",   0 " // scoreType
-                                           ",  %4 " // cachedScore
-                                           ",  %5 " // firstUpdate
-                                           ",  %6 " // lastUpdate
-                                           ")")
-                                .arg(rsc.usedActivity)
-                                .arg(rsc.initiatingAgent)
-                                .arg(rsc.targettedResource)
-                                .arg(rsc.cachedScore)
-                                .arg(rsc.firstUpdate)
-                                .arg(rsc.lastUpdate));
+        /* clang-format off */
+        database->execQuery(QStringLiteral(
+            "INSERT INTO ResourceScoreCache ("
+                "  usedActivity"
+                ", initiatingAgent"
+                ", targettedResource"
+                ", scoreType"
+                ", cachedScore"
+                ", firstUpdate"
+                ", lastUpdate"
+            ") VALUES ("
+                "  '%1'" // usedActivity
+                ", '%2'" // initiatingAgent
+                ", '%3'" // targettedResource
+                ",   0 " // scoreType
+                ",  %4 " // cachedScore
+                ",  %5 " // firstUpdate
+                ",  %6 " // lastUpdate
+            ")"
+        )
+            .arg(rsc.usedActivity)
+            .arg(rsc.initiatingAgent)
+            .arg(rsc.targettedResource)
+            .arg(rsc.cachedScore)
+            .arg(rsc.firstUpdate)
+            .arg(rsc.lastUpdate)
+        );
+        /* clang-format on */
+
     }
     std::cerr << std::endl;
 
@@ -385,25 +440,29 @@ void ResultSetQuickCheckTest::pushToDatabase()
     for (const auto &ri : qAsConst(resourceInfos)) {
         std::cerr << '.';
 
-        if (++i % 10 == 0)
-            std::cerr << i;
+        if (++i % 10 == 0) std::cerr << i;
 
-        database->execQuery(QStringLiteral("INSERT INTO ResourceInfo ("
-                                           "  targettedResource"
-                                           ", title"
-                                           ", mimetype"
-                                           ", autoTitle"
-                                           ", autoMimetype"
-                                           ") VALUES ("
-                                           "  '%1' " // targettedResource
-                                           ", '%2' " // title
-                                           ", '%3' " // mimetype
-                                           ",   1  " // autoTitle
-                                           ",   1  " // autoMimetype
-                                           ")")
-                                .arg(ri.targettedResource)
-                                .arg(ri.title)
-                                .arg(ri.mimetype));
+        /* clang-format off */
+        database->execQuery(QStringLiteral(
+            "INSERT INTO ResourceInfo ("
+                "  targettedResource"
+                ", title"
+                ", mimetype"
+                ", autoTitle"
+                ", autoMimetype"
+            ") VALUES ("
+                "  '%1' " // targettedResource
+                ", '%2' " // title
+                ", '%3' " // mimetype
+                ",   1  " // autoTitle
+                ",   1  " // autoMimetype
+            ")"
+        )
+            .arg(ri.targettedResource)
+            .arg(ri.title)
+            .arg(ri.mimetype)
+        );
+        /* clang-format on */
     }
     std::cerr << std::endl;
 
@@ -414,21 +473,26 @@ void ResultSetQuickCheckTest::pushToDatabase()
     for (const auto &rl : qAsConst(resourceLinks)) {
         std::cerr << '.';
 
-        if (++i % 10 == 0)
-            std::cerr << i;
+        if (++i % 10 == 0) std::cerr << i;
 
-        database->execQuery(QStringLiteral("INSERT INTO ResourceLink ("
-                                           "  targettedResource"
-                                           ", usedActivity"
-                                           ", initiatingAgent"
-                                           ") VALUES ("
-                                           "  '%1' " // targettedResource
-                                           ", '%2' " // usedActivity
-                                           ", '%3' " // initiatingAgent
-                                           ")")
-                                .arg(rl.targettedResource)
-                                .arg(rl.usedActivity)
-                                .arg(rl.initiatingAgent));
+        /* clang-format off */
+        database->execQuery(QStringLiteral(
+            "INSERT INTO ResourceLink ("
+                "  targettedResource"
+                ", usedActivity"
+                ", initiatingAgent"
+            ") VALUES ("
+                "  '%1' " // targettedResource
+                ", '%2' " // usedActivity
+                ", '%3' " // initiatingAgent
+            ")"
+        )
+            .arg(rl.targettedResource)
+            .arg(rl.usedActivity)
+            .arg(rl.initiatingAgent)
+        );
+        /* clang-format on */
+
     }
     std::cerr << std::endl;
 }
@@ -542,24 +606,32 @@ void ResultSetQuickCheckTest::testLinkedResourcesForAgents()
     using boost::adaptors::filtered;
 
     for (const auto &agent : qAsConst(agentsList)) {
-        auto memItems = ResourceLink::groupByResource(resourceLinks | filtered(ResourceLink::initiatingAgent() == agent));
+        /* clang-format off */
+        auto memItems = ResourceLink::groupByResource(
+                resourceLinks
+                | filtered(ResourceLink::initiatingAgent() == agent)
+            );
 
         auto baseTerm = LinkedResources | Agent{agent} | Activity::any();
 
-#define ORDERING_TEST(Column, Dir, OrderFlag)                                                                                                                  \
-    {                                                                                                                                                          \
-        sort(memItems, ResourceLink::Column().Dir() | ResourceLink::targettedResource().asc());                                                                \
-        ResultSet dbItems = baseTerm | OrderFlag;                                                                                                              \
-        ASSERT_RANGE_EQUAL(memItems, dbItems);                                                                                                                 \
-    }
+        #define ORDERING_TEST(Column, Dir, OrderFlag)                          \
+        {                                                                      \
+            sort(memItems, ResourceLink::Column().Dir()                        \
+                           | ResourceLink::targettedResource().asc());         \
+            ResultSet dbItems = baseTerm | OrderFlag;                          \
+            ASSERT_RANGE_EQUAL(memItems, dbItems);                             \
+        }
 
-        ORDERING_TEST(targettedResource, asc, OrderByUrl)
+        ORDERING_TEST(targettedResource, asc,  OrderByUrl)
         // ORDERING_TEST(cachedScore,       desc, HighScoredFirst);
         // ORDERING_TEST(lastUpdate,        desc, RecentlyUsedFirst);
         // ORDERING_TEST(firstUpdate,       desc, RecentlyCreatedFirst);
 
-#undef ORDERING_TEST
+        #undef ORDERING_TEST
+
+        /* clang-format on */
     }
+
 }
 
 // vim: set foldmethod=marker:

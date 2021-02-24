@@ -153,7 +153,13 @@ void QueryTest::testFancySyntaxBasic()
 {
     TEST_CHUNK(QStringLiteral("Testing the fancy syntax, non c++11"))
 
-    auto query = LinkedResources | Type(QStringLiteral("text")) | Type(QStringLiteral("image")) | Agent(QStringLiteral("test")) | RecentlyCreatedFirst;
+    /* clang-format off */
+    auto query = LinkedResources
+                    | Type(QStringLiteral("text"))
+                    | Type(QStringLiteral("image"))
+                    | Agent(QStringLiteral("test"))
+                    | RecentlyCreatedFirst;
+    /* clang-format on */
 
     QCOMPARE(query.selection(), LinkedResources);
     QCOMPARE(query.types(), QStringList() << QStringLiteral("text") << QStringLiteral("image"));
@@ -164,8 +170,13 @@ void QueryTest::testFancySyntaxBasic()
 #ifdef Q_COMPILER_INITIALIZER_LISTS
     TEST_CHUNK(QStringLiteral("Testing the fancy syntax, c++11"))
 
+    /* clang-format off */
     // Testing the fancy c++11 syntax
-    auto queryCXX11 = LinkedResources | Type{QStringLiteral("text"), QStringLiteral("image")} | Agent{QStringLiteral("test")} | RecentlyCreatedFirst;
+    auto queryCXX11 = LinkedResources
+                        | Type{QStringLiteral("text"), QStringLiteral("image")}
+                        | Agent{QStringLiteral("test")}
+                        | RecentlyCreatedFirst;
+    /* clang-format on */
 
     QCOMPARE(query, queryCXX11);
 #endif

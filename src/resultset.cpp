@@ -7,23 +7,23 @@
 #include "resultset.h"
 
 // Qt
+#include <QSqlQuery>
+#include <QSqlError>
 #include <QCoreApplication>
 #include <QDir>
-#include <QSqlError>
-#include <QSqlQuery>
 #include <QUrl>
 
 // Local
-#include "kactivities-stats-logsettings.h"
 #include <common/database/Database.h>
 #include <common/specialvalues.h>
 #include <utils/debug_and_return.h>
 #include <utils/qsqlquery_iterator.h>
+#include "kactivities-stats-logsettings.h"
 
 // Boost and STL
 #include <boost/range/algorithm/transform.hpp>
-#include <functional>
 #include <iterator>
+#include <functional>
 #include <mutex>
 
 // KActivities
@@ -31,23 +31,22 @@
 
 #define DEBUG_QUERIES 0
 
-namespace KActivities
-{
-namespace Stats
-{
+namespace KActivities {
+namespace Stats {
+
 using namespace Terms;
 
-class ResultSet_ResultPrivate
-{
+class ResultSet_ResultPrivate {
 public:
     QString resource;
     QString title;
     QString mimetype;
-    double score;
-    uint lastUpdate;
-    uint firstUpdate;
+    double  score;
+    uint    lastUpdate;
+    uint    firstUpdate;
     ResultSet::Result::LinkStatus linkStatus;
     QStringList linkedActivities;
+
 };
 
 ResultSet::Result::Result()
@@ -78,16 +77,18 @@ ResultSet::Result::~Result()
     delete d;
 }
 
-#define CREATE_GETTER_AND_SETTER(Type, Name, Set)                                                                                                              \
-    Type ResultSet::Result::Name() const                                                                                                                       \
-    {                                                                                                                                                          \
-        return d->Name;                                                                                                                                        \
-    }                                                                                                                                                          \
-                                                                                                                                                               \
-    void ResultSet::Result::Set(Type Name)                                                                                                                     \
-    {                                                                                                                                                          \
-        d->Name = Name;                                                                                                                                        \
+/* clang-format off */
+#define CREATE_GETTER_AND_SETTER(Type, Name, Set)                              \
+    Type ResultSet::Result::Name() const                                       \
+    {                                                                          \
+        return d->Name;                                                        \
+    }                                                                          \
+                                                                               \
+    void ResultSet::Result::Set(Type Name)                                     \
+    {                                                                          \
+        d->Name = Name;                                                        \
     }
+/* clang-format on */
 
 CREATE_GETTER_AND_SETTER(QString, resource, setResource)
 CREATE_GETTER_AND_SETTER(QString, title, setTitle)
@@ -109,8 +110,7 @@ QUrl ResultSet::Result::url() const
     }
 }
 
-class ResultSetPrivate
-{
+class ResultSetPrivate {
 public:
     Common::Database::Ptr database;
     QSqlQuery query;
@@ -126,10 +126,13 @@ public:
 
         auto selection = queryDefinition.selection();
 
-        query = database->execQuery(replaceQueryParameters(selection == LinkedResources     ? linkedResourcesQuery()
-                                                               : selection == UsedResources ? usedResourcesQuery()
-                                                               : selection == AllResources  ? allResourcesQuery()
-                                                                                            : QString()));
+        /* clang-format off */
+        query = database->execQuery(replaceQueryParameters(
+                selection == LinkedResources ? linkedResourcesQuery()
+              : selection == UsedResources   ? usedResourcesQuery()
+              : selection == AllResources    ? allResourcesQuery()
+              : QString()));
+        /* clang-format on */
 
         if (query.lastError().isValid()) {
             qCWarning(KACTIVITIES_STATS_LOG) << "[Error at ResultSetPrivate::initQuery]: " << query.lastError();
@@ -138,64 +141,66 @@ public:
 
     QString agentClause(const QString &agent) const
     {
-        if (agent == QLatin1String(":any"))
-            return QStringLiteral("1");
+        if (agent == QLatin1String(":any")) return QStringLiteral("1");
 
-        return QStringLiteral("agent = '") + (agent == QLatin1String(":current") ? QCoreApplication::instance()->applicationName() : agent)
-            + QStringLiteral("'");
+        /* clang-format off */
+        return QStringLiteral("agent = '") + (
+                agent == QLatin1String(":current") ? QCoreApplication::instance()->applicationName() :
+                                      agent
+            ) + QStringLiteral("'");
+        /* clang-format on */
     }
 
     QString activityClause(const QString &activity) const
     {
-        if (activity == QLatin1String(":any"))
-            return QStringLiteral("1");
+        if (activity == QLatin1String(":any")) return QStringLiteral("1");
 
-        return QStringLiteral("activity = '") + (activity == QLatin1String(":current") ? ActivitiesSync::currentActivity(activities) : activity)
-            + QStringLiteral("'");
+        /* clang-format off */
+        return QStringLiteral("activity = '") + (
+                activity == QLatin1String(":current") ? ActivitiesSync::currentActivity(activities) :
+                                         activity
+            ) + QStringLiteral("'");
+        /* clang-format on */
     }
 
     inline QString starPattern(const QString &pattern) const
     {
-        return Common::parseStarPattern(pattern, QStringLiteral("%"), [](QString str) {
+        return Common::parseStarPattern(pattern, QStringLiteral("%"), [] (QString str) {
             return str.replace(QLatin1String("%"), QLatin1String("\\%")).replace(QLatin1String("_"), QLatin1String("\\_"));
         });
     }
 
     QString urlFilterClause(const QString &urlFilter) const
     {
-        if (urlFilter == QLatin1String("*"))
-            return QStringLiteral("1");
+        if (urlFilter == QLatin1String("*")) return QStringLiteral("1");
 
         return QStringLiteral("resource LIKE '") + Common::starPatternToLike(urlFilter) + QStringLiteral("' ESCAPE '\\'");
     }
 
     QString mimetypeClause(const QString &mimetype) const
     {
-        if (mimetype == ANY_TYPE_TAG || mimetype == QLatin1String("*"))
-            return QStringLiteral("1");
+        if (mimetype == ANY_TYPE_TAG || mimetype == QLatin1String("*")) return QStringLiteral("1");
 
-        else if (mimetype == FILES_TYPE_TAG)
-            return QStringLiteral("mimetype != 'inode/directory' AND mimetype != ''");
-        else if (mimetype == DIRECTORIES_TYPE_TAG)
-            return QStringLiteral("mimetype = 'inode/directory'");
+        else if (mimetype == FILES_TYPE_TAG) return QStringLiteral("mimetype != 'inode/directory' AND mimetype != ''");
+        else if (mimetype == DIRECTORIES_TYPE_TAG) return QStringLiteral("mimetype = 'inode/directory'");
 
         return QStringLiteral("mimetype LIKE '") + Common::starPatternToLike(mimetype) + QStringLiteral("' ESCAPE '\\'");
     }
 
-    QString dateClause(QDate start, QDate end) const
-    {
+    QString dateClause(QDate start, QDate end) const {
         if (end.isNull()) {
             // only date filtering
-            return QStringLiteral("DATE(re.start, 'unixepoch') = '") + start.toString(Qt::ISODate) + QStringLiteral("' ");
+            return QStringLiteral("DATE(re.start, 'unixepoch') = '") +
+                    start.toString(Qt::ISODate) + QStringLiteral("' ");
         } else {
             // date range filtering
-            return QStringLiteral("DATE(re.start, 'unixepoch') >= '") + start.toString(Qt::ISODate) + QStringLiteral("' AND DATE(re.start, 'unixepoch') <= '")
-                + end.toString(Qt::ISODate) + QStringLiteral("' ");
+            return QStringLiteral("DATE(re.start, 'unixepoch') >= '") +
+                    start.toString(Qt::ISODate) + QStringLiteral("' AND DATE(re.start, 'unixepoch') <= '") +
+                    end.toString(Qt::ISODate) + QStringLiteral("' ");
         }
     }
 
-    QString resourceEventJoinClause() const
-    {
+    QString resourceEventJoinClause() const {
         return QStringLiteral(R"sql(
             LEFT JOIN
                 ResourceEvent re
@@ -209,13 +214,16 @@ public:
      * Transforms the input list's elements with the f member method,
      * and returns the resulting list
      */
-    template<typename F>
-    inline QStringList transformedList(const QStringList &input, F f) const
+    template <typename F>
+    inline
+    QStringList transformedList(const QStringList &input, F f) const
     {
         using namespace std::placeholders;
 
         QStringList result;
-        boost::transform(input, std::back_inserter(result), std::bind(f, this, _1));
+        boost::transform(input,
+                         std::back_inserter(result),
+                         std::bind(f, this, _1));
 
         return result;
     }
@@ -241,24 +249,31 @@ public:
     {
         // ORDER BY column
         auto ordering = queryDefinition.ordering();
-        QString orderingColumn = QStringLiteral("linkStatus DESC, ")
-            + (ordering == HighScoredFirst            ? QStringLiteral("score DESC,")
-                   : ordering == RecentlyCreatedFirst ? QStringLiteral("firstUpdate DESC,")
-                   : ordering == RecentlyUsedFirst    ? QStringLiteral("lastUpdate DESC,")
-                   : ordering == OrderByTitle         ? QStringLiteral("title ASC,")
-                                                      : QString());
+        /* clang-format off */
+        QString orderingColumn = QStringLiteral("linkStatus DESC, ") + (
+                ordering == HighScoredFirst      ? QStringLiteral("score DESC,")
+              : ordering == RecentlyCreatedFirst ? QStringLiteral("firstUpdate DESC,")
+              : ordering == RecentlyUsedFirst    ? QStringLiteral("lastUpdate DESC,")
+              : ordering == OrderByTitle         ? QStringLiteral("title ASC,")
+              : QString()
+            );
+        /* clang-format on */
 
         // WHERE clause for filtering on agents
-        QStringList agentsFilter = transformedList(queryDefinition.agents(), &ResultSetPrivate::agentClause);
+        QStringList agentsFilter = transformedList(
+                queryDefinition.agents(), &ResultSetPrivate::agentClause);
 
         // WHERE clause for filtering on activities
-        QStringList activitiesFilter = transformedList(queryDefinition.activities(), &ResultSetPrivate::activityClause);
+        QStringList activitiesFilter = transformedList(
+                queryDefinition.activities(), &ResultSetPrivate::activityClause);
 
         // WHERE clause for filtering on resource URLs
-        QStringList urlFilter = transformedList(queryDefinition.urlFilters(), &ResultSetPrivate::urlFilterClause);
+        QStringList urlFilter = transformedList(
+                queryDefinition.urlFilters(), &ResultSetPrivate::urlFilterClause);
 
         // WHERE clause for filtering on resource mime
-        QStringList mimetypeFilter = transformedList(queryDefinition.types(), &ResultSetPrivate::mimetypeClause);
+        QStringList mimetypeFilter = transformedList(
+                queryDefinition.types(), &ResultSetPrivate::mimetypeClause);
 
         QString dateColumn = QStringLiteral("1"), resourceEventJoin;
         // WHERE clause for access date filtering and ResourceEvent table Join
@@ -271,17 +286,18 @@ public:
         auto queryString = _query;
 
         queryString.replace(QStringLiteral("ORDER_BY_CLAUSE"), QStringLiteral("ORDER BY $orderingColumn resource ASC"))
-            .replace(QStringLiteral("LIMIT_CLAUSE"), limitOffsetSuffix());
+                   .replace(QStringLiteral("LIMIT_CLAUSE"), limitOffsetSuffix());
 
-        return kamd::utils::debug_and_return(DEBUG_QUERIES,
-                                             "Query: ",
-                                             queryString.replace(QLatin1String("$orderingColumn"), orderingColumn)
-                                                 .replace(QLatin1String("$agentsFilter"), agentsFilter.join(QStringLiteral(" OR ")))
-                                                 .replace(QLatin1String("$activitiesFilter"), activitiesFilter.join(QStringLiteral(" OR ")))
-                                                 .replace(QLatin1String("$urlFilter"), urlFilter.join(QStringLiteral(" OR ")))
-                                                 .replace(QLatin1String("$mimetypeFilter"), mimetypeFilter.join(QStringLiteral(" OR ")))
-                                                 .replace(QLatin1String("$resourceEventJoin"), resourceEventJoin)
-                                                 .replace(QLatin1String("$dateFilter"), dateColumn));
+        return kamd::utils::debug_and_return(DEBUG_QUERIES, "Query: ",
+            queryString
+                .replace(QLatin1String("$orderingColumn"), orderingColumn)
+                .replace(QLatin1String("$agentsFilter"), agentsFilter.join(QStringLiteral(" OR ")))
+                .replace(QLatin1String("$activitiesFilter"), activitiesFilter.join(QStringLiteral(" OR ")))
+                .replace(QLatin1String("$urlFilter"), urlFilter.join(QStringLiteral(" OR ")))
+                .replace(QLatin1String("$mimetypeFilter"), mimetypeFilter.join(QStringLiteral(" OR ")))
+                .replace(QLatin1String("$resourceEventJoin"), resourceEventJoin)
+                .replace(QLatin1String("$dateFilter"), dateColumn)
+            );
     }
 
     static const QString &linkedResourcesQuery()
@@ -289,7 +305,9 @@ public:
         // TODO: We need to correct the scores based on the time that passed
         //       since the cache was last updated, although, for this query,
         //       scores are not that important.
-        static const QString queryString = QStringLiteral(R"sql(
+        /* clang-format off */
+        static const QString queryString =
+            QStringLiteral(R"sql(
             SELECT
                 from_table.targettedResource as resource
               , SUM(rsc.cachedScore)         as score
@@ -325,7 +343,9 @@ public:
 
             ORDER_BY_CLAUSE
             LIMIT_CLAUSE
-            )sql");
+            )sql")
+            ;
+        /* clang-format on */
 
         return queryString;
     }
@@ -334,7 +354,8 @@ public:
     {
         // TODO: We need to correct the scores based on the time that passed
         //       since the cache was last updated
-        static const QString queryString = QStringLiteral(R"sql(
+        static const QString queryString =
+            QStringLiteral(R"sql(
             SELECT
                 from_table.targettedResource as resource
               , SUM(from_table.cachedScore)  as score
@@ -365,7 +386,8 @@ public:
 
             ORDER_BY_CLAUSE
             LIMIT_CLAUSE
-            )sql");
+            )sql")
+            ;
 
         return queryString;
     }
@@ -375,7 +397,8 @@ public:
         // TODO: We need to correct the scores based on the time that passed
         //       since the cache was last updated, although, for this query,
         //       scores are not that important.
-        static const QString queryString = QStringLiteral(R"sql(
+        static const QString queryString =
+            QStringLiteral(R"sql(
             WITH
                 LinkedResourcesResults AS (
                     SELECT from_table.targettedResource as resource
@@ -459,7 +482,8 @@ public:
 
                 ORDER_BY_CLAUSE
                 LIMIT_CLAUSE
-            )sql");
+            )sql")
+            ;
 
         return queryString;
     }
@@ -468,8 +492,7 @@ public:
     {
         ResultSet::Result result;
 
-        if (!database || !query.isActive())
-            return result;
+        if (!database || !query.isActive()) return result;
 
         result.setResource(query.value(QStringLiteral("resource")).toString());
         result.setTitle(query.value(QStringLiteral("title")).toString());
@@ -478,7 +501,8 @@ public:
         result.setLastUpdate(query.value(QStringLiteral("lastUpdate")).toUInt());
         result.setFirstUpdate(query.value(QStringLiteral("firstUpdate")).toUInt());
 
-        result.setLinkStatus(static_cast<ResultSet::Result::LinkStatus>(query.value(QStringLiteral("linkStatus")).toUInt()));
+        result.setLinkStatus(
+            static_cast<ResultSet::Result::LinkStatus>(query.value(QStringLiteral("linkStatus")).toUInt()));
 
         auto linkedActivitiesQuery = database->createQuery();
 
@@ -492,7 +516,7 @@ public:
         linkedActivitiesQuery.exec();
 
         QStringList linkedActivities;
-        for (const auto &item : linkedActivitiesQuery) {
+        for (const auto &item: linkedActivitiesQuery) {
             linkedActivities << item[0].toString();
         }
 
@@ -512,9 +536,9 @@ ResultSet::ResultSet(Query queryDefinition)
 
     if (!(d->database)) {
         qCWarning(KACTIVITIES_STATS_LOG) << "KActivities ERROR: There is no database. This probably means "
-                                            "that you do not have the Activity Manager running, or that "
-                                            "something else is broken on your system. Recent documents and "
-                                            "alike will not work!";
+                      "that you do not have the Activity Manager running, or that "
+                      "something else is broken on your system. Recent documents and "
+                      "alike will not work!";
     }
 
     d->queryDefinition = queryDefinition;
@@ -533,7 +557,7 @@ ResultSet::ResultSet(const ResultSet &source)
 {
 }
 
-ResultSet &ResultSet::operator=(ResultSet source)
+ResultSet &ResultSet::operator= (ResultSet source)
 {
     std::swap(d, source.d);
     return *this;
@@ -546,8 +570,7 @@ ResultSet::~ResultSet()
 
 ResultSet::Result ResultSet::at(int index) const
 {
-    if (!d->query.isActive())
-        return Result();
+    if (!d->query.isActive()) return Result();
 
     d->query.seek(index);
 
@@ -558,3 +581,4 @@ ResultSet::Result ResultSet::at(int index) const
 } // namespace KActivities
 
 #include "resultset_iterator.cpp"
+
