@@ -17,7 +17,7 @@ namespace Stats {
 void forgetResource(Terms::Activity activities, Terms::Agent agents,
                     const QString &resource)
 {
-    KAMD_DBUS_DECL_INTERFACE(scoring, Resources/Scoring, ResourcesScoring);
+    KAMD_DBUS_DECL_INTERFACE(scoring, "Resources/Scoring", "ResourcesScoring");
     for (const auto& activity: activities.values) {
         for (const auto& agent: agents.values) {
             scoring.call(QStringLiteral("DeleteStatsForResource"), activity, agent, resource);
@@ -27,7 +27,7 @@ void forgetResource(Terms::Activity activities, Terms::Agent agents,
 
 void forgetResources(const Query &query)
 {
-    KAMD_DBUS_DECL_INTERFACE(scoring, Resources/Scoring, ResourcesScoring);
+    KAMD_DBUS_DECL_INTERFACE(scoring, "Resources/Scoring", "ResourcesScoring");
     for (const auto& activity: query.activities()) {
         for (const auto& agent: query.agents()) {
             for (const auto& urlFilter: query.urlFilters()) {
@@ -39,7 +39,7 @@ void forgetResources(const Query &query)
 
 void forgetRecentStats(Terms::Activity activities, int count, TimeUnit what)
 {
-    KAMD_DBUS_DECL_INTERFACE(scoring, Resources/Scoring, ResourcesScoring);
+    KAMD_DBUS_DECL_INTERFACE(scoring, "Resources/Scoring", "ResourcesScoring");
     for (const auto& activity: activities.values) {
         /* clang-format off */
         scoring.call(QStringLiteral("DeleteRecentStats"), activity, count,
@@ -53,7 +53,7 @@ void forgetRecentStats(Terms::Activity activities, int count, TimeUnit what)
 
 void forgetEarlierStats(Terms::Activity activities, int months)
 {
-    KAMD_DBUS_DECL_INTERFACE(scoring, Resources/Scoring, ResourcesScoring);
+    KAMD_DBUS_DECL_INTERFACE(scoring, "Resources/Scoring", "ResourcesScoring");
     for (const auto& activity: activities.values) {
         scoring.call(QStringLiteral("DeleteEarlierStats"), activity, months);
     }

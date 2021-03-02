@@ -12,9 +12,9 @@
 
 #define KAMD_DBUS_SERVICE QStringLiteral("org.kde.ActivityManager")
 
-#define KAMD_DBUS_OBJECT_PATH(A) (sizeof(#A) > 2 ? QLatin1String("/ActivityManager/" #A) : QLatin1String("/ActivityManager"))
+#define KAMD_DBUS_OBJECT_PATH(A) (sizeof(A) > 2 ? QLatin1String("/ActivityManager/" A) : QLatin1String("/ActivityManager"))
 
-#define KAMD_DBUS_OBJECT(A) QLatin1String("org.kde.ActivityManager." #A)
+#define KAMD_DBUS_OBJECT(A) QLatin1String("org.kde.ActivityManager." A)
 
 #define KAMD_DBUS_INTERFACE(OBJECT_PATH, OBJECT, PARENT)                                                                                                       \
     QDBusInterface(KAMD_DBUS_SERVICE, KAMD_DBUS_OBJECT_PATH(OBJECT_PATH), KAMD_DBUS_OBJECT(OBJECT), QDBusConnection::sessionBus(), PARENT)
