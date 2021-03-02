@@ -53,8 +53,10 @@ public:
     QList<QRegularExpression> urlFilters;
 
     ResultWatcherPrivate(ResultWatcher *parent, Query query)
-        : linking(new KAMD_DBUS_CLASS_INTERFACE(Resources / Linking, ResourcesLinking, nullptr))
-        , scoring(new KAMD_DBUS_CLASS_INTERFACE(Resources / Scoring, ResourcesScoring, nullptr))
+/* clang-format off */
+        : linking(new KAMD_DBUS_CLASS_INTERFACE(Resources/Linking, ResourcesLinking, nullptr))
+        , scoring(new KAMD_DBUS_CLASS_INTERFACE(Resources/Scoring, ResourcesScoring, nullptr))
+/* clang-format on */
         , q(parent)
         , query(query)
     {
