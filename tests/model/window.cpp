@@ -342,11 +342,7 @@ void Window::updateResults()
         Activity(ui->comboActivity->currentText().split(QLatin1Char(','))) |
 
         // And URL filters
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-        Url(ui->textUrl->text().split(QLatin1Char(','), QString::SkipEmptyParts)) |
-#else
         Url(ui->textUrl->text().split(QLatin1Char(','), Qt::SkipEmptyParts)) |
-#endif
 
         // And date filter
         (
