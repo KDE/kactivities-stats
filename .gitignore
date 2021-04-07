@@ -18,3 +18,6 @@ GSYMS
 GTAGS
 .cmake/
 /.clang-format
+.clangd
+.idea
+/cmake-build*
