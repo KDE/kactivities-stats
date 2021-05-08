@@ -66,9 +66,7 @@ set (
    )
 
 # add_definitions (-DTRANSLATION_DOMAIN=\"kactivitiesstats5\")
-# if (IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/po")
-#     ki18n_install (po)
-# endif ()
+# ki18n_install (po)
 
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
    set(CMAKE_CXX_VISIBILITY_PRESET default)
