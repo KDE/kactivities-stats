@@ -1,6 +1,6 @@
 maintainer: ivan
 description: A library for accessing the usage data collected by the activities system.
-tier: 2
+tier: 3
 type: solution
 platforms:
     - name: Linux
