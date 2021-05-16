@@ -26,14 +26,14 @@ ecm_qt_declare_logging_category(KActivitiesStats_LIB_SRCS
 )
 
 
-qt5_add_dbus_interface (
+qt_add_dbus_interface (
    KActivitiesStats_LIB_SRCS
 
    ${KASTATS_CURRENT_ROOT_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.ResourcesScoring.xml
    resourcesscoring_interface
    )
 
-qt5_add_dbus_interface (
+qt_add_dbus_interface (
    KActivitiesStats_LIB_SRCS
 
    ${KASTATS_CURRENT_ROOT_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.ResourcesLinking.xml

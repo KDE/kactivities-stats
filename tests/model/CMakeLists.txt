@@ -15,12 +15,12 @@ set (
    main.cpp
    )
 
-qt5_wrap_ui(
+qt_wrap_ui(
    KActivitiesStatsTestApp_SRCS
    window.ui
    )
 
-qt5_add_resources(
+qt_add_resources(
    KActivitiesStatsTestApp_SRCS
    main.qrc
    )
