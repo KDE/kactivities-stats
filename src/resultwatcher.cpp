@@ -19,7 +19,6 @@
 #include <utils/debug_and_return.h>
 
 // Boost and STL
-#include <boost/range/algorithm/transform.hpp>
 #include <functional>
 #include <iterator>
 #include <limits>

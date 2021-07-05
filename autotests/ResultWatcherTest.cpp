@@ -15,10 +15,6 @@
 #include <QTest>
 #include <QTime>
 
-#include <boost/range/adaptor/transformed.hpp>
-#include <boost/range/algorithm.hpp>
-#include <boost/range/numeric.hpp>
-
 #include <KActivities/ResourceInstance>
 
 #include <query.h>
