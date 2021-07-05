@@ -4,7 +4,7 @@
     SPDX-License-Identifier: LGPL-2.1-only OR LGPL-3.0-only OR LicenseRef-KDE-Accepted-LGPL
 */
 
-#include <boost/optional.hpp>
+#include <optional>
 
 namespace KActivities
 {
@@ -28,7 +28,7 @@ public:
 
     const ResultSet *resultSet;
     int currentRow;
-    boost::optional<ResultSet::Result> currentValue;
+    std::optional<ResultSet::Result> currentValue;
 
     inline void moveTo(int row)
     {
@@ -45,14 +45,12 @@ public:
 
     void updateValue()
     {
-        using namespace boost;
-
         if (!resultSet || !resultSet->d->query.seek(currentRow)) {
-            currentValue = none;
+            currentValue.reset();
 
         } else {
             auto value = resultSet->d->currentResult();
-            currentValue = make_optional(std::move(value));
+            currentValue = std::move(value);
         }
     }
 
@@ -65,8 +63,8 @@ public:
 
     bool operator==(const ResultSet_IteratorPrivate &other) const
     {
-        bool thisValid = currentValue.is_initialized();
-        bool otherValid = other.currentValue.is_initialized();
+        bool thisValid = currentValue.has_value();
+        bool otherValid = other.currentValue.has_value();
 
         return
             // If one is valid, and the other is not,
@@ -83,7 +81,7 @@ public:
 
     bool isValid() const
     {
-        return currentValue.is_initialized();
+        return currentValue.has_value();
     }
 
     static bool sameSource(const ResultSet_IteratorPrivate &left, const ResultSet_IteratorPrivate &right)
@@ -126,12 +124,12 @@ iterator::~const_iterator()
 
 iterator::reference iterator::operator*() const
 {
-    return d->currentValue.get();
+    return d->currentValue.value();
 }
 
 iterator::pointer iterator::operator->() const
 {
-    return &d->currentValue.get();
+    return &d->currentValue.value();
 }
 
 // prefix
