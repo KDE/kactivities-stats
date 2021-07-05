@@ -175,7 +175,7 @@ void ResultSetTest::initTestCase()
         qFatal("Can not create a temporary directory");
     }
 
-    const auto databaseFile = dir.path() + QStringLiteral("/database");
+    const QString databaseFile = dir.path() + QStringLiteral("/database");
 
     Common::ResourcesDatabaseSchema::overridePath(databaseFile);
     qDebug() << "Creating database in " << databaseFile;
