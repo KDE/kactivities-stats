@@ -14,15 +14,13 @@
 #include <QTemporaryDir>
 #include <QTest>
 
-#include <boost/range/adaptor/transformed.hpp>
-#include <boost/range/algorithm.hpp>
-#include <boost/range/numeric.hpp>
-
 #include <query.h>
 #include <resultset.h>
 
 #include <common/database/Database.h>
 #include <common/database/schema/ResourcesDatabaseSchema.h>
+
+#include <numeric>
 
 namespace KAStats = KActivities::Stats;
 
@@ -33,17 +31,15 @@ ResultSetTest::ResultSetTest(QObject *parent)
 
 namespace
 {
-QString getBarredUri(const KAStats::ResultSet::Result &result)
+QString getBarredUri(QString lhs, const KAStats::ResultSet::Result &result)
 {
-    return result.resource() + QStringLiteral("|");
+    return lhs + result.resource() + QStringLiteral("|");
 }
 
 QString concatenateResults(const KAStats::ResultSet &results)
 {
-    using boost::accumulate;
-    using boost::adaptors::transformed;
-
-    return accumulate(results | transformed(getBarredUri), QStringLiteral("|"));
+    return std::accumulate(results.cbegin(), results.cend(), QStringLiteral("|"),
+                           getBarredUri);
 }
 }
 
