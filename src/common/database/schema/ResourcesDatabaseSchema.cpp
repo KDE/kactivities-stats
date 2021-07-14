@@ -27,7 +27,7 @@ QStringList schema()
     /* clang-format off */
     return QStringList()
 
-        << // Schema informations table, used for versioning
+        << // Schema information table, used for versioning
            QStringLiteral("CREATE TABLE IF NOT EXISTS SchemaInfo ("
                "key text PRIMARY KEY, value text"
            ")")
@@ -48,7 +48,7 @@ QStringList schema()
                "end INTEGER "
            ")")
 
-        << // The ResourceScoreCache table stores the calcualted scores
+        << // The ResourceScoreCache table stores the calculated scores
            // for resources based on the recorded events.
            QStringLiteral("CREATE TABLE IF NOT EXISTS ResourceScoreCache ("
                "usedActivity TEXT, "

@@ -5,7 +5,7 @@ Library to access the usage statistics data collected by the KDE activity manage
 ## Introduction
 
 The KActivitiesStats library provides a querying mechanism for the data
-that the activitiy manager collects - which documents hae been opened by
+that the activity manager collects - which documents hae been opened by
 which applications, and what documents have been linked to which activity.
 The activity manager also keeps the score for each document which gets
 higher when a particular document has been often accessed or kept open

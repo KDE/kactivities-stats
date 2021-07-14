@@ -91,7 +91,7 @@ void ResultWatcherTest::testUsedResources()
 
     KAStats::ResultWatcher watcher(UsedResources | Agent::current() | Activity::any());
 
-    // Openning a resource for a few seconds
+    // Opening a resource for a few seconds
     {
         KActivities::ResourceInstance resource(0);
         resource.setUri(QUrl(QStringLiteral("test://test1")));
