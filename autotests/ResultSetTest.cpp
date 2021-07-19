@@ -104,17 +104,15 @@ void ResultSetTest::testLinkedResources()
     using namespace KAStats;
     using namespace KAStats::Terms;
 
-    // TEST_CHUNK("Getting the linked resources alphabetically")
-    // {
-    //     ResultSet result(LinkedResources
-    //                         | Agent { "gvim" }
-    //                         | Activity { "860d9ec8-87f9-8e96-1558-1faf54b98e97" }
-    //                         | OrderAlphabetically
-    //                     );
-    //
-    //     QCOMPARE(result.at(0).resource, QStringLiteral("/path/mid1_a1"));
-    //     QCOMPARE(result.at(1).resource, QStringLiteral("/path/mid2_a1"));
-    // }
+    TEST_CHUNK("Getting the linked resources alphabetically")
+    {
+        ResultSet result(LinkedResources
+                            | Agent { QStringLiteral("gvim") }
+                            | Activity { QStringLiteral("activity1") }
+                        );
+        QCOMPARE(result.at(0).resource(), QStringLiteral("/path/mid1_a1"));
+        QCOMPARE(result.at(1).resource(), QStringLiteral("/path/mid2_a1"));
+    }
 }
 
 void ResultSetTest::testUsedResources()
