@@ -47,6 +47,58 @@ QString concatenateResults(const KAStats::ResultSet &results)
 }
 }
 
+void ResultSetTest::testConcat()
+{
+    using namespace KAStats;
+    using namespace KAStats::Terms;
+
+    TEST_CHUNK(QStringLiteral("Checking barred function"))
+    {
+        ResultSet::Result r;
+        r.setResource(QStringLiteral("quack"));
+
+        QCOMPARE(getBarredUri(KAStats::ResultSet::Result{}), QStringLiteral("|"));
+        QCOMPARE(getBarredUri(r), QStringLiteral("quack|"));
+        r.setResource(QStringLiteral("http://www.kde.org"));
+        QVERIFY(getBarredUri(r).startsWith(QStringLiteral("http://")));
+        QVERIFY(getBarredUri(r).endsWith(QStringLiteral("org|")));
+    }
+
+    TEST_CHUNK(QStringLiteral("Checking empty concatenation"))
+    {
+        ResultSet rs(KActivities::Stats::Terms::LinkedResources);
+        // There is no "count" on a resultset
+        unsigned int rs_count = 0;
+        for(const auto& r : rs)
+        {
+            Q_UNUSED(r);
+            rs_count++;
+        }
+        QCOMPARE(rs_count, 0);  // It's empty
+        QCOMPARE(concatenateResults(rs), QStringLiteral("|"));  // 0 results pasted after a "|" to start
+    }
+
+    TEST_CHUNK(QStringLiteral("Checking non-empty concatenation"))
+    {
+        ResultSet rs(UsedResources
+                    | HighScoredFirst
+                    | Agent{QStringLiteral("gvim")}
+                    );
+        // There is no "count" on a resultset
+        unsigned int rs_count = 0;
+        for(const auto& r : rs)
+        {
+            Q_UNUSED(r);
+            rs_count++;
+        }
+        QCOMPARE(rs_count, 5);  // Not empty (see data inserted into ResourceLink, in initTestCase()
+
+        const QString cat = concatenateResults(rs);
+        QCOMPARE(cat.count(QStringLiteral("|")), 6);  // 5 items, plus 1 to start
+    }
+}
+
+
 void ResultSetTest::testLinkedResources()
 {
     using namespace KAStats;

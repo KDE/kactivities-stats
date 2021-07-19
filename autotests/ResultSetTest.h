@@ -23,6 +23,7 @@ public:
 private Q_SLOTS:
     void initTestCase();
 
+    void testConcat();  ///< Tests test-implementation-details
     void testLinkedResources();
     void testUsedResources();
 
