@@ -104,7 +104,7 @@ void ResultSetTest::testLinkedResources()
     using namespace KAStats;
     using namespace KAStats::Terms;
 
-    TEST_CHUNK("Getting the linked resources alphabetically")
+    TEST_CHUNK(QStringLiteral("Getting the linked resources alphabetically"))
     {
         ResultSet result(LinkedResources
                             | Agent { QStringLiteral("gvim") }
