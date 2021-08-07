@@ -211,8 +211,8 @@ Window::Window()
     /* clang-format on */
 
     ui->comboPreset->addItem(QStringLiteral("Choose a preset"), QVariant());
-    for (const auto& presetId: presets.keys()) {
-        ui->comboPreset->addItem(presetId, presetId);
+    for (auto it = presets.cbegin(); it != presets.cend(); ++it) {
+        ui->comboPreset->addItem(it.key(), it.key());
     }
 
     connect(ui->comboPreset, SIGNAL(activated(int)),
