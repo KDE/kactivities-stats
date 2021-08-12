@@ -124,7 +124,9 @@ public:
             QStringList linkedItems;
 
             for (const ResultSet::Result &item : qAsConst(m_items)) {
-                if (item.linkStatus() == ResultSet::Result::NotLinked) break;
+                if (item.linkStatus() == ResultSet::Result::NotLinked) {
+                    break;
+                }
                 linkedItems << item.resource();
             }
 
@@ -327,7 +329,9 @@ public:
 
         inline void clear()
         {
-            if (m_items.size() == 0) return;
+            if (m_items.size() == 0) {
+                return;
+            }
 
             d->q->beginRemoveRows(QModelIndex(), 0, m_items.size() - 1);
             m_items.clear();
@@ -391,7 +395,9 @@ public:
             // in the case where somebody called this with too much new items.
             const int maxToReplace = m_countLimit - from;
 
-            if (maxToReplace <= 0) return;
+            if (maxToReplace <= 0) {
+                return;
+            }
 
             const auto newItemsEnd =
                 newItems.size() <= maxToReplace ? newItems.cend() :
@@ -504,7 +510,9 @@ public:
 
         inline void trim(int limit)
         {
-            if (m_items.size() <= limit) return;
+            if (m_items.size() <= limit) {
+                return;
+            }
 
             // Example:
             //   limit is 5,
@@ -709,7 +717,9 @@ public:
             count = query.limit() - from;
         }
 
-        if (count <= 0) return;
+        if (count <= 0) {
+            return;
+        }
 
         // In order to see whether there are more results, we need to pass
         // the count increased by one
@@ -845,7 +855,9 @@ public:
     {
         const auto result = cache.find(resource);
 
-        if (!result) return;
+        if (!result) {
+            return;
+        }
 
         if (query.selection() == Terms::UsedResources
             || result->linkStatus() != ResultSet::Result::Linked) {
@@ -864,7 +876,9 @@ public:
     {
         const auto result = cache.find(resource);
 
-        if (!result) return;
+        if (!result) {
+            return;
+        }
 
         if (query.selection() == Terms::LinkedResources) {
             removeResult(result);
@@ -886,7 +900,9 @@ public:
     //_ Title and mimetype functions
     void fillTitleAndMimetype(ResultSet::Result &result)
     {
-        if (!database) return;
+        if (!database) {
+            return;
+        }
 
         /* clang-format off */
         auto query = database->execQuery(
@@ -910,7 +926,9 @@ public:
     {
         const auto result = cache.find(resource);
 
-        if (!result) return;
+        if (!result) {
+            return;
+        }
 
         result->setTitle(title);
 
@@ -923,7 +941,9 @@ public:
 
         const auto result = cache.find(resource);
 
-        if (!result) return;
+        if (!result) {
+            return;
+        }
 
         result->setMimetype(mimetype);
 
@@ -1029,7 +1049,9 @@ int ResultModel::rowCount(const QModelIndex &parent) const
 
 void ResultModel::fetchMore(const QModelIndex &parent)
 {
-    if (parent.isValid()) return;
+    if (parent.isValid()) {
+        return;
+    }
     d->fetch(ResultModelPrivate::FetchMore);
 }
 
@@ -1059,7 +1081,9 @@ void ResultModel::forgetResource(const QString &resource)
 
 void ResultModel::forgetResource(int row)
 {
-    if (row >= d->cache.size()) return;
+    if (row >= d->cache.size()) {
+        return;
+    }
     const auto lstActivities = d->query.activities();
     for (const QString &activity : lstActivities) {
         const auto lstAgents = d->query.agents();

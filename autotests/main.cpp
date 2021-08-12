@@ -25,8 +25,9 @@ public:
 
     TestRunner &addTest(Test *test)
     {
-        if (m_nextToStart == 0)
+        if (m_nextToStart == 0) {
             m_tests << test;
+        }
         return *this;
     }
 
@@ -38,8 +39,9 @@ public:
 
     void start()
     {
-        if (m_nextToStart)
+        if (m_nextToStart) {
             return;
+        }
 
         if (m_tests.size() == 0) {
             // We do not have a QCoreApplication here, calling system exit

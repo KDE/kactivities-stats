@@ -227,7 +227,9 @@ void Window::selectPreset()
 {
     const auto id = ui->comboPreset->currentData().toString();
 
-    if (id.isEmpty()) return;
+    if (id.isEmpty()) {
+        return;
+    }
 
     const auto &query = presets[id];
     qDebug() << "Id: " << id;

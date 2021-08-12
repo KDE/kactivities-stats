@@ -313,8 +313,9 @@ void ResultSetQuickCheckTest::generateResourceInfos()
     auto *generator = QRandomGenerator::global();
     for (const QString &resource : qAsConst(resourcesList)) {
         // We want every n-th or so to be without the title
-        if (generator->bounded(3))
+        if (generator->bounded(3)) {
             continue;
+        }
 
         ResourceInfo::Item ri;
         ri.targettedResource = resource;
@@ -349,8 +350,9 @@ void ResultSetQuickCheckTest::generateResourceLinks()
     for (const QString &resource : qAsConst(resourcesList)) {
         // We don't want all the resources to be linked
         // to something
-        if (generator->bounded(2))
+        if (generator->bounded(2)) {
             continue;
+        }
 
         ResourceLink::Item rl;
 
@@ -399,7 +401,9 @@ void ResultSetQuickCheckTest::pushToDatabase()
     for (const auto &rsc : qAsConst(resourceScoreCaches)) {
         std::cerr << '.';
 
-        if (++i % 10 == 0) std::cerr << i;
+        if (++i % 10 == 0) {
+            std::cerr << i;
+        }
 
         /* clang-format off */
         database->execQuery(QStringLiteral(
@@ -440,7 +444,9 @@ void ResultSetQuickCheckTest::pushToDatabase()
     for (const auto &ri : qAsConst(resourceInfos)) {
         std::cerr << '.';
 
-        if (++i % 10 == 0) std::cerr << i;
+        if (++i % 10 == 0) {
+            std::cerr << i;
+        }
 
         /* clang-format off */
         database->execQuery(QStringLiteral(
@@ -473,7 +479,9 @@ void ResultSetQuickCheckTest::pushToDatabase()
     for (const auto &rl : qAsConst(resourceLinks)) {
         std::cerr << '.';
 
-        if (++i % 10 == 0) std::cerr << i;
+        if (++i % 10 == 0) {
+            std::cerr << i;
+        }
 
         /* clang-format off */
         database->execQuery(QStringLiteral(

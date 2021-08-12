@@ -141,7 +141,9 @@ public:
 
     QString agentClause(const QString &agent) const
     {
-        if (agent == QLatin1String(":any")) return QStringLiteral("1");
+        if (agent == QLatin1String(":any")) {
+            return QStringLiteral("1");
+        }
 
         /* clang-format off */
         return QStringLiteral("agent = '") + (
@@ -153,7 +155,9 @@ public:
 
     QString activityClause(const QString &activity) const
     {
-        if (activity == QLatin1String(":any")) return QStringLiteral("1");
+        if (activity == QLatin1String(":any")) {
+            return QStringLiteral("1");
+        }
 
         /* clang-format off */
         return QStringLiteral("activity = '") + (
@@ -172,17 +176,23 @@ public:
 
     QString urlFilterClause(const QString &urlFilter) const
     {
-        if (urlFilter == QLatin1String("*")) return QStringLiteral("1");
+        if (urlFilter == QLatin1String("*")) {
+            return QStringLiteral("1");
+        }
 
         return QStringLiteral("resource LIKE '") + Common::starPatternToLike(urlFilter) + QStringLiteral("' ESCAPE '\\'");
     }
 
     QString mimetypeClause(const QString &mimetype) const
     {
-        if (mimetype == ANY_TYPE_TAG || mimetype == QLatin1String("*")) return QStringLiteral("1");
+        if (mimetype == ANY_TYPE_TAG || mimetype == QLatin1String("*")) {
+            return QStringLiteral("1");
 
-        else if (mimetype == FILES_TYPE_TAG) return QStringLiteral("mimetype != 'inode/directory' AND mimetype != ''");
-        else if (mimetype == DIRECTORIES_TYPE_TAG) return QStringLiteral("mimetype = 'inode/directory'");
+        } else if (mimetype == FILES_TYPE_TAG) {
+            return QStringLiteral("mimetype != 'inode/directory' AND mimetype != ''");
+        } else if (mimetype == DIRECTORIES_TYPE_TAG) {
+            return QStringLiteral("mimetype = 'inode/directory'");
+        }
 
         return QStringLiteral("mimetype LIKE '") + Common::starPatternToLike(mimetype) + QStringLiteral("' ESCAPE '\\'");
     }
@@ -275,7 +285,8 @@ public:
         QStringList mimetypeFilter = transformedList(
                 queryDefinition.types(), &ResultSetPrivate::mimetypeClause);
 
-        QString dateColumn = QStringLiteral("1"), resourceEventJoin;
+        QString dateColumn = QStringLiteral("1");
+        QString resourceEventJoin;
         // WHERE clause for access date filtering and ResourceEvent table Join
         if (!queryDefinition.dateStart().isNull()) {
             dateColumn = dateClause(queryDefinition.dateStart(), queryDefinition.dateEnd());
@@ -492,7 +503,9 @@ public:
     {
         ResultSet::Result result;
 
-        if (!database || !query.isActive()) return result;
+        if (!database || !query.isActive()) {
+            return result;
+        }
 
         result.setResource(query.value(QStringLiteral("resource")).toString());
         result.setTitle(query.value(QStringLiteral("title")).toString());
@@ -570,7 +583,9 @@ ResultSet::~ResultSet()
 
 ResultSet::Result ResultSet::at(int index) const
 {
-    if (!d->query.isActive()) return Result();
+    if (!d->query.isActive()) {
+        return Result();
+    }
 
     d->query.seek(index);
 

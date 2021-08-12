@@ -135,8 +135,9 @@ public:
 
             auto database = Database::instance(Database::ResourcesDatabase, Database::ReadOnly);
 
-            if (!database)
+            if (!database) {
                 return QString();
+            }
 
             auto query = database->execQuery(QStringLiteral("SELECT mimetype FROM ResourceInfo WHERE "
                                                             "targettedResource = '")
@@ -184,11 +185,13 @@ public:
 #endif
 
         // The used resources do not really care about the linked ones
-        if (query.selection() == Terms::UsedResources)
+        if (query.selection() == Terms::UsedResources) {
             return;
+        }
 
-        if (!eventMatches(agent, resource, activity))
+        if (!eventMatches(agent, resource, activity)) {
             return;
+        }
 
         // TODO: See whether it makes sense to have
         //       lastUpdate/firstUpdate here as well
@@ -202,11 +205,13 @@ public:
 #endif
 
         // The used resources do not really care about the linked ones
-        if (query.selection() == Terms::UsedResources)
+        if (query.selection() == Terms::UsedResources) {
             return;
+        }
 
-        if (!eventMatches(agent, resource, activity))
+        if (!eventMatches(agent, resource, activity)) {
             return;
+        }
 
         Q_EMIT q->resultUnlinked(resource);
     }
@@ -220,11 +225,13 @@ public:
                    "The activity should be always specified here, no magic values");
 
         // The linked resources do not really care about the stats
-        if (query.selection() == Terms::LinkedResources)
+        if (query.selection() == Terms::LinkedResources) {
             return;
+        }
 
-        if (!eventMatches(agent, resource, activity))
+        if (!eventMatches(agent, resource, activity)) {
             return;
+        }
 
         Q_EMIT q->resultScoreUpdated(resource, score, lastUpdate, firstUpdate);
     }
@@ -232,8 +239,9 @@ public:
     void onEarlierStatsDeleted(QString, int)
     {
         // The linked resources do not really care about the stats
-        if (query.selection() == Terms::LinkedResources)
+        if (query.selection() == Terms::LinkedResources) {
             return;
+        }
 
         scheduleResultsInvalidation();
     }
@@ -241,16 +249,18 @@ public:
     void onRecentStatsDeleted(QString, int, QString)
     {
         // The linked resources do not really care about the stats
-        if (query.selection() == Terms::LinkedResources)
+        if (query.selection() == Terms::LinkedResources) {
             return;
+        }
 
         scheduleResultsInvalidation();
     }
 
     void onStatsForResourceDeleted(const QString &activity, const QString &agent, const QString &resource)
     {
-        if (query.selection() == Terms::LinkedResources)
+        if (query.selection() == Terms::LinkedResources) {
             return;
+        }
 
         if (activityMatches(activity) && agentMatches(agent)) {
             if (resource.contains(QLatin1Char('*'))) {
