@@ -6,7 +6,7 @@ set(KF_VERSION "5.86.0") # handled by release scripts
 set(KF_DEP_VERSION "5.85.0") # handled by release scripts
 project (KActivitiesStats VERSION ${KF_VERSION})
 
-set (REQUIRED_QT_VERSION 5.15.0)
+set (REQUIRED_QT_VERSION 5.15.2)
 
 # We don't build in-source
 if ("${CMAKE_SOURCE_DIR}" STREQUAL "${CMAKE_BINARY_DIR}")
@@ -82,7 +82,7 @@ ecm_setup_version (
    PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/KF5ActivitiesStatsConfigVersion.cmake"
    SOVERSION 1
    )
-add_definitions(-DQT_DISABLE_DEPRECATED_BEFORE=0x050f00)
+add_definitions(-DQT_DISABLE_DEPRECATED_BEFORE=0x050f02)
 add_definitions(-DKF_DISABLE_DEPRECATED_BEFORE_AND_AT=0x055100)
 
 add_subdirectory (src)
