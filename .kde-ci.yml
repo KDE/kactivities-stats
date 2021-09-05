@@ -1,0 +1,8 @@
+Dependencies:
+- 'on': ['Linux']
+  'require':
+    'frameworks/extra-cmake-modules': '@same'
+    'frameworks/kactivities' : '@same'
+
+Options:
+  test-before-installing: True
