@@ -238,7 +238,8 @@ inline QDebug operator<<(QDebug out, const ResultSet::Result &result)
     return out << (result.linkStatus() == ResultSet::Result::Linked          ? "⊤"
                        : result.linkStatus() == ResultSet::Result::NotLinked ? "⊥"
                                                                              : "?")
-               << result.score() << (result.title() != result.resource() ? result.title() : QString()) << result.lastUpdate() << result.resource().rightRef(20);
+               << result.score() << (result.title() != result.resource() ? result.title() : QString()) << result.lastUpdate()
+               << QStringView(result.resource()).right(20);
 }
 
 } // namespace Stats
