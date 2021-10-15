@@ -196,7 +196,7 @@ struct KACTIVITIESSTATS_EXPORT Url {
     static Url localFile();
 
     /**
-     * Show local files, smb, fish, ftp and stfp
+     * Show local files, smb, fish, ftp and sftp
      */
     static Url file();
 
