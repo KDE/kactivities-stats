@@ -144,14 +144,13 @@ if(BUILD_QCH)
 endif()
 
 if (NOT WIN32)
-   configure_file (
-      ${CMAKE_CURRENT_SOURCE_DIR}/libKActivitiesStats.pc.cmake
-      ${CMAKE_CURRENT_BINARY_DIR}/libKActivitiesStats.pc
-      )
-   install (
-      FILES ${CMAKE_CURRENT_BINARY_DIR}/libKActivitiesStats.pc
-      DESTINATION ${KDE_INSTALL_LIBDIR}/pkgconfig
-      )
+    ecm_generate_pkgconfig_file(BASE_NAME libKActivitiesStats
+      LIB_NAME KF5ActivitiesStats
+      INCLUDE_INSTALL_DIR ${KDE_INSTALL_INCLUDEDIR_KF5}/KActivitiesStats
+      DEPS Qt5Core
+      DESCRIPTION "libKActivitiesStats is a C++ library for using KDE activities"
+      INSTALL
+    )
 endif ()
 
 include (ECMGeneratePriFile)

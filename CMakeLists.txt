@@ -32,6 +32,7 @@ include(KDEGitCommitHooks)
 include (KDEFrameworkCompilerSettings NO_POLICY_SCOPE)
 include (GenerateExportHeader)
 include (ECMGenerateHeaders)
+include (ECMGeneratePkgConfigFile)
 include (ECMAddQch)
 include (ECMQtDeclareLoggingCategory)
 
