@@ -17,7 +17,7 @@ ConsumerPtr instance()
     static std::mutex s_instanceMutex;
     static std::weak_ptr<KActivities::Consumer> s_instance;
 
-    std::unique_lock<std::mutex> locker;
+    std::unique_lock<std::mutex> locker{s_instanceMutex};
 
     auto ptr = s_instance.lock();
 
