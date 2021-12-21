@@ -1,7 +1,7 @@
 # vim:set softtabstop=3 shiftwidth=3 tabstop=3 expandtab:
 project (KActivitiesStatsAutotests)
 
-find_package (Qt5 REQUIRED NO_MODULE COMPONENTS Test Core DBus Sql)
+find_package (Qt${QT_MAJOR_VERSION} REQUIRED NO_MODULE COMPONENTS Test Core DBus Sql)
 
 include_directories (
    ${KASTATS_CURRENT_ROOT_SOURCE_DIR}/src
@@ -37,10 +37,10 @@ if (NOT WIN32)
       KActivitiesStatsTest
       Boost::boost
 
-      Qt5::Core
-      Qt5::Test
-      Qt5::DBus
-      Qt5::Sql
+      Qt${QT_MAJOR_VERSION}::Core
+      Qt${QT_MAJOR_VERSION}::Test
+      Qt${QT_MAJOR_VERSION}::DBus
+      Qt${QT_MAJOR_VERSION}::Sql
 
       KF5::Activities
       KF5::ActivitiesStats

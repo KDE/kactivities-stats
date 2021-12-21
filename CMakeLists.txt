@@ -41,7 +41,7 @@ add_feature_info(QCH ${BUILD_QCH} "API documentation in QCH format (for e.g. Qt 
 
 # Qt
 set (CMAKE_AUTOMOC ON)
-find_package (Qt5 ${REQUIRED_QT_VERSION} CONFIG REQUIRED COMPONENTS Core DBus Sql)
+find_package (Qt${QT_MAJOR_VERSION} ${REQUIRED_QT_VERSION} CONFIG REQUIRED COMPONENTS Core DBus Sql)
 
 # KDE Frameworks
 # find_package (KF5DBusAddons ${KF_DEP_VERSION} CONFIG REQUIRED)
@@ -126,7 +126,7 @@ install (
 
 install (
    FILES ${CMAKE_CURRENT_BINARY_DIR}/kactivitiesstats_version.h
-   DESTINATION ${KDE_INSTALL_INCLUDEDIR_KF5} COMPONENT Devel
+   DESTINATION ${KDE_INSTALL_INCLUDEDIR_KF} COMPONENT Devel
    )
 
 # Write out the features
