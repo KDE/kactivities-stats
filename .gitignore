@@ -22,3 +22,4 @@ GTAGS
 .idea
 /cmake-build*
 .cache
+/build*/
