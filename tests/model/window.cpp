@@ -23,8 +23,6 @@
 
 #include <KActivities/Consumer>
 
-#include <boost/range/numeric.hpp>
-
 namespace KAStats = KActivities::Stats;
 
 using namespace KAStats;

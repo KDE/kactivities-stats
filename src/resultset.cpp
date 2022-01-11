@@ -20,8 +20,7 @@
 #include <utils/qsqlquery_iterator.h>
 #include "kactivities-stats-logsettings.h"
 
-// Boost and STL
-#include <boost/range/algorithm/transform.hpp>
+// STL
 #include <iterator>
 #include <functional>
 #include <mutex>
@@ -231,7 +230,7 @@ public:
         using namespace std::placeholders;
 
         QStringList result;
-        boost::transform(input,
+        std::transform(input.cbegin(), input.cend(),
                          std::back_inserter(result),
                          std::bind(f, this, _1));
 

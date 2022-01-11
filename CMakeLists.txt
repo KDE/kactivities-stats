@@ -50,7 +50,7 @@ find_package (KF5Config ${KF_DEP_VERSION} CONFIG REQUIRED)
 find_package (KF5Activities ${KF_DEP_VERSION} CONFIG REQUIRED)
 
 set(Boost_NO_BOOST_CMAKE ON)
-find_package (Boost 1.49 REQUIRED)
+find_package (Boost 1.49)
 
 # Basic includes
 include (CPack)
@@ -88,7 +88,9 @@ add_definitions(-DKF_DISABLE_DEPRECATED_BEFORE_AND_AT=0x055900)
 
 add_subdirectory (src)
 if(BUILD_TESTING)
-  add_subdirectory (autotests)
+  if (Boost_FOUND)
+    add_subdirectory (autotests)
+  endif ()
   add_subdirectory (tests)
 endif (BUILD_TESTING)
 

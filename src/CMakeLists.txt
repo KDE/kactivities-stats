@@ -64,7 +64,6 @@ target_link_libraries (
    PUBLIC
       Qt${QT_MAJOR_VERSION}::Core
    PRIVATE
-      Boost::boost
       Qt${QT_MAJOR_VERSION}::DBus
       Qt${QT_MAJOR_VERSION}::Sql
       KF5::Activities

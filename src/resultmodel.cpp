@@ -13,10 +13,8 @@
 #include <QCoreApplication>
 #include <QFile>
 
-// STL and Boost
+// STL
 #include <functional>
-#include <boost/range/algorithm/find_if.hpp>
-#include <boost/range/algorithm/count_if.hpp>
 
 // KDE
 #include <KSharedConfig>
@@ -265,10 +263,10 @@ public:
         inline FindCacheResult find(const QString &resource)
         {
             using namespace kamd::utils::member_matcher;
-            using boost::find_if;
 
+            // Non-const iterator because the result is constructed from it
             return FindCacheResult(
-                this, find_if(m_items, member(&ResultSet::Result::resource)
+                this, std::find_if(m_items.begin(), m_items.end(), member(&ResultSet::Result::resource)
                                            == resource));
         }
 
@@ -276,7 +274,7 @@ public:
         inline FindCacheResult lowerBoundWithSkippedResource(Predicate &&lessThanPredicate)
         {
             using namespace kamd::utils::member_matcher;
-            const int count = boost::count_if(m_items,
+            const int count = std::count_if(m_items.cbegin(), m_items.cend(),
                     [&] (const ResultSet::Result &result) {
                         return lessThanPredicate(result, _);
                     });

@@ -18,8 +18,7 @@
 #include <common/database/Database.h>
 #include <utils/debug_and_return.h>
 
-// Boost and STL
-#include <boost/range/algorithm/transform.hpp>
+// STL
 #include <functional>
 #include <iterator>
 #include <limits>
@@ -67,7 +66,6 @@ public:
         QObject::connect(&m_resultInvalidationTimer, &QTimer::timeout, q, Q_EMIT & ResultWatcher::resultsInvalidated);
     }
 
-    // Like boost any_of, but returning true if the range is empty
     template<typename Collection, typename Predicate>
     inline bool any_of(const Collection &collection, Predicate &&predicate) const
     {

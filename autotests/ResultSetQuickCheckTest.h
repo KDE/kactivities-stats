@@ -13,14 +13,11 @@
 #include <memory>
 
 #include <QScopedPointer>
-#include <boost/container/flat_set.hpp>
 #include <set>
 
 #include "quickcheck/tables/ResourceInfo.h"
 #include "quickcheck/tables/ResourceLink.h"
 #include "quickcheck/tables/ResourceScoreCache.h"
-
-using boost::container::flat_set;
 
 class ResultSetQuickCheckTest : public Test
 {

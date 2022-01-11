@@ -4,9 +4,9 @@ tier: 3
 type: solution
 platforms:
     - name: Linux
-      note: Needs QtDBus, QtSql, KActivities, boost
-    - name: FreeBSD 
-      note: Needs QtDBus, QtSql, KActivities, boost
+      note: Needs QtDBus, QtSql, KActivities, Boost (optional, for autotests)
+    - name: FreeBSD
+      note: Needs QtDBus, QtSql, KActivities, Boost (optional, for autotests)
 portingAid: false
 deprecated: false
 release: true

@@ -34,7 +34,6 @@ if (NOT WIN32)
 
    target_link_libraries (
       KActivitiesStatsTestApp
-      Boost::boost
 
       Qt${QT_MAJOR_VERSION}::Core
       Qt${QT_MAJOR_VERSION}::Gui

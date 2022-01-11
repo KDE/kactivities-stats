@@ -88,7 +88,7 @@ public:
 
     /**
      * ResultSet is a container. This notifies the generic algorithms
-     * from STLboost, and others of the contained type.
+     * from STL and others of the contained type.
      */
     typedef Result value_type;
 

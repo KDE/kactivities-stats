@@ -14,15 +14,13 @@
 #include <QTemporaryDir>
 #include <QTest>
 
-#include <boost/range/adaptor/transformed.hpp>
-#include <boost/range/algorithm.hpp>
-#include <boost/range/numeric.hpp>
-
 #include <query.h>
 #include <resultset.h>
 
 #include <common/database/Database.h>
 #include <common/database/schema/ResourcesDatabaseSchema.h>
+
+#include <numeric>
 
 namespace KAStats = KActivities::Stats;
 
@@ -33,17 +31,15 @@ ResultSetTest::ResultSetTest(QObject *parent)
 
 namespace
 {
-QString getBarredUri(const KAStats::ResultSet::Result &result)
+QString getBarredUri(QString lhs, const KAStats::ResultSet::Result &result)
 {
-    return result.resource() + QStringLiteral("|");
+    return lhs + result.resource() + QStringLiteral("|");
 }
 
 QString concatenateResults(const KAStats::ResultSet &results)
 {
-    using boost::accumulate;
-    using boost::adaptors::transformed;
-
-    return accumulate(results | transformed(getBarredUri), QStringLiteral("|"));
+    return std::accumulate(results.cbegin(), results.cend(), QStringLiteral("|"),
+                           getBarredUri);
 }
 }
 
@@ -57,11 +53,11 @@ void ResultSetTest::testConcat()
         ResultSet::Result r;
         r.setResource(QStringLiteral("quack"));
 
-        QCOMPARE(getBarredUri(KAStats::ResultSet::Result{}), QStringLiteral("|"));
-        QCOMPARE(getBarredUri(r), QStringLiteral("quack|"));
+        QCOMPARE(getBarredUri(QString(), KAStats::ResultSet::Result{}), QStringLiteral("|"));
+        QCOMPARE(getBarredUri(QString(), r), QStringLiteral("quack|"));
         r.setResource(QStringLiteral("http://www.kde.org"));
-        QVERIFY(getBarredUri(r).startsWith(QStringLiteral("http://")));
-        QVERIFY(getBarredUri(r).endsWith(QStringLiteral("org|")));
+        QVERIFY(getBarredUri(QString(), r).startsWith(QStringLiteral("http://")));
+        QVERIFY(getBarredUri(QString(), r).endsWith(QStringLiteral("org|")));
     }
 
     TEST_CHUNK(QStringLiteral("Checking empty concatenation"))
