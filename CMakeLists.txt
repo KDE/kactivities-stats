@@ -35,6 +35,7 @@ include (ECMGenerateHeaders)
 include (ECMGeneratePkgConfigFile)
 include (ECMAddQch)
 include (ECMQtDeclareLoggingCategory)
+include(ECMDeprecationSettings)
 
 option(BUILD_QCH "Build API documentation in QCH format (for e.g. Qt Assistant, Qt Creator & KDevelop)" OFF)
 add_feature_info(QCH ${BUILD_QCH} "API documentation in QCH format (for e.g. Qt Assistant, Qt Creator & KDevelop)")
@@ -83,8 +84,11 @@ ecm_setup_version (
    PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/KF5ActivitiesStatsConfigVersion.cmake"
    SOVERSION 1
    )
-add_definitions(-DQT_DISABLE_DEPRECATED_BEFORE=0x050f02)
-add_definitions(-DKF_DISABLE_DEPRECATED_BEFORE_AND_AT=0x055900)
+ecm_set_disabled_deprecation_versions(
+    QT 5.15.2
+    KF 5.90.0
+)
+
 
 add_subdirectory (src)
 if(BUILD_TESTING)
