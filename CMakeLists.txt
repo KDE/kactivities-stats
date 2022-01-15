@@ -132,7 +132,7 @@ install (
 
 install (
    FILES ${CMAKE_CURRENT_BINARY_DIR}/kactivitiesstats_version.h
-   DESTINATION ${KDE_INSTALL_INCLUDEDIR_KF} COMPONENT Devel
+   DESTINATION ${KDE_INSTALL_INCLUDEDIR_KF}/KActivitiesStats COMPONENT Devel
    )
 
 # Write out the features
