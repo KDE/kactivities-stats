@@ -50,9 +50,6 @@ find_package (Qt${QT_MAJOR_VERSION} ${REQUIRED_QT_VERSION} CONFIG REQUIRED COMPO
 find_package (KF5Config ${KF_DEP_VERSION} CONFIG REQUIRED)
 find_package (KF5Activities ${KF_DEP_VERSION} CONFIG REQUIRED)
 
-set(Boost_NO_BOOST_CMAKE ON)
-find_package (Boost 1.49)
-
 # Basic includes
 include (CPack)
 
@@ -92,6 +89,8 @@ ecm_set_disabled_deprecation_versions(
 
 add_subdirectory (src)
 if(BUILD_TESTING)
+  set(Boost_NO_BOOST_CMAKE ON)
+  find_package (Boost 1.49)
   if (Boost_FOUND)
     add_subdirectory (autotests)
   endif ()
