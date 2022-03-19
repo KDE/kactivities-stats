@@ -49,6 +49,7 @@ find_package (Qt${QT_MAJOR_VERSION} ${REQUIRED_QT_VERSION} CONFIG REQUIRED COMPO
 # find_package (KF5I18n ${KF_DEP_VERSION} CONFIG REQUIRED)
 find_package (KF5Config ${KF_DEP_VERSION} CONFIG REQUIRED)
 find_package (KF5Activities ${KF_DEP_VERSION} CONFIG REQUIRED)
+find_package(Threads REQUIRED)
 
 # Basic includes
 include (CPack)

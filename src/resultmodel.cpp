@@ -8,13 +8,15 @@
 #include "resultmodel.h"
 
 // Qt
-#include <QDebug>
-#include <QDateTime>
 #include <QCoreApplication>
+#include <QDateTime>
+#include <QDebug>
 #include <QFile>
+#include <QTimer>
 
 // STL
 #include <functional>
+#include <thread>
 
 // KDE
 #include <KSharedConfig>
@@ -493,11 +495,24 @@ public:
 
             // Check whether we got an item representing a non-existent file,
             // if so, schedule its removal from the database
-            for (const auto &item: newItems) {
-                if (item.resource().startsWith(QLatin1Char('/')) && !QFile(item.resource()).exists()) {
-                    d->q->forgetResource(item.resource());
+            // we want to do this async so that we don't block
+            std::thread([=] {
+                QList<QString> missingResources;
+                for (const auto &item: newItems) {
+                    // QFile.exists() can be incredibly slow (eg. if resource is on remote filesystem)
+                    if (item.resource().startsWith(QLatin1Char('/')) && !QFile(item.resource()).exists()) {
+                        missingResources << item.resource();
+                    }
                 }
-            }
+
+                if (missingResources.empty()) {
+                    return;
+                }
+
+                QTimer::singleShot(0, this->d->q, [=] {
+                    d->q->forgetResources(missingResources);
+                });
+            }).detach();
         }
         //^
 

@@ -68,6 +68,7 @@ target_link_libraries (
       Qt${QT_MAJOR_VERSION}::Sql
       KF5::Activities
       KF5::ConfigCore
+      Threads::Threads
    )
 
 target_include_directories (
