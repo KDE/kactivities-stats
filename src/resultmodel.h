@@ -75,6 +75,11 @@ public Q_SLOTS:
     void forgetResource(const QString &resource);
 
     /**
+     * Removes specified list of resources from the history
+     */
+    void forgetResources(const QList<QString> &resources);
+
+    /**
      * Removes the specified resource from the history
      */
     void forgetResource(int row);

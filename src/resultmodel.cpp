@@ -1060,21 +1060,28 @@ bool ResultModel::canFetchMore(const QModelIndex &parent) const
          : d->hasMore;
 }
 
-void ResultModel::forgetResource(const QString &resource)
+void ResultModel::forgetResources(const QList<QString> &resources)
 {
     const auto lstActivities = d->query.activities();
     for (const QString &activity : lstActivities) {
         const auto lstAgents = d->query.agents();
         for (const QString &agent : lstAgents) {
-            /* clang-format off */
-            Stats::forgetResource(
-                    activity,
-                    agent == CURRENT_AGENT_TAG ?
-                        QCoreApplication::applicationName() : agent,
-                    resource);
-            /* clang-format on */
+            for (const QString &resource : resources) {
+                /* clang-format off */
+                Stats::forgetResource(
+                        activity,
+                        agent == CURRENT_AGENT_TAG ?
+                            QCoreApplication::applicationName() : agent,
+                        resource);
+                /* clang-format on */
+            }
         }
     }
+}
+
+void ResultModel::forgetResource(const QString &resource)
+{
+    ResultModel::forgetResources({ resource });
 }
 
 void ResultModel::forgetResource(int row)
