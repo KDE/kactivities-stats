@@ -12,7 +12,6 @@
 #include <KActivities/Controller>
 #include <memory>
 
-#include <QScopedPointer>
 #include <set>
 
 #include "quickcheck/tables/ResourceInfo.h"
@@ -36,7 +35,7 @@ private Q_SLOTS:
     void cleanupTestCase();
 
 public:
-    QScopedPointer<KActivities::Consumer> activities;
+    std::unique_ptr<KActivities::Consumer> activities;
 
     struct PrimaryKeyOrder {
         template<typename T>

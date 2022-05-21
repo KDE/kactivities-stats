@@ -122,7 +122,7 @@ public:
         return database ? QSqlQuery(database->get()) : QSqlQuery();
     }
 
-    QScopedPointer<QSqlDatabaseWrapper> database;
+    std::unique_ptr<QSqlDatabaseWrapper> database;
 };
 
 Database::Locker::Locker(Database &database)
@@ -160,7 +160,7 @@ Database::Ptr Database::instance(Source source, OpenMode openMode)
     // Creating a new database instance
     auto ptr = std::make_shared<Database>();
 
-    ptr->d->database.reset(new QSqlDatabaseWrapper(info));
+    ptr->d->database = std::make_unique<QSqlDatabaseWrapper>(info);
 
     if (!ptr->d->database->isOpen()) {
         return nullptr;

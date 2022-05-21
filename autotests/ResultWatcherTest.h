@@ -12,8 +12,6 @@
 #include <KActivities/Controller>
 #include <memory>
 
-#include <QScopedPointer>
-
 class ResultWatcherTest : public Test
 {
     Q_OBJECT

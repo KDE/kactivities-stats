@@ -42,7 +42,7 @@ static ResultSetQuickCheckTest *instance;
 
 ResultSetQuickCheckTest::ResultSetQuickCheckTest(QObject *parent)
     : Test(parent)
-    , activities(new KActivities::Consumer())
+    , activities(std::make_unique<KActivities::Consumer>())
 {
     instance = this;
 }

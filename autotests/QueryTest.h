@@ -11,8 +11,6 @@
 
 #include <KActivities/Controller>
 
-#include <QScopedPointer>
-
 class QueryTest : public Test
 {
     Q_OBJECT
