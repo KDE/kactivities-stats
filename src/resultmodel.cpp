@@ -43,6 +43,8 @@
 namespace KActivities {
 namespace Stats {
 
+using Common::Database;
+
 class ResultModelPrivate {
 public:
     ResultModelPrivate(Query query, const QString &clientId, ResultModel *parent)
@@ -50,10 +52,9 @@ public:
         , query(query)
         , watcher(query)
         , hasMore(true)
+        , database(Database::instance(Database::ResourcesDatabase, Database::ReadOnly))
         , q(parent)
     {
-        using Common::Database;
-        database = Database::instance(Database::ResourcesDatabase, Database::ReadOnly);
         s_privates << this;
     }
 
@@ -151,8 +152,6 @@ public:
                 Q_ASSERT(resourcePosition.index == linkedItems.indexOf(resourcePath));
                 auto oldPosition = linkedItems.indexOf(resourcePath);
 
-                const auto oldLinkedItems = linkedItems;
-
                 kamd::utils::move_one(
                         linkedItems.begin() + oldPosition,
                         linkedItems.begin() + position);
@@ -170,7 +169,7 @@ public:
             m_orderingConfig.sync();
 
             // We need to notify others to reload
-            for (const auto& other: s_privates) {
+            for (const auto &other : qAsConst(s_privates)) {
                 if (other != d && other->cache.m_clientId == m_clientId) {
                     other->fetch(FetchReset);
                 }
@@ -659,7 +658,7 @@ public:
         const int oldPosition = result.index;
         int position = destination.index;
 
-        q->dataChanged(q->index(oldPosition), q->index(oldPosition));
+        Q_EMIT q->dataChanged(q->index(oldPosition), q->index(oldPosition));
 
         if (oldPosition == position) {
             return;
@@ -945,7 +944,7 @@ public:
 
         result->setTitle(title);
 
-        q->dataChanged(q->index(result.index), q->index(result.index));
+        Q_EMIT q->dataChanged(q->index(result.index), q->index(result.index));
     }
 
     void onResourceMimetypeChanged(const QString &resource, const QString &mimetype)
@@ -960,7 +959,7 @@ public:
 
         result->setMimetype(mimetype);
 
-        q->dataChanged(q->index(result.index), q->index(result.index));
+        Q_EMIT q->dataChanged(q->index(result.index), q->index(result.index));
     }
     //^
 

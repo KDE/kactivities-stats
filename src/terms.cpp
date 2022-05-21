@@ -16,12 +16,12 @@ namespace Stats
 // Term classes
 #define IMPLEMENT_TERM_CONSTRUCTORS(TYPE)                                                                                                                      \
     Terms::TYPE::TYPE(QStringList values)                                                                                                                      \
-        : values(values)                                                                                                                                       \
+        : values(std::move(values))                                                                                                                            \
     {                                                                                                                                                          \
     }                                                                                                                                                          \
                                                                                                                                                                \
     Terms::TYPE::TYPE(QString value)                                                                                                                           \
-        : values(QStringList() << value)                                                                                                                       \
+        : values(QStringList() << std::move(value))                                                                                                            \
     {                                                                                                                                                          \
     }
 
@@ -72,13 +72,13 @@ Terms::Offset::Offset(int value)
 }
 
 Terms::Date::Date(QDate value)
-    : start(value)
+    : start(std::move(value))
 {
 }
 
 Terms::Date::Date(QDate start, QDate end)
-    : start(start)
-    , end(end)
+    : start(std::move(start))
+    , end(std::move(end))
 {
 }
 
