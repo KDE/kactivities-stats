@@ -167,7 +167,6 @@ void QueryTest::testFancySyntaxBasic()
     QCOMPARE(query.activities(), QStringList() << QStringLiteral(":current"));
     QCOMPARE(query.ordering(), RecentlyCreatedFirst);
 
-#ifdef Q_COMPILER_INITIALIZER_LISTS
     TEST_CHUNK(QStringLiteral("Testing the fancy syntax, c++11"))
 
     /* clang-format off */
@@ -179,7 +178,6 @@ void QueryTest::testFancySyntaxBasic()
     /* clang-format on */
 
     QCOMPARE(query, queryCXX11);
-#endif
 }
 
 void QueryTest::testFancySyntaxAgentDefinition()

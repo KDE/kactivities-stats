@@ -7,11 +7,7 @@
 #ifndef KACTIVITIES_STATS_QUERY_H
 #define KACTIVITIES_STATS_QUERY_H
 
-#include <qcompilerdetection.h>
-
-#ifdef Q_COMPILER_INITIALIZER_LISTS
 #include <initializer_list>
-#endif
 
 #include <QString>
 #include <QStringList>

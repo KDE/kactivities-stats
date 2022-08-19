@@ -7,11 +7,7 @@
 #ifndef KACTIVITIES_STATS_TERMS_H
 #define KACTIVITIES_STATS_TERMS_H
 
-#include <qcompilerdetection.h>
-
-#ifdef Q_COMPILER_INITIALIZER_LISTS
 #include <initializer_list>
-#endif
 
 #include <QDate>
 #include <QString>
@@ -91,12 +87,10 @@ struct KACTIVITIESSTATS_EXPORT Type {
      */
     static Type directories();
 
-#ifdef Q_COMPILER_INITIALIZER_LISTS
     inline Type(std::initializer_list<QString> types)
         : values(types)
     {
     }
-#endif
 
     Type(QStringList types);
     Type(QString type);
@@ -126,12 +120,10 @@ struct KACTIVITIESSTATS_EXPORT Agent {
      */
     static Agent current();
 
-#ifdef Q_COMPILER_INITIALIZER_LISTS
     inline Agent(std::initializer_list<QString> agents)
         : values(agents)
     {
     }
-#endif
 
     Agent(QStringList agents);
     Agent(QString agent);
@@ -161,12 +153,10 @@ struct KACTIVITIESSTATS_EXPORT Activity {
      */
     static Activity current();
 
-#ifdef Q_COMPILER_INITIALIZER_LISTS
     inline Activity(std::initializer_list<QString> activities)
         : values(activities)
     {
     }
-#endif
 
     Activity(QStringList activities);
     Activity(QString activity);
@@ -200,12 +190,10 @@ struct KACTIVITIESSTATS_EXPORT Url {
      */
     static Url file();
 
-#ifdef Q_COMPILER_INITIALIZER_LISTS
     inline Url(std::initializer_list<QString> urlPatterns)
         : values(urlPatterns)
     {
     }
-#endif
 
     Url(QStringList urlPatterns);
     Url(QString urlPattern);
