@@ -97,7 +97,7 @@ install (
    TARGETS KF5ActivitiesStats
    EXPORT KF5ActivitiesStatsLibraryTargets
    ${SKIP_NAMELINK}
-   ${KF5_INSTALL_TARGETS_DEFAULT_ARGS}
+   ${KF_INSTALL_TARGETS_DEFAULT_ARGS}
    )
 
 install (
