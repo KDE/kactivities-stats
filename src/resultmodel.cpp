@@ -124,7 +124,7 @@ public:
             // not others
             QStringList linkedItems;
 
-            for (const ResultSet::Result &item : qAsConst(m_items)) {
+            for (const ResultSet::Result &item : std::as_const(m_items)) {
                 if (item.linkStatus() == ResultSet::Result::NotLinked) {
                     break;
                 }
@@ -169,7 +169,7 @@ public:
             m_orderingConfig.sync();
 
             // We need to notify others to reload
-            for (const auto &other : qAsConst(s_privates)) {
+            for (const auto &other : std::as_const(s_privates)) {
                 if (other != d && other->cache.m_clientId == m_clientId) {
                     other->fetch(FetchReset);
                 }
