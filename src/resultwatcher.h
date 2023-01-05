@@ -55,7 +55,7 @@ Q_SIGNALS:
     void resultLinked(const QString &resource);
 
     /**
-     * Emitted when a result has been linked to the activity
+     * Emitted when a result has been unlinked from the activity
      */
     void resultUnlinked(const QString &resource);
 
