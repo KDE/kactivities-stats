@@ -42,17 +42,17 @@ qt_add_dbus_interface (
 
 
 add_library (
-   KF5ActivitiesStats SHARED
+   KF6ActivitiesStats SHARED
    ${KActivitiesStats_LIB_SRCS}
    )
-add_library(KF5::ActivitiesStats ALIAS KF5ActivitiesStats)
+add_library(KF6::ActivitiesStats ALIAS KF6ActivitiesStats)
 
 include_directories (
    ${KASTATS_CURRENT_ROOT_SOURCE_DIR}/src
    )
 
 set_target_properties (
-   KF5ActivitiesStats
+   KF6ActivitiesStats
    PROPERTIES
    VERSION ${KACTIVITIESSTATS_VERSION}
    SOVERSION ${KACTIVITIESSTATS_SOVERSION}
@@ -60,24 +60,24 @@ set_target_properties (
    )
 
 target_link_libraries (
-   KF5ActivitiesStats
+   KF6ActivitiesStats
    PUBLIC
       Qt${QT_MAJOR_VERSION}::Core
    PRIVATE
       Qt${QT_MAJOR_VERSION}::DBus
       Qt${QT_MAJOR_VERSION}::Sql
-      KF5::Activities
-      KF5::ConfigCore
+      KF6::Activities
+      KF6::ConfigCore
       Threads::Threads
    )
 
 target_include_directories (
-   KF5ActivitiesStats
+   KF6ActivitiesStats
    INTERFACE "$<INSTALL_INTERFACE:${KDE_INSTALL_INCLUDEDIR_KF}/KActivitiesStats>"
    )
 
 # install
-generate_export_header (KF5ActivitiesStats BASE_NAME KActivitiesStats)
+generate_export_header (KF6ActivitiesStats BASE_NAME KActivitiesStats)
 
 ecm_generate_headers (
    KActivitiesStats_CamelCase_HEADERS
@@ -94,8 +94,8 @@ ecm_generate_headers (
 )
 
 install (
-   TARGETS KF5ActivitiesStats
-   EXPORT KF5ActivitiesStatsLibraryTargets
+   TARGETS KF6ActivitiesStats
+   EXPORT KF6ActivitiesStatsLibraryTargets
    ${SKIP_NAMELINK}
    ${KF_INSTALL_TARGETS_DEFAULT_ARGS}
    )
@@ -120,9 +120,9 @@ ecm_qt_install_logging_categories(
 
 if(BUILD_QCH)
     ecm_add_qch(
-        KF5ActivitiesStats_QCH
+        KF6ActivitiesStats_QCH
         NAME KActivitiesStats
-        BASE_NAME KF5ActivitiesStats
+        BASE_NAME KF6ActivitiesStats
         VERSION ${KF_VERSION}
         ORG_DOMAIN org.kde
         SOURCES # using only public headers, to cover only public API
@@ -130,7 +130,7 @@ if(BUILD_QCH)
         MD_MAINPAGE "${CMAKE_SOURCE_DIR}/README.md"
         LINK_QCHS
             Qt5Core_QCH
-            KF5Activities_QCH # while not in API symbols, some classes are referenced in comments
+            KF6Activities_QCH # while not in API symbols, some classes are referenced in comments
         INCLUDE_DIRS
             ${CMAKE_CURRENT_BINARY_DIR}
         BLANK_MACROS
@@ -145,7 +145,7 @@ endif()
 
 if (NOT WIN32)
     ecm_generate_pkgconfig_file(BASE_NAME libKActivitiesStats
-      LIB_NAME KF5ActivitiesStats
+      LIB_NAME KF6ActivitiesStats
       INCLUDE_INSTALL_DIR ${KDE_INSTALL_INCLUDEDIR_KF}/KActivitiesStats
       DEPS Qt${QT_MAJOR_VERSION}Core
       DESCRIPTION "libKActivitiesStats is a C++ library for using KDE activities"
@@ -156,7 +156,7 @@ endif ()
 include (ECMGeneratePriFile)
 ecm_generate_pri_file (
    BASE_NAME KActivitiesStats
-   LIB_NAME KF5ActivitiesStats
+   LIB_NAME KF6ActivitiesStats
    DEPS "KActivities"
    FILENAME_VAR PRI_FILENAME INCLUDE_INSTALL_DIR ${KDE_INSTALL_INCLUDEDIR_KF}/KActivitiesStats
    )

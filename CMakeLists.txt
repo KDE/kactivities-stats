@@ -45,10 +45,10 @@ set (CMAKE_AUTOMOC ON)
 find_package (Qt${QT_MAJOR_VERSION} ${REQUIRED_QT_VERSION} CONFIG REQUIRED COMPONENTS Core DBus Sql)
 
 # KDE Frameworks
-# find_package (KF5DBusAddons ${KF_DEP_VERSION} CONFIG REQUIRED)
-# find_package (KF5I18n ${KF_DEP_VERSION} CONFIG REQUIRED)
-find_package (KF5Config ${KF_DEP_VERSION} CONFIG REQUIRED)
-find_package (KF5Activities ${KF_DEP_VERSION} CONFIG REQUIRED)
+# find_package (KF6DBusAddons ${KF_DEP_VERSION} CONFIG REQUIRED)
+# find_package (KF6I18n ${KF_DEP_VERSION} CONFIG REQUIRED)
+find_package (KF6Config ${KF_DEP_VERSION} CONFIG REQUIRED)
+find_package (KF6Activities ${KF_DEP_VERSION} CONFIG REQUIRED)
 find_package(Threads REQUIRED)
 
 # Basic includes
@@ -79,7 +79,7 @@ ecm_setup_version (
    PROJECT
    VARIABLE_PREFIX KACTIVITIESSTATS
    VERSION_HEADER "${CMAKE_CURRENT_BINARY_DIR}/kactivitiesstats_version.h"
-   PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/KF5ActivitiesStatsConfigVersion.cmake"
+   PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/KF6ActivitiesStatsConfigVersion.cmake"
    SOVERSION 1
    )
 ecm_set_disabled_deprecation_versions(
@@ -98,34 +98,34 @@ if(BUILD_TESTING)
   add_subdirectory (tests)
 endif (BUILD_TESTING)
 
-set (CMAKECONFIG_INSTALL_DIR "${KDE_INSTALL_CMAKEPACKAGEDIR}/KF5ActivitiesStats")
+set (CMAKECONFIG_INSTALL_DIR "${KDE_INSTALL_CMAKEPACKAGEDIR}/KF6ActivitiesStats")
 
 if (BUILD_QCH)
     ecm_install_qch_export(
-        TARGETS KF5ActivitiesStats_QCH
-        FILE KF5ActivitiesStatsLibraryQchTargets.cmake
+        TARGETS KF6ActivitiesStats_QCH
+        FILE KF6ActivitiesStatsLibraryQchTargets.cmake
         DESTINATION "${CMAKECONFIG_INSTALL_DIR}"
         COMPONENT Devel
     )
-    set(PACKAGE_INCLUDE_QCHTARGETS "include(\"\${CMAKE_CURRENT_LIST_DIR}/KF5ActivitiesStatsLibraryQchTargets.cmake\")")
+    set(PACKAGE_INCLUDE_QCHTARGETS "include(\"\${CMAKE_CURRENT_LIST_DIR}/KF6ActivitiesStatsLibraryQchTargets.cmake\")")
 endif()
 
 install (
-   EXPORT KF5ActivitiesStatsLibraryTargets
+   EXPORT KF6ActivitiesStatsLibraryTargets
    DESTINATION "${CMAKECONFIG_INSTALL_DIR}"
-   FILE KF5ActivitiesStatsLibraryTargets.cmake
-   NAMESPACE KF5::
+   FILE KF6ActivitiesStatsLibraryTargets.cmake
+   NAMESPACE KF6::
    )
 
 configure_package_config_file (
-   "${CMAKE_CURRENT_SOURCE_DIR}/KF5ActivitiesStatsConfig.cmake.in"
-   "${CMAKE_CURRENT_BINARY_DIR}/KF5ActivitiesStatsConfig.cmake"
+   "${CMAKE_CURRENT_SOURCE_DIR}/KF6ActivitiesStatsConfig.cmake.in"
+   "${CMAKE_CURRENT_BINARY_DIR}/KF6ActivitiesStatsConfig.cmake"
    INSTALL_DESTINATION  ${CMAKECONFIG_INSTALL_DIR}
    )
 
 install (
-   FILES "${CMAKE_CURRENT_BINARY_DIR}/KF5ActivitiesStatsConfig.cmake"
-         "${CMAKE_CURRENT_BINARY_DIR}/KF5ActivitiesStatsConfigVersion.cmake"
+   FILES "${CMAKE_CURRENT_BINARY_DIR}/KF6ActivitiesStatsConfig.cmake"
+         "${CMAKE_CURRENT_BINARY_DIR}/KF6ActivitiesStatsConfigVersion.cmake"
    DESTINATION "${CMAKECONFIG_INSTALL_DIR}"
    COMPONENT Devel
    )

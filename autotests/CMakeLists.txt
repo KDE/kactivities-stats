@@ -42,8 +42,8 @@ if (NOT WIN32)
       Qt${QT_MAJOR_VERSION}::DBus
       Qt${QT_MAJOR_VERSION}::Sql
 
-      KF5::Activities
-      KF5::ActivitiesStats
+      KF6::Activities
+      KF6::ActivitiesStats
       )
 
 endif ()

@@ -8,5 +8,5 @@ Description: libKActivitiesStats is a C++ library for using KDE activities
 URL: http://www.kde.org
 Requires: Qt${QT_MAJOR_VERSION}Core
 Version: ${KACTIVITIESSTATS_VERSION}
-Libs: -L${KDE_INSTALL_LIBDIR} -lKF5ActivitiesStats
+Libs: -L${KDE_INSTALL_LIBDIR} -lKF6ActivitiesStats
 Cflags: -I${KDE_INSTALL_INCLUDEDIR}
