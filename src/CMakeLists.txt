@@ -129,7 +129,7 @@ if(BUILD_QCH)
             ${KActivitiesStats_HEADERS}
         MD_MAINPAGE "${CMAKE_SOURCE_DIR}/README.md"
         LINK_QCHS
-            Qt5Core_QCH
+            Qt6Core_QCH
             KF6Activities_QCH # while not in API symbols, some classes are referenced in comments
         INCLUDE_DIRS
             ${CMAKE_CURRENT_BINARY_DIR}
