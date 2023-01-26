@@ -98,8 +98,8 @@ public:
     ResultSet(Query query);
 
     ResultSet(ResultSet &&source);
-    ResultSet(const ResultSet &source);
-    ResultSet &operator=(ResultSet source);
+    ResultSet(const ResultSet &source) = delete;
+    ResultSet &operator=(ResultSet source) = delete;
     ~ResultSet();
 
     /**

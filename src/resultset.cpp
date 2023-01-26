@@ -564,17 +564,6 @@ ResultSet::ResultSet(ResultSet &&source)
     std::swap(d, source.d);
 }
 
-ResultSet::ResultSet(const ResultSet &source)
-    : d(new ResultSetPrivate(*source.d))
-{
-}
-
-ResultSet &ResultSet::operator= (ResultSet source)
-{
-    std::swap(d, source.d);
-    return *this;
-}
-
 ResultSet::~ResultSet()
 {
     delete d;

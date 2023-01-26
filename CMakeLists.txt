@@ -83,8 +83,8 @@ ecm_setup_version (
    SOVERSION 1
    )
 ecm_set_disabled_deprecation_versions(
-    QT 5.15.2
-    KF 5.95.0
+    QT 6.4.0
+    KF 5.102.0
 )
 
 
