@@ -62,10 +62,10 @@ set_target_properties (
 target_link_libraries (
    KF6ActivitiesStats
    PUBLIC
-      Qt${QT_MAJOR_VERSION}::Core
+      Qt6::Core
    PRIVATE
-      Qt${QT_MAJOR_VERSION}::DBus
-      Qt${QT_MAJOR_VERSION}::Sql
+      Qt6::DBus
+      Qt6::Sql
       KF6::Activities
       KF6::ConfigCore
       Threads::Threads
@@ -147,7 +147,7 @@ if (NOT WIN32)
     ecm_generate_pkgconfig_file(BASE_NAME libKActivitiesStats
       LIB_NAME KF6ActivitiesStats
       INCLUDE_INSTALL_DIR ${KDE_INSTALL_INCLUDEDIR_KF}/KActivitiesStats
-      DEPS Qt${QT_MAJOR_VERSION}Core
+      DEPS Qt6Core
       DESCRIPTION "libKActivitiesStats is a C++ library for using KDE activities"
       INSTALL
     )
