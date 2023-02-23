@@ -144,7 +144,7 @@ if(BUILD_QCH)
 endif()
 
 if (NOT WIN32)
-    ecm_generate_pkgconfig_file(BASE_NAME libKActivitiesStats
+    ecm_generate_pkgconfig_file(BASE_NAME KF6ActivitiesStats
       LIB_NAME KF6ActivitiesStats
       INCLUDE_INSTALL_DIR ${KDE_INSTALL_INCLUDEDIR_KF}/KActivitiesStats
       DEPS Qt6Core
