@@ -3,14 +3,17 @@ project (KActivitiesStatsAutotests)
 
 find_package (Qt6 REQUIRED NO_MODULE COMPONENTS Test Core DBus Sql)
 
-include_directories (
+if (NOT WIN32)
+
+add_executable(KActivitiesStatsTest)
+
+target_include_directories(KActivitiesStatsTest PRIVATE
    ${KASTATS_CURRENT_ROOT_SOURCE_DIR}/src
    ${KASTATS_CURRENT_ROOT_SOURCE_DIR}/autotests
    ${CMAKE_BINARY_DIR}/src
-   )
+)
 
-set (
-   KActivitiesStatsTest_SRCS
+target_sources(KActivitiesStatsTest PRIVATE
    main.cpp
    QueryTest.cpp
    ResultSetTest.cpp
@@ -24,17 +27,10 @@ set (
    ${KASTATS_CURRENT_ROOT_SOURCE_DIR}/src/common/database/Database.cpp
    ${KASTATS_CURRENT_ROOT_SOURCE_DIR}/src/common/database/schema/ResourcesDatabaseSchema.cpp
    ${KASTATS_CURRENT_ROOT_SOURCE_DIR}/autotests/common/test.cpp
-   )
+)
 
-if (NOT WIN32)
-
-   add_executable (
-      KActivitiesStatsTest
-      ${KActivitiesStatsTest_SRCS}
-      )
-
-   target_link_libraries (
-      KActivitiesStatsTest
+target_link_libraries(KActivitiesStatsTest
+   PRIVATE
       Boost::boost
 
       Qt6::Core
@@ -44,6 +40,6 @@ if (NOT WIN32)
 
       KF6::Activities
       KF6::ActivitiesStats
-      )
+)
 
 endif ()

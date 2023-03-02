@@ -1,8 +1,15 @@
 # vim:set softtabstop=3 shiftwidth=3 tabstop=3 expandtab:
 
-set (
-   KActivitiesStats_LIB_SRCS
+add_library(KF6ActivitiesStats)
+add_library(KF6::ActivitiesStats ALIAS KF6ActivitiesStats)
 
+set_target_properties(KF6ActivitiesStats PROPERTIES
+   VERSION     ${KACTIVITIESSTATS_VERSION}
+   SOVERSION   ${KACTIVITIESSTATS_SOVERSION}
+   EXPORT_NAME ActivitiesStats
+)
+
+target_sources(KF6ActivitiesStats PRIVATE
    query.cpp
    terms.cpp
    resultset.cpp
@@ -14,9 +21,9 @@ set (
    ${KASTATS_CURRENT_ROOT_SOURCE_DIR}/src/common/database/Database.cpp
    ${KASTATS_CURRENT_ROOT_SOURCE_DIR}/src/common/database/schema/ResourcesDatabaseSchema.cpp
    ${KASTATS_CURRENT_ROOT_SOURCE_DIR}/src/utils/qsqlquery_iterator.cpp
-   )
+)
 
-ecm_qt_declare_logging_category(KActivitiesStats_LIB_SRCS
+ecm_qt_declare_logging_category(KF6ActivitiesStats
     HEADER kactivities-stats-logsettings.h
     IDENTIFIER KACTIVITIES_STATS_LOG
     CATEGORY_NAME kf.activitiesstats
@@ -25,42 +32,21 @@ ecm_qt_declare_logging_category(KActivitiesStats_LIB_SRCS
     EXPORT KACTIVITIES_STATS
 )
 
-
-qt_add_dbus_interface (
-   KActivitiesStats_LIB_SRCS
-
+set(KActivitiesStats_DBus_SRCS)
+qt_add_dbus_interface(KActivitiesStats_DBus_SRCS
    ${KASTATS_CURRENT_ROOT_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.ResourcesScoring.xml
    resourcesscoring_interface
-   )
-
-qt_add_dbus_interface (
-   KActivitiesStats_LIB_SRCS
-
+)
+qt_add_dbus_interface(KActivitiesStats_DBus_SRCS
    ${KASTATS_CURRENT_ROOT_SOURCE_DIR}/src/common/dbus/org.kde.ActivityManager.ResourcesLinking.xml
    resourceslinking_interface
-   )
+)
 
+target_sources(KF6ActivitiesStats PRIVATE
+   ${KActivitiesStats_DBus_SRCS}
+)
 
-add_library (
-   KF6ActivitiesStats SHARED
-   ${KActivitiesStats_LIB_SRCS}
-   )
-add_library(KF6::ActivitiesStats ALIAS KF6ActivitiesStats)
-
-include_directories (
-   ${KASTATS_CURRENT_ROOT_SOURCE_DIR}/src
-   )
-
-set_target_properties (
-   KF6ActivitiesStats
-   PROPERTIES
-   VERSION ${KACTIVITIESSTATS_VERSION}
-   SOVERSION ${KACTIVITIESSTATS_SOVERSION}
-   EXPORT_NAME ActivitiesStats
-   )
-
-target_link_libraries (
-   KF6ActivitiesStats
+target_link_libraries(KF6ActivitiesStats
    PUBLIC
       Qt6::Core
    PRIVATE
@@ -69,12 +55,11 @@ target_link_libraries (
       KF6::Activities
       KF6::ConfigCore
       Threads::Threads
-   )
+)
 
-target_include_directories (
-   KF6ActivitiesStats
+target_include_directories(KF6ActivitiesStats
    INTERFACE "$<INSTALL_INTERFACE:${KDE_INSTALL_INCLUDEDIR_KF}/KActivitiesStats>"
-   )
+)
 
 # install
 generate_export_header (KF6ActivitiesStats BASE_NAME KActivitiesStats)
@@ -96,7 +81,6 @@ ecm_generate_headers (
 install (
    TARGETS KF6ActivitiesStats
    EXPORT KF6ActivitiesStatsLibraryTargets
-   ${SKIP_NAMELINK}
    ${KF_INSTALL_TARGETS_DEFAULT_ARGS}
    )
 
