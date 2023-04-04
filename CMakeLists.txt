@@ -75,10 +75,11 @@ endif ()
 
 # libKActivitiesStats
 
+set(kactivitiesstats_version_header "${CMAKE_CURRENT_BINARY_DIR}/src/kactivitiesstats_version.h")
 ecm_setup_version (
    PROJECT
    VARIABLE_PREFIX KACTIVITIESSTATS
-   VERSION_HEADER "${CMAKE_CURRENT_BINARY_DIR}/kactivitiesstats_version.h"
+   VERSION_HEADER ${kactivitiesstats_version_header}
    PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/KF6ActivitiesStatsConfigVersion.cmake"
    SOVERSION 1
    )
@@ -131,7 +132,7 @@ install (
    )
 
 install (
-   FILES ${CMAKE_CURRENT_BINARY_DIR}/kactivitiesstats_version.h
+   FILES ${kactivitiesstats_version_header}
    DESTINATION ${KDE_INSTALL_INCLUDEDIR_KF}/KActivitiesStats COMPONENT Devel
    )
 
