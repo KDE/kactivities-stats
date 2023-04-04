@@ -62,7 +62,13 @@ target_include_directories(KF6ActivitiesStats
 )
 
 # install
-generate_export_header (KF6ActivitiesStats BASE_NAME KActivitiesStats)
+ecm_generate_export_header (KF6ActivitiesStats
+   BASE_NAME KActivitiesStats
+   GROUP_BASE_NAME KF
+   VERSION ${KF_VERSION}
+   USE_VERSION_HEADER
+   DEPRECATED_BASE_VERSION 0
+)
 
 ecm_generate_headers (
    KActivitiesStats_CamelCase_HEADERS
