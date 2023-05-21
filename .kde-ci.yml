@@ -3,6 +3,7 @@ Dependencies:
   'require':
     'frameworks/extra-cmake-modules': '@same'
     'frameworks/kactivities' : '@same'
+    'frameworks/kio' : '@same'
 
 Options:
   test-before-installing: True

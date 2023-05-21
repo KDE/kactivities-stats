@@ -54,6 +54,7 @@ target_link_libraries(KF6ActivitiesStats
       Qt6::Sql
       KF6::Activities
       KF6::ConfigCore
+      KF6::KIOCore
       Threads::Threads
 )
 

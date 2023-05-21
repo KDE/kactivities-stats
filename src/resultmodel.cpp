@@ -13,14 +13,16 @@
 #include <QDebug>
 #include <QFile>
 #include <QTimer>
+#include <QUrl>
 
 // STL
 #include <functional>
 #include <thread>
 
 // KDE
-#include <KSharedConfig>
 #include <KConfigGroup>
+#include <KIO/StatJob>
+#include <KSharedConfig>
 
 // Local
 #include <common/database/Database.h>
@@ -211,6 +213,8 @@ public:
 
         QList<ResultSet::Result> m_items;
         int m_countLimit;
+        int m_pendingStatJobs = 0;
+        QList<QString> m_missingResources;
 
         QString m_clientId;
         KSharedConfig::Ptr m_configFile;
@@ -495,23 +499,26 @@ public:
             // Check whether we got an item representing a non-existent file,
             // if so, schedule its removal from the database
             // we want to do this async so that we don't block
-            std::thread([=] {
-                QList<QString> missingResources;
-                for (const auto &item: newItems) {
-                    // QFile.exists() can be incredibly slow (eg. if resource is on remote filesystem)
-                    if (item.resource().startsWith(QLatin1Char('/')) && !QFile(item.resource()).exists()) {
-                        missingResources << item.resource();
-                    }
-                }
+            Q_ASSERT(m_pendingStatJobs == 0);
+            Q_ASSERT(m_missingResources.empty());
+            for (const auto &item : newItems) {
+                // QFile.exists() can be incredibly slow (eg. if resource is on remote filesystem)
+                const QString path = item.resource();
+                if (path.startsWith(QLatin1Char('/'))) {
+                    auto job = KIO::stat(QUrl::fromLocalFile(path), KIO::HideProgressInfo);
+                    ++m_pendingStatJobs;
+                    QObject::connect(job, &KJob::finished, this->d->q, [this, path](KJob *job) {
+                        if (job->error()) {
+                            m_missingResources << path;
+                        }
 
-                if (missingResources.empty()) {
-                    return;
+                        if (--m_pendingStatJobs == 0 && !m_missingResources.empty()) {
+                            d->q->forgetResources(m_missingResources);
+                            m_missingResources.clear();
+                        }
+                    });
                 }
-
-                QTimer::singleShot(0, this->d->q, [=] {
-                    d->q->forgetResources(missingResources);
-                });
-            }).detach();
+            }
         }
         //^
 

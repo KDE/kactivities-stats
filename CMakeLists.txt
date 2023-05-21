@@ -49,6 +49,7 @@ find_package (Qt6 ${REQUIRED_QT_VERSION} CONFIG REQUIRED COMPONENTS Core DBus Sq
 # find_package (KF6I18n ${KF_DEP_VERSION} CONFIG REQUIRED)
 find_package (KF6Config ${KF_DEP_VERSION} CONFIG REQUIRED)
 find_package (KF6Activities ${KF_DEP_VERSION} CONFIG REQUIRED)
+find_package (KF6KIO ${KF_DEP_VERSION} CONFIG REQUIRED)
 find_package(Threads REQUIRED)
 
 # Basic includes
