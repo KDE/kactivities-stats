@@ -1151,4 +1151,4 @@ void ResultModel::unlinkFromActivity(const QUrl &resource,
 } // namespace Stats
 } // namespace KActivities
 
-// #include "resourcemodel.moc"
+#include "moc_resultmodel.cpp"
