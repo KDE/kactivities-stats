@@ -300,3 +300,5 @@ void ResultSetTest::cleanupTestCase()
 {
     Q_EMIT testFinished();
 }
+
+#include "moc_ResultSetTest.cpp"

@@ -317,3 +317,5 @@ void QueryTest::cleanupTestCase()
 {
     Q_EMIT testFinished();
 }
+
+#include "moc_QueryTest.cpp"

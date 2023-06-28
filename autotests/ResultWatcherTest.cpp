@@ -107,3 +107,5 @@ void ResultWatcherTest::cleanupTestCase()
 {
     Q_EMIT testFinished();
 }
+
+#include "moc_ResultWatcherTest.cpp"

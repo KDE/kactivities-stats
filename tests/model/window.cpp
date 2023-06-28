@@ -357,3 +357,4 @@ void Window::updateResults()
     /* clang-format on */
 }
 
+#include "moc_window.cpp"

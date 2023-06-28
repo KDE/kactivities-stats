@@ -642,4 +642,6 @@ void ResultSetQuickCheckTest::testLinkedResourcesForAgents()
 
 }
 
+#include "moc_ResultSetQuickCheckTest.cpp"
+
 // vim: set foldmethod=marker:

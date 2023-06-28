@@ -357,3 +357,5 @@ void ResultWatcher::unlinkFromActivity(const QUrl &resource, const Terms::Activi
 
 } // namespace Stats
 } // namespace KActivities
+
+#include "moc_resultwatcher.cpp"
