@@ -89,7 +89,7 @@ void ResultWatcherTest::testUsedResources()
 
     // Opening a resource for a few seconds
     {
-        KActivities::ResourceInstance resource(0);
+        KActivities::ResourceInstance resource(nullptr);
         resource.setUri(QUrl(QStringLiteral("test://test1")));
 
         liveSleep(3);
