@@ -145,10 +145,10 @@ public:
         }
 
         /* clang-format off */
-        return QStringLiteral("agent = '") + (
+        return QLatin1String("agent = '") + (
                 agent == QLatin1String(":current") ? QCoreApplication::instance()->applicationName() :
                                       agent
-            ) + QStringLiteral("'");
+            ) + QLatin1String("'");
         /* clang-format on */
     }
 
@@ -159,10 +159,10 @@ public:
         }
 
         /* clang-format off */
-        return QStringLiteral("activity = '") + (
+        return QLatin1String("activity = '") + (
                 activity == QLatin1String(":current") ? ActivitiesSync::currentActivity(activities) :
                                          activity
-            ) + QStringLiteral("'");
+            ) + QLatin1String("'");
         /* clang-format on */
     }
 
@@ -179,7 +179,7 @@ public:
             return QStringLiteral("1");
         }
 
-        return QStringLiteral("resource LIKE '") + Common::starPatternToLike(urlFilter) + QStringLiteral("' ESCAPE '\\'");
+        return QLatin1String("resource LIKE '") + Common::starPatternToLike(urlFilter) + QLatin1String("' ESCAPE '\\'");
     }
 
     QString mimetypeClause(const QString &mimetype) const
@@ -193,19 +193,17 @@ public:
             return QStringLiteral("mimetype = 'inode/directory'");
         }
 
-        return QStringLiteral("mimetype LIKE '") + Common::starPatternToLike(mimetype) + QStringLiteral("' ESCAPE '\\'");
+        return QLatin1String("mimetype LIKE '") + Common::starPatternToLike(mimetype) + QLatin1String("' ESCAPE '\\'");
     }
 
     QString dateClause(QDate start, QDate end) const {
         if (end.isNull()) {
             // only date filtering
-            return QStringLiteral("DATE(re.start, 'unixepoch') = '") +
-                    start.toString(Qt::ISODate) + QStringLiteral("' ");
+            return QLatin1String("DATE(re.start, 'unixepoch') = '") + start.toString(Qt::ISODate) + QLatin1String("' ");
         } else {
             // date range filtering
-            return QStringLiteral("DATE(re.start, 'unixepoch') >= '") +
-                    start.toString(Qt::ISODate) + QStringLiteral("' AND DATE(re.start, 'unixepoch') <= '") +
-                    end.toString(Qt::ISODate) + QStringLiteral("' ");
+            return QLatin1String("DATE(re.start, 'unixepoch') >= '") + start.toString(Qt::ISODate) + QLatin1String("' AND DATE(re.start, 'unixepoch') <= '")
+                + end.toString(Qt::ISODate) + QLatin1String("' ");
         }
     }
 
@@ -243,11 +241,11 @@ public:
 
         const int limit = queryDefinition.limit();
         if (limit > 0) {
-            result += QStringLiteral(" LIMIT ") + QString::number(limit);
+            result += QLatin1String(" LIMIT ") + QString::number(limit);
 
             const int offset = queryDefinition.offset();
             if (offset > 0) {
-                result += QStringLiteral(" OFFSET ") + QString::number(offset);
+                result += QLatin1String(" OFFSET ") + QString::number(offset);
             }
         }
 
@@ -258,15 +256,12 @@ public:
     {
         // ORDER BY column
         auto ordering = queryDefinition.ordering();
-        /* clang-format off */
-        QString orderingColumn = QStringLiteral("linkStatus DESC, ") + (
-                ordering == HighScoredFirst      ? QStringLiteral("score DESC,")
-              : ordering == RecentlyCreatedFirst ? QStringLiteral("firstUpdate DESC,")
-              : ordering == RecentlyUsedFirst    ? QStringLiteral("lastUpdate DESC,")
-              : ordering == OrderByTitle         ? QStringLiteral("title ASC,")
-              : QString()
-            );
-        /* clang-format on */
+        QString orderingColumn = QLatin1String("linkStatus DESC, ")
+            + (ordering == HighScoredFirst            ? QLatin1String("score DESC,")
+                   : ordering == RecentlyCreatedFirst ? QLatin1String("firstUpdate DESC,")
+                   : ordering == RecentlyUsedFirst    ? QLatin1String("lastUpdate DESC,")
+                   : ordering == OrderByTitle         ? QLatin1String("title ASC,")
+                                                      : QLatin1String());
 
         // WHERE clause for filtering on agents
         QStringList agentsFilter = transformedList(
@@ -295,8 +290,8 @@ public:
 
         auto queryString = _query;
 
-        queryString.replace(QStringLiteral("ORDER_BY_CLAUSE"), QStringLiteral("ORDER BY $orderingColumn resource ASC"))
-                   .replace(QStringLiteral("LIMIT_CLAUSE"), limitOffsetSuffix());
+        queryString.replace(QLatin1String("ORDER_BY_CLAUSE"), QLatin1String("ORDER BY $orderingColumn resource ASC"))
+            .replace(QLatin1String("LIMIT_CLAUSE"), limitOffsetSuffix());
 
         return kamd::utils::debug_and_return(DEBUG_QUERIES, "Query: ",
             queryString
