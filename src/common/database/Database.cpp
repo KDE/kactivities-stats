@@ -34,12 +34,7 @@ struct DatabaseInfo {
 
 bool operator<(const DatabaseInfo &left, const DatabaseInfo &right)
 {
-    /* clang-format off */
-    return
-        left.thread < right.thread     ? true  :
-        left.thread > right.thread     ? false :
-        left.openMode < right.openMode;
-    /* clang-format on */
+    return left.thread < right.thread ? true : left.thread > right.thread ? false : left.openMode < right.openMode;
 }
 
 std::map<DatabaseInfo, std::weak_ptr<Database>> databases;

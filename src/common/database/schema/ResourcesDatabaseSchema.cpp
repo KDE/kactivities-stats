@@ -23,77 +23,71 @@ QString version()
 
 QStringList schema()
 {
-    // If only we could use initializer lists here ...
+    return QStringList{
 
-    /* clang-format off */
-    return QStringList()
+        // Schema information table, used for versioning
+        QStringLiteral("CREATE TABLE IF NOT EXISTS SchemaInfo ("
+                       "key text PRIMARY KEY, value text"
+                       ")"),
 
-        << // Schema information table, used for versioning
-           QStringLiteral("CREATE TABLE IF NOT EXISTS SchemaInfo ("
-               "key text PRIMARY KEY, value text"
-           ")")
+        QStringLiteral("INSERT OR IGNORE INTO schemaInfo VALUES ('version', '%1')").arg(version()),
+        QStringLiteral("UPDATE schemaInfo SET value = '%1' WHERE key = 'version'").arg(version()),
 
-        << QStringLiteral("INSERT OR IGNORE INTO schemaInfo VALUES ('version', '%1')").arg(version())
-        << QStringLiteral("UPDATE schemaInfo SET value = '%1' WHERE key = 'version'").arg(version())
+        // The ResourceEvent table saves the Opened/Closed event pairs for
+        // a resource. The Accessed event is mapped to those.
+        // Focussing events are not stored in order not to get a
+        // huge database file and to lessen writes to the disk.
+        QStringLiteral("CREATE TABLE IF NOT EXISTS ResourceEvent ("
+                       "usedActivity TEXT, "
+                       "initiatingAgent TEXT, "
+                       "targettedResource TEXT, "
+                       "start INTEGER, "
+                       "end INTEGER "
+                       ")"),
 
+        // The ResourceScoreCache table stores the calculated scores
+        // for resources based on the recorded events.
+        QStringLiteral("CREATE TABLE IF NOT EXISTS ResourceScoreCache ("
+                       "usedActivity TEXT, "
+                       "initiatingAgent TEXT, "
+                       "targettedResource TEXT, "
+                       "scoreType INTEGER, "
+                       "cachedScore FLOAT, "
+                       "firstUpdate INTEGER, "
+                       "lastUpdate INTEGER, "
+                       "PRIMARY KEY(usedActivity, initiatingAgent, targettedResource)"
+                       ")"),
 
-        << // The ResourceEvent table saves the Opened/Closed event pairs for
-           // a resource. The Accessed event is mapped to those.
-           // Focussing events are not stored in order not to get a
-           // huge database file and to lessen writes to the disk.
-           QStringLiteral("CREATE TABLE IF NOT EXISTS ResourceEvent ("
-               "usedActivity TEXT, "
-               "initiatingAgent TEXT, "
-               "targettedResource TEXT, "
-               "start INTEGER, "
-               "end INTEGER "
-           ")")
+        // @since 2014.05.05
+        // The ResourceLink table stores the information, formerly kept by
+        // Nepomuk, of which resources are linked to which activities.
+        // The additional features compared to the old days are
+        // the ability to limit the link to specific applications, and
+        // to create global links.
+        QStringLiteral("CREATE TABLE IF NOT EXISTS ResourceLink ("
+                       "usedActivity TEXT, "
+                       "initiatingAgent TEXT, "
+                       "targettedResource TEXT, "
+                       "PRIMARY KEY(usedActivity, initiatingAgent, targettedResource)"
+                       ")"),
 
-        << // The ResourceScoreCache table stores the calculated scores
-           // for resources based on the recorded events.
-           QStringLiteral("CREATE TABLE IF NOT EXISTS ResourceScoreCache ("
-               "usedActivity TEXT, "
-               "initiatingAgent TEXT, "
-               "targettedResource TEXT, "
-               "scoreType INTEGER, "
-               "cachedScore FLOAT, "
-               "firstUpdate INTEGER, "
-               "lastUpdate INTEGER, "
-               "PRIMARY KEY(usedActivity, initiatingAgent, targettedResource)"
-           ")")
+        // @since 2015.01.18
+        // The ResourceInfo table stores the collected information about a
+        // resource that is not agent nor activity related like the
+        // title and the mime type.
+        // If these are automatically retrieved (works for files), the
+        // flag is set to true. This is done for the agents to be able to
+        // override these.
+        QStringLiteral("CREATE TABLE IF NOT EXISTS ResourceInfo ("
+                       "targettedResource TEXT, "
+                       "title TEXT, "
+                       "mimetype TEXT, "
+                       "autoTitle INTEGER, "
+                       "autoMimetype INTEGER, "
+                       "PRIMARY KEY(targettedResource)"
+                       ")")}
 
-
-        << // @since 2014.05.05
-           // The ResourceLink table stores the information, formerly kept by
-           // Nepomuk, of which resources are linked to which activities.
-           // The additional features compared to the old days are
-           // the ability to limit the link to specific applications, and
-           // to create global links.
-           QStringLiteral("CREATE TABLE IF NOT EXISTS ResourceLink ("
-               "usedActivity TEXT, "
-               "initiatingAgent TEXT, "
-               "targettedResource TEXT, "
-               "PRIMARY KEY(usedActivity, initiatingAgent, targettedResource)"
-           ")")
-
-        << // @since 2015.01.18
-           // The ResourceInfo table stores the collected information about a
-           // resource that is not agent nor activity related like the
-           // title and the mime type.
-           // If these are automatically retrieved (works for files), the
-           // flag is set to true. This is done for the agents to be able to
-           // override these.
-           QStringLiteral("CREATE TABLE IF NOT EXISTS ResourceInfo ("
-               "targettedResource TEXT, "
-               "title TEXT, "
-               "mimetype TEXT, "
-               "autoTitle INTEGER, "
-               "autoMimetype INTEGER, "
-               "PRIMARY KEY(targettedResource)"
-           ")")
-
-       ;
-    /* clang-format on */
+    ;
 }
 
 // TODO: This will require some refactoring after we introduce more databases
