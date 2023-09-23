@@ -38,8 +38,7 @@ QString getBarredUri(QString lhs, const KAStats::ResultSet::Result &result)
 
 QString concatenateResults(const KAStats::ResultSet &results)
 {
-    return std::accumulate(results.cbegin(), results.cend(), QStringLiteral("|"),
-                           getBarredUri);
+    return std::accumulate(results.cbegin(), results.cend(), QStringLiteral("|"), getBarredUri);
 }
 }
 
@@ -65,35 +64,29 @@ void ResultSetTest::testConcat()
         ResultSet rs(KActivities::Stats::Terms::LinkedResources);
         // There is no "count" on a resultset
         unsigned int rs_count = 0;
-        for(const auto& r : rs)
-        {
+        for (const auto &r : rs) {
             Q_UNUSED(r);
             rs_count++;
         }
-        QCOMPARE(rs_count, 0);  // It's empty
-        QCOMPARE(concatenateResults(rs), QStringLiteral("|"));  // 0 results pasted after a "|" to start
+        QCOMPARE(rs_count, 0); // It's empty
+        QCOMPARE(concatenateResults(rs), QStringLiteral("|")); // 0 results pasted after a "|" to start
     }
 
     TEST_CHUNK(QStringLiteral("Checking non-empty concatenation"))
     {
-        ResultSet rs(UsedResources
-                    | HighScoredFirst
-                    | Agent{QStringLiteral("gvim")}
-                    );
+        ResultSet rs(UsedResources | HighScoredFirst | Agent{QStringLiteral("gvim")});
         // There is no "count" on a resultset
         unsigned int rs_count = 0;
-        for(const auto& r : rs)
-        {
+        for (const auto &r : rs) {
             Q_UNUSED(r);
             rs_count++;
         }
-        QCOMPARE(rs_count, 5);  // Not empty (see data inserted into ResourceLink, in initTestCase()
+        QCOMPARE(rs_count, 5); // Not empty (see data inserted into ResourceLink, in initTestCase()
 
         const QString cat = concatenateResults(rs);
-        QCOMPARE(cat.count(QStringLiteral("|")), 6);  // 5 items, plus 1 to start
+        QCOMPARE(cat.count(QStringLiteral("|")), 6); // 5 items, plus 1 to start
     }
 }
-
 
 void ResultSetTest::testLinkedResources()
 {
@@ -102,10 +95,7 @@ void ResultSetTest::testLinkedResources()
 
     TEST_CHUNK(QStringLiteral("Getting the linked resources alphabetically"))
     {
-        ResultSet result(LinkedResources
-                            | Agent { QStringLiteral("gvim") }
-                            | Activity { QStringLiteral("activity1") }
-                        );
+        ResultSet result(LinkedResources | Agent{QStringLiteral("gvim")} | Activity{QStringLiteral("activity1")});
         QCOMPARE(result.at(0).resource(), QStringLiteral("/path/mid1_a1"));
         QCOMPARE(result.at(1).resource(), QStringLiteral("/path/mid2_a1"));
     }
@@ -142,12 +132,7 @@ void ResultSetTest::testUsedResources()
 
     TEST_CHUNK(QStringLiteral("Getting the used resources by the highest score, gvim"))
     {
-        /* clang-format off */
-        ResultSet result(UsedResources
-                        | HighScoredFirst
-                        | Agent{QStringLiteral("gvim")}
-                        );
-        /* clang-format on */
+        ResultSet result(UsedResources | HighScoredFirst | Agent{QStringLiteral("gvim")});
 
         QCOMPARE(result.at(0).resource(), QStringLiteral("/path/high1_act1_gvim"));
         QCOMPARE(result.at(1).resource(), QStringLiteral("/path/high4_act1_gvim"));
@@ -155,12 +140,7 @@ void ResultSetTest::testUsedResources()
 
     TEST_CHUNK(QStringLiteral("Getting the used resources by the highest score, global agent"))
     {
-        /* clang-format off */
-        ResultSet result(UsedResources
-                        | HighScoredFirst
-                        | Agent::global()
-                        );
-        /* clang-format on */
+        ResultSet result(UsedResources | HighScoredFirst | Agent::global());
 
         QCOMPARE(result.at(0).resource(), QStringLiteral("/path/mid6_act1_glob"));
         QCOMPARE(result.at(1).resource(), QStringLiteral("/path/mid7_act1_glob"));
@@ -169,13 +149,7 @@ void ResultSetTest::testUsedResources()
 
     TEST_CHUNK(QStringLiteral("Getting the used resources by the highest score, any agent"))
     {
-        /* clang-format off */
-        ResultSet result(UsedResources
-                        | HighScoredFirst
-                        | Agent::any()
-                        | Activity::any()
-                        );
-        /* clang-format on */
+        ResultSet result(UsedResources | HighScoredFirst | Agent::any() | Activity::any());
 
         QCOMPARE(result.at(0).resource(), QStringLiteral("/path/high1_act1_gvim"));
         QCOMPARE(result.at(1).resource(), QStringLiteral("/path/high2_act2_kate"));
@@ -184,28 +158,14 @@ void ResultSetTest::testUsedResources()
 
     TEST_CHUNK(QStringLiteral("Getting the used resources filter by Date"))
     {
-        /* clang-format off */
-        ResultSet result(UsedResources
-                        | HighScoredFirst
-                        | Agent::any()
-                        | Activity::any()
-                        | Date::fromString(QStringLiteral("2015-01-15"))
-                        );
-    /* clang-format on */
+        ResultSet result(UsedResources | HighScoredFirst | Agent::any() | Activity::any() | Date::fromString(QStringLiteral("2015-01-15")));
 
         QCOMPARE(result.at(0).resource(), QStringLiteral("/path/high1_act1_gvim"));
     }
 
     TEST_CHUNK(QStringLiteral("Getting the used resources filter by Date range"))
     {
-        /* clang-format off */
-        ResultSet result(UsedResources
-                        | HighScoredFirst
-                        | Agent::any()
-                        | Activity::any()
-                        | Date::fromString(QStringLiteral("2015-01-14,2015-01-15"))
-                        );
-        /* clang-format on */
+        ResultSet result(UsedResources | HighScoredFirst | Agent::any() | Activity::any() | Date::fromString(QStringLiteral("2015-01-14,2015-01-15")));
 
         QCOMPARE(result.at(0).resource(), QStringLiteral("/path/high1_act1_gvim"));
         QCOMPARE(result.at(1).resource(), QStringLiteral("/path/high2_act2_kate"));

@@ -6,13 +6,14 @@
 
 #include "ResourcesDatabaseSchema.h"
 
+#include <QCoreApplication>
 #include <QStandardPaths>
 #include <QVariant>
-#include <QCoreApplication>
 
-namespace Common {
-namespace ResourcesDatabaseSchema {
-
+namespace Common
+{
+namespace ResourcesDatabaseSchema
+{
 const QString name = QStringLiteral("Resources");
 
 QString version()
@@ -98,9 +99,7 @@ QStringList schema()
 // TODO: This will require some refactoring after we introduce more databases
 QString defaultPath()
 {
-    return QStandardPaths::writableLocation(
-               QStandardPaths::GenericDataLocation)
-           + QStringLiteral("/kactivitymanagerd/resources/database");
+    return QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QStringLiteral("/kactivitymanagerd/resources/database");
 }
 
 const char *overrideFlagProperty = "org.kde.KActivities.ResourcesDatabase.overrideDatabase";
@@ -110,12 +109,7 @@ QString path()
 {
     auto app = QCoreApplication::instance();
 
-    /* clang-format off */
-    return
-        (app->property(overrideFlagProperty).toBool()) ?
-            app->property(overrideFileProperty).toString() :
-            defaultPath();
-    /* clang-format on */
+    return app->property(overrideFlagProperty).toBool() ? app->property(overrideFileProperty).toString() : defaultPath();
 }
 
 void overridePath(const QString &path)
@@ -161,13 +155,12 @@ void initSchema(Database &database)
     // be at least magic values. These do not change the structure
     // of the database, but the old data.
     if (dbSchemaVersion < QStringLiteral("2015.02.09")) {
-        /* clang-format off */
-        const QString updateActivity =
-            QStringLiteral("SET usedActivity=':global' "
+        const QString updateActivity = QStringLiteral(
+            "SET usedActivity=':global' "
             "WHERE usedActivity IS NULL OR usedActivity = ''");
 
-        const QString updateAgent =
-            QStringLiteral("SET initiatingAgent=':global' "
+        const QString updateAgent = QStringLiteral(
+            "SET initiatingAgent=':global' "
             "WHERE initiatingAgent IS NULL OR initiatingAgent = ''");
 
         // When the activity field was empty, it meant the file was
@@ -184,11 +177,8 @@ void initSchema(Database &database)
         database.execQuery(QStringLiteral("UPDATE ResourceEvent ") + updateAgent);
         database.execQuery(QStringLiteral("UPDATE ResourceScoreCache ") + updateActivity);
         database.execQuery(QStringLiteral("UPDATE ResourceScoreCache ") + updateAgent);
-
-        /* clang-format on */
     }
 }
 
 } // namespace Common
 } // namespace ResourcesDatabaseSchema
-

@@ -10,15 +10,15 @@
 
 #include <QAbstractItemModelTester>
 #include <QAction>
-#include <QListView>
-#include <QDebug>
 #include <QCoreApplication>
-#include <QItemDelegate>
-#include <QPainter>
 #include <QDateTime>
+#include <QDebug>
+#include <QItemDelegate>
+#include <QListView>
+#include <QPainter>
 
-#include <QQmlContext>
 #include <QQmlComponent>
+#include <QQmlContext>
 #include <QQuickItem>
 
 #include <KActivities/Consumer>
@@ -28,10 +28,10 @@ namespace KAStats = KActivities::Stats;
 using namespace KAStats;
 using namespace KAStats::Terms;
 
-class Delegate: public QItemDelegate {
+class Delegate : public QItemDelegate
+{
 public:
-    void paint(QPainter *painter, const QStyleOptionViewItem &option,
-               const QModelIndex &index) const override
+    void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override
     {
         painter->save();
 
@@ -44,12 +44,10 @@ public:
         titleRect.moveTop(option.rect.top());
         titleRect.setWidth(option.rect.width());
 
-        painter->fillRect(titleRect.x(), titleRect.y(),
-                          titleRect.width(), titleRect.height() + 16,
-                          QColor(32, 32, 32));
+        painter->fillRect(titleRect.x(), titleRect.y(), titleRect.width(), titleRect.height() + 16, QColor(32, 32, 32));
 
         // Painting the title
-        painter->setPen(QColor(255,255,255));
+        painter->setPen(QColor(255, 255, 255));
 
         titleRect.moveTop(titleRect.top() + 8);
         titleRect.setLeft(8);
@@ -57,41 +55,29 @@ public:
         painter->drawText(titleRect, index.data(ResultModel::TitleRole).toString());
 
         // Painting the score
-        painter->drawText(titleRect,
-                          QStringLiteral("Score: ") + QString::number(index.data(ResultModel::ScoreRole).toDouble()),
-                          QTextOption(Qt::AlignRight));
+        painter->drawText(titleRect, QStringLiteral("Score: ") + QString::number(index.data(ResultModel::ScoreRole).toDouble()), QTextOption(Qt::AlignRight));
 
         // Painting the moification and creation times
         titleRect.moveTop(titleRect.bottom() + 16);
 
-        painter->fillRect(titleRect.x() - 4, titleRect.y() - 8,
-                          titleRect.width() + 8, titleRect.height() + 8 + lineHeight,
-                          QColor(64, 64, 64));
+        painter->fillRect(titleRect.x() - 4, titleRect.y() - 8, titleRect.width() + 8, titleRect.height() + 8 + lineHeight, QColor(64, 64, 64));
 
         titleRect.moveTop(titleRect.top() - 4);
 
-        painter->drawText(titleRect,
-                          index.data(ResultModel::ResourceRole).toString()
-                          );
+        painter->drawText(titleRect, index.data(ResultModel::ResourceRole).toString());
 
         auto firstUpdate = QDateTime::fromSecsSinceEpoch(index.data(ResultModel::FirstUpdateRole).toUInt());
         auto lastUpdate = QDateTime::fromSecsSinceEpoch(index.data(ResultModel::LastUpdateRole).toUInt());
 
         titleRect.moveTop(titleRect.top() + lineHeight);
 
-        painter->drawText(titleRect,
-                          QStringLiteral("Modified: ") + lastUpdate.toString()
-                          );
-        painter->drawText(titleRect,
-                          QStringLiteral("Created: ") + firstUpdate.toString(),
-                          QTextOption(Qt::AlignRight));
+        painter->drawText(titleRect, QStringLiteral("Modified: ") + lastUpdate.toString());
+        painter->drawText(titleRect, QStringLiteral("Created: ") + firstUpdate.toString(), QTextOption(Qt::AlignRight));
 
         painter->restore();
-
     }
 
-    QSize sizeHint(const QStyleOptionViewItem &option,
-                   const QModelIndex &index) const override
+    QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const override
     {
         Q_UNUSED(option);
         Q_UNUSED(index);
@@ -113,15 +99,11 @@ Window::Window()
         QCoreApplication::processEvents();
     }
 
-    connect(ui->buttonUpdate, SIGNAL(clicked()),
-            this, SLOT(updateResults()));
-    connect(ui->buttonReloadRowCount, SIGNAL(clicked()),
-            this, SLOT(updateRowCount()));
+    connect(ui->buttonUpdate, SIGNAL(clicked()), this, SLOT(updateResults()));
+    connect(ui->buttonReloadRowCount, SIGNAL(clicked()), this, SLOT(updateRowCount()));
 
     for (const auto &activity :
-         (QStringList() << QStringLiteral(":current")
-                        << QStringLiteral(":any")
-                        << QStringLiteral(":global")) + activities->activities()) {
+         (QStringList() << QStringLiteral(":current") << QStringLiteral(":any") << QStringLiteral(":global")) + activities->activities()) {
         ui->comboActivity->addItem(activity);
     }
 
@@ -147,74 +129,41 @@ Window::Window()
 
         } else if (arg == QLatin1String("--select")) {
             updateResults();
-
         }
     }
 
     auto redisplayAction = new QAction(this);
     addAction(redisplayAction);
     redisplayAction->setShortcut(Qt::Key_F5);
-    connect(redisplayAction, SIGNAL(triggered()),
-            this, SLOT(updateResults()));
+    connect(redisplayAction, SIGNAL(triggered()), this, SLOT(updateResults()));
 
     // loading the presets
 
-    /* clang-format off */
-    const auto recentQueryBase
-                 = UsedResources
-                    | RecentlyUsedFirst
-                    | Agent::any()
-                    | Type::any()
-                    | Activity::current();
+    const auto recentQueryBase = UsedResources | RecentlyUsedFirst | Agent::any() | Type::any() | Activity::current();
 
-    const auto popularQueryBase
-                 = UsedResources
-                    | HighScoredFirst
-                    | Agent::any()
-                    | Type::any()
-                    | Activity::current();
+    const auto popularQueryBase = UsedResources | HighScoredFirst | Agent::any() | Type::any() | Activity::current();
 
     presets = {
-        { QStringLiteral("kicker-favorites"),
-            LinkedResources
-                | Agent {
-                    QStringLiteral("org.kde.plasma.favorites.applications"),
-                    QStringLiteral("org.kde.plasma.favorites.documents"),
-                    QStringLiteral("org.kde.plasma.favorites.contacts")
-                  }
-                | Type::any()
-                | Activity::current()
-                | Activity::global()
-                | Limit(15)
-        },
-        { QStringLiteral("kicker-recent-apps-n-docs"),
-            recentQueryBase | Url::startsWith(QStringLiteral("applications:")) | Url::file() | Limit(30)
-        },
-        { QStringLiteral("kicker-recent-apps"),
-            recentQueryBase | Url::startsWith(QStringLiteral("applications:")) | Limit(15)
-        },
-        { QStringLiteral("kicker-recent-docs"),
-            recentQueryBase | Url::file() | Limit(15)
-        },
-        { QStringLiteral("kicker-popular-apps-n-docs"),
-            popularQueryBase | Url::startsWith(QStringLiteral("applications:")) | Url::file() | Limit(30)
-        },
-        { QStringLiteral("kicker-popular-apps"),
-            popularQueryBase | Url::startsWith(QStringLiteral("applications:")) | Limit(15)
-        },
-        { QStringLiteral("kicker-popular-docs"),
-            popularQueryBase | Url::file() | Limit(15)
-        }
+        {QStringLiteral("kicker-favorites"),
+         LinkedResources
+             | Agent{QStringLiteral("org.kde.plasma.favorites.applications"),
+                     QStringLiteral("org.kde.plasma.favorites.documents"),
+                     QStringLiteral("org.kde.plasma.favorites.contacts")}
+             | Type::any() | Activity::current() | Activity::global() | Limit(15)},
+        {QStringLiteral("kicker-recent-apps-n-docs"), recentQueryBase | Url::startsWith(QStringLiteral("applications:")) | Url::file() | Limit(30)},
+        {QStringLiteral("kicker-recent-apps"), recentQueryBase | Url::startsWith(QStringLiteral("applications:")) | Limit(15)},
+        {QStringLiteral("kicker-recent-docs"), recentQueryBase | Url::file() | Limit(15)},
+        {QStringLiteral("kicker-popular-apps-n-docs"), popularQueryBase | Url::startsWith(QStringLiteral("applications:")) | Url::file() | Limit(30)},
+        {QStringLiteral("kicker-popular-apps"), popularQueryBase | Url::startsWith(QStringLiteral("applications:")) | Limit(15)},
+        {QStringLiteral("kicker-popular-docs"), popularQueryBase | Url::file() | Limit(15)},
     };
-    /* clang-format on */
 
     ui->comboPreset->addItem(QStringLiteral("Choose a preset"), QVariant());
     for (auto it = presets.cbegin(); it != presets.cend(); ++it) {
         ui->comboPreset->addItem(it.key(), it.key());
     }
 
-    connect(ui->comboPreset, SIGNAL(activated(int)),
-            this, SLOT(selectPreset()));
+    connect(ui->comboPreset, SIGNAL(activated(int)), this, SLOT(selectPreset()));
 }
 
 Window::~Window()
@@ -271,9 +220,7 @@ void Window::selectPreset()
 
 void Window::updateRowCount()
 {
-    ui->labelRowCount->setText(QString::number(
-            ui->viewResults->model()->rowCount()
-        ));
+    ui->labelRowCount->setText(QString::number(ui->viewResults->model()->rowCount()));
 }
 
 void Window::setQuery(const KActivities::Stats::Query &query)
@@ -314,23 +261,20 @@ void Window::updateResults()
 
     QString textDate = ui->textDate->text();
 
-    /* clang-format off */
     setQuery(
         // What should we get
-        (
-            ui->radioSelectUsedResources->isChecked()   ? UsedResources :
-            ui->radioSelectLinkedResources->isChecked() ? LinkedResources :
-                                                          AllResources
-        ) |
+        (ui->radioSelectUsedResources->isChecked()         ? UsedResources
+             : ui->radioSelectLinkedResources->isChecked() ? LinkedResources
+                                                           : AllResources)
+        |
 
         // How we should order it
-        (
-            ui->radioOrderHighScoredFirst->isChecked()      ? HighScoredFirst :
-            ui->radioOrderRecentlyUsedFirst->isChecked()    ? RecentlyUsedFirst :
-            ui->radioOrderRecentlyCreatedFirst->isChecked() ? RecentlyCreatedFirst :
-            ui->radioOrderByUrl->isChecked()                ? OrderByUrl :
-                                                              OrderByTitle
-        ) |
+        (ui->radioOrderHighScoredFirst->isChecked()            ? HighScoredFirst
+             : ui->radioOrderRecentlyUsedFirst->isChecked()    ? RecentlyUsedFirst
+             : ui->radioOrderRecentlyCreatedFirst->isChecked() ? RecentlyCreatedFirst
+             : ui->radioOrderByUrl->isChecked()                ? OrderByUrl
+                                                               : OrderByTitle)
+        |
 
         // Which agents?
         Agent(ui->textAgent->text().split(QLatin1Char(','))) |
@@ -345,16 +289,13 @@ void Window::updateResults()
         Url(ui->textUrl->text().split(QLatin1Char(','), Qt::SkipEmptyParts)) |
 
         // And date filter
-        (
-            textDate == QStringLiteral("today")     ? Date::today() :
-            textDate == QStringLiteral("yesterday") ? Date::yesterday() :
-                                                      Date::fromString(textDate)
-        ) |
+        (textDate == QStringLiteral("today")           ? Date::today()
+             : textDate == QStringLiteral("yesterday") ? Date::yesterday()
+                                                       : Date::fromString(textDate))
+        |
 
         // And how many items
-        Limit(ui->spinLimitCount->value())
-    );
-    /* clang-format on */
+        Limit(ui->spinLimitCount->value()));
 }
 
 #include "moc_window.cpp"

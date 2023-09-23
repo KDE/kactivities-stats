@@ -47,12 +47,7 @@ public:
 
         inline bool operator()(const Type &left, const Type &right) const
         {
-            /* clang-format off */
-            return
-                comp1(left, right) ? true :
-                comp1(right, left) ? false :
-                comp2(left, right);
-            /* clang-format on */
+            return comp1(left, right) ? true : comp1(right, left) ? false : comp2(left, right);
         }
 
     private:
@@ -75,14 +70,14 @@ public:
                             : left.*memberptr < right.*memberptr;
         }
 
-        template <typename Comp2>
-        CompositeComparator<Comparator, Comp2> operator | (const Comp2 &comp2)
+        template<typename Comp2>
+        CompositeComparator<Comparator, Comp2> operator|(const Comp2 &comp2)
         {
             return CompositeComparator<Comparator, Comp2>(*this, comp2);
         }
 
     private:
-        const ColumnType Type::* memberptr;
+        const ColumnType Type::*memberptr;
         const bool invert;
     };
     //^

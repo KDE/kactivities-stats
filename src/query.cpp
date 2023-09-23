@@ -96,16 +96,14 @@ Query::~Query()
 
 bool Query::operator==(const Query &right) const
 {
-    /* clang-format off */
-    return selection() == right.selection()
-        && types() == right.types()
-        && agents() == right.agents()
-        && activities() == right.activities()
-        && selection() == right.selection()
-        && urlFilters() == right.urlFilters()
-        && dateStart() == right.dateStart()
+    return selection() == right.selection() //
+        && types() == right.types() //
+        && agents() == right.agents() //
+        && activities() == right.activities() //
+        && selection() == right.selection() //
+        && urlFilters() == right.urlFilters() //
+        && dateStart() == right.dateStart() //
         && dateEnd() == right.dateEnd();
-    /* clang-format on */
 }
 
 bool Query::operator!=(const Query &right) const
@@ -219,7 +217,7 @@ QDebug operator<<(QDebug dbg, const KAStats::Query &query)
 {
     using namespace KAStats::Terms;
 
-    /* clang-format off */
+    // clang-format off
     dbg.nospace()
         << "Query { "
         << query.selection()
@@ -231,7 +229,7 @@ QDebug operator<<(QDebug dbg, const KAStats::Query &query)
         << ", " << query.ordering()
         << ", Limit: " << query.limit()
         << " }";
-    /* clang-format on */
+    // clang-format on
 
     return dbg;
 }
