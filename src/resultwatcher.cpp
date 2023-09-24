@@ -52,8 +52,8 @@ public:
     QList<QRegularExpression> urlFilters;
 
     ResultWatcherPrivate(ResultWatcher *parent, Query query)
-        : linking(new KAMD_DBUS_CLASS_INTERFACE("Resources/Linking", ResourcesLinking, nullptr))
-        , scoring(new KAMD_DBUS_CLASS_INTERFACE("Resources/Scoring", ResourcesScoring, nullptr))
+        : linking(KAMD_DBUS_SERVICE, QStringLiteral("/ActivityManager/Resources/Linking"), QDBusConnection::sessionBus(), nullptr)
+        , scoring(KAMD_DBUS_SERVICE, QStringLiteral("/ActivityManager/Resources/Scoring"), QDBusConnection::sessionBus(), nullptr)
         , q(parent)
         , query(query)
     {
@@ -282,8 +282,8 @@ public:
         m_resultInvalidationTimer.start();
     }
 
-    std::unique_ptr<org::kde::ActivityManager::ResourcesLinking> linking;
-    std::unique_ptr<org::kde::ActivityManager::ResourcesScoring> scoring;
+    org::kde::ActivityManager::ResourcesLinking linking;
+    org::kde::ActivityManager::ResourcesScoring scoring;
 
     ResultWatcher *const q;
     Query query;
@@ -299,26 +299,23 @@ ResultWatcher::ResultWatcher(Query query, QObject *parent)
     // There is no need for private slots, when we have bind
 
     // Connecting the linking service
-    QObject::connect(d->linking.get(),
+    QObject::connect(&d->linking,
                      &ResourcesLinking::ResourceLinkedToActivity,
                      this,
                      std::bind(&ResultWatcherPrivate::onResourceLinkedToActivity, d, _1, _2, _3));
-    QObject::connect(d->linking.get(),
+    QObject::connect(&d->linking,
                      &ResourcesLinking::ResourceUnlinkedFromActivity,
                      this,
                      std::bind(&ResultWatcherPrivate::onResourceUnlinkedFromActivity, d, _1, _2, _3));
 
     // Connecting the scoring service
-    QObject::connect(d->scoring.get(),
+    QObject::connect(&d->scoring,
                      &ResourcesScoring::ResourceScoreUpdated,
                      this,
                      std::bind(&ResultWatcherPrivate::onResourceScoreUpdated, d, _1, _2, _3, _4, _5, _6));
-    QObject::connect(d->scoring.get(),
-                     &ResourcesScoring::ResourceScoreDeleted,
-                     this,
-                     std::bind(&ResultWatcherPrivate::onStatsForResourceDeleted, d, _1, _2, _3));
-    QObject::connect(d->scoring.get(), &ResourcesScoring::RecentStatsDeleted, this, std::bind(&ResultWatcherPrivate::onRecentStatsDeleted, d, _1, _2, _3));
-    QObject::connect(d->scoring.get(), &ResourcesScoring::EarlierStatsDeleted, this, std::bind(&ResultWatcherPrivate::onEarlierStatsDeleted, d, _1, _2));
+    QObject::connect(&d->scoring, &ResourcesScoring::ResourceScoreDeleted, this, std::bind(&ResultWatcherPrivate::onStatsForResourceDeleted, d, _1, _2, _3));
+    QObject::connect(&d->scoring, &ResourcesScoring::RecentStatsDeleted, this, std::bind(&ResultWatcherPrivate::onRecentStatsDeleted, d, _1, _2, _3));
+    QObject::connect(&d->scoring, &ResourcesScoring::EarlierStatsDeleted, this, std::bind(&ResultWatcherPrivate::onEarlierStatsDeleted, d, _1, _2));
 }
 
 ResultWatcher::~ResultWatcher()
@@ -335,7 +332,7 @@ void ResultWatcher::linkToActivity(const QUrl &resource, const Terms::Activity &
 
     for (const auto &activity : activities) {
         for (const auto &agent : agents) {
-            d->linking->LinkResourceToActivity(agent, resource.toString(), activity);
+            d->linking.LinkResourceToActivity(agent, resource.toString(), activity);
         }
     }
 }
@@ -350,7 +347,7 @@ void ResultWatcher::unlinkFromActivity(const QUrl &resource, const Terms::Activi
     for (const auto &activity : activities) {
         for (const auto &agent : agents) {
             qCDebug(KACTIVITIES_STATS_LOG) << "Unlink " << agent << resource << activity;
-            d->linking->UnlinkResourceFromActivity(agent, resource.toString(), activity);
+            d->linking.UnlinkResourceFromActivity(agent, resource.toString(), activity);
         }
     }
 }
