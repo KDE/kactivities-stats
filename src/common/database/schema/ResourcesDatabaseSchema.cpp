@@ -16,9 +16,9 @@ namespace ResourcesDatabaseSchema
 {
 const QString name = QStringLiteral("Resources");
 
-QString version()
+QLatin1String version()
 {
-    return QStringLiteral("2015.02.09");
+    return QLatin1String("2015.02.09");
 }
 
 QStringList schema()

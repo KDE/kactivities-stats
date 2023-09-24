@@ -14,7 +14,7 @@ namespace Common
 {
 namespace ResourcesDatabaseSchema
 {
-QString version();
+QLatin1String version();
 
 QStringList schema();
 
