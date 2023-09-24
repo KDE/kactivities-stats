@@ -16,21 +16,31 @@ namespace Stats
 {
 void forgetResource(Terms::Activity activities, Terms::Agent agents, const QString &resource)
 {
-    KAMD_DBUS_DECL_INTERFACE(scoring, "Resources/Scoring", "ResourcesScoring");
-    for (const auto &activity : activities.values) {
-        for (const auto &agent : agents.values) {
-            scoring.call(QStringLiteral("DeleteStatsForResource"), activity, agent, resource);
+    QDBusMessage message = QDBusMessage::createMethodCall(KAMD_DBUS_SERVICE,
+                                                          KAMD_DBUS_OBJECT_PATH("Resources/Scoring"),
+                                                          KAMD_DBUS_OBJECT("ResourcesScoring"),
+                                                          QStringLiteral("DeleteStatsForResource"));
+
+    for (const auto& activity: activities.values) {
+        for (const auto& agent: agents.values) {
+            message.setArguments({activity, agent, resource});
+            QDBusConnection::sessionBus().asyncCall(message);
         }
     }
 }
 
 void forgetResources(const Query &query)
 {
-    KAMD_DBUS_DECL_INTERFACE(scoring, "Resources/Scoring", "ResourcesScoring");
-    for (const auto &activity : query.activities()) {
-        for (const auto &agent : query.agents()) {
-            for (const auto &urlFilter : query.urlFilters()) {
-                scoring.call(QStringLiteral("DeleteStatsForResource"), activity, agent, urlFilter);
+    QDBusMessage message = QDBusMessage::createMethodCall(KAMD_DBUS_SERVICE,
+                                                          KAMD_DBUS_OBJECT_PATH("Resources/Scoring"),
+                                                          KAMD_DBUS_OBJECT("ResourcesScoring"),
+                                                          QStringLiteral("DeleteStatsForResource"));
+
+    for (const auto& activity: query.activities()) {
+        for (const auto& agent: query.agents()) {
+            for (const auto& urlFilter: query.urlFilters()) {
+                message.setArguments({activity, agent, urlFilter});
+                QDBusConnection::sessionBus().asyncCall(message);
             }
         }
     }
@@ -38,22 +48,32 @@ void forgetResources(const Query &query)
 
 void forgetRecentStats(Terms::Activity activities, int count, TimeUnit what)
 {
-    KAMD_DBUS_DECL_INTERFACE(scoring, "Resources/Scoring", "ResourcesScoring");
-    for (const auto &activity : activities.values) {
-        scoring.call(QStringLiteral("DeleteRecentStats"),
-                     activity,
-                     count,
-                     what == Hours      ? QStringLiteral("h")
-                         : what == Days ? QStringLiteral("d")
-                                        : QStringLiteral("m"));
+    QDBusMessage message = QDBusMessage::createMethodCall(KAMD_DBUS_SERVICE,
+                                                          KAMD_DBUS_OBJECT_PATH("Resources/Scoring"),
+                                                          KAMD_DBUS_OBJECT("ResourcesScoring"),
+                                                          QStringLiteral("DeleteRecentStats"));
+
+    for (const auto& activity: activities.values) {
+        message.setArguments({QStringLiteral("DeleteRecentStats"),
+                              activity,
+                              count,
+                              what == Hours      ? QStringLiteral("h")
+                                  : what == Days ? QStringLiteral("d")
+                                                 : QStringLiteral("m")});
+        QDBusConnection::sessionBus().asyncCall(message);
     }
 }
 
 void forgetEarlierStats(Terms::Activity activities, int months)
 {
-    KAMD_DBUS_DECL_INTERFACE(scoring, "Resources/Scoring", "ResourcesScoring");
-    for (const auto &activity : activities.values) {
-        scoring.call(QStringLiteral("DeleteEarlierStats"), activity, months);
+    QDBusMessage message = QDBusMessage::createMethodCall(KAMD_DBUS_SERVICE,
+                                                          KAMD_DBUS_OBJECT_PATH("Resources/Scoring"),
+                                                          KAMD_DBUS_OBJECT("ResourcesScoring"),
+                                                          QStringLiteral("DeleteEarlierStats"));
+
+    for (const auto& activity: activities.values) {
+        message.setArguments({QStringLiteral("DeleteEarlierStats"), activity, months});
+        QDBusConnection::sessionBus().asyncCall(message);
     }
 }
 
