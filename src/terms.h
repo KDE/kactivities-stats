@@ -49,11 +49,10 @@ enum KACTIVITIESSTATS_EXPORT Select {
 /**
  * @struct KActivities::Stats::Terms::Limit terms.h <KActivities/Stats/Terms>
  *
- * How many items do you need?
+ * How many items you need. The default is 50
  */
 struct KACTIVITIESSTATS_EXPORT Limit {
     Limit(int value);
-    static Limit all();
     int value;
 };
 

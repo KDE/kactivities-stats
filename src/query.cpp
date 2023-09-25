@@ -9,6 +9,8 @@
 #include <QDate>
 #include <QDebug>
 
+constexpr int s_defaultCacheSize = 50;
+
 namespace KActivities
 {
 namespace Stats
@@ -50,7 +52,7 @@ class QueryPrivate
 public:
     QueryPrivate()
         : ordering(Terms::HighScoredFirst)
-        , limit(0)
+        , limit(s_defaultCacheSize)
         , offset(0)
     {
     }

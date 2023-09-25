@@ -35,8 +35,7 @@
 
 #include <common/specialvalues.h>
 
-#define MAX_CHUNK_LOAD_SIZE 50
-#define MAX_RELOAD_CACHE_SIZE 50
+constexpr int s_defaultCacheSize = 50;
 
 #define QDBG qCDebug(KACTIVITIES_STATS_LOG) << "KActivitiesStats(" << (void *)this << ")"
 
@@ -334,13 +333,13 @@ public:
 #if 0
             QDBG << "======";
             QDBG << "Old items {";
-            for (const auto& item: m_items) {
+            for (const auto &item : m_items) {
                 QDBG << item;
             }
             QDBG << "}";
 
             QDBG << "New items to be added at " << from << " {";
-            for (const auto& item: newItems) {
+            for (const auto &item : newItems) {
                 QDBG << item;
             }
             QDBG << "}";
@@ -662,7 +661,7 @@ public:
         fetch(FetchReset);
     }
 
-    void fetch(int from, int count)
+    void fetch(const int from, int count)
     {
         using namespace Terms;
 
@@ -712,10 +711,10 @@ public:
 
             cache.loadOrderingConfig(activityTag);
 
-            fetch(0, MAX_CHUNK_LOAD_SIZE);
+            fetch(0, query.limit());
 
         } else if (mode == FetchReload) {
-            if (cache.size() > MAX_RELOAD_CACHE_SIZE) {
+            if (cache.size() > s_defaultCacheSize) {
                 // If the cache is big, we are pretending
                 // we were asked to reset the model
                 fetch(FetchReset);
@@ -728,7 +727,7 @@ public:
 
         } else { // FetchMore
             // Load a new batch of data
-            fetch(cache.size(), MAX_CHUNK_LOAD_SIZE);
+            fetch(cache.size(), s_defaultCacheSize);
         }
     }
 

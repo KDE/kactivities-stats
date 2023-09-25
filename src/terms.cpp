@@ -61,11 +61,6 @@ Terms::Limit::Limit(int value)
 {
 }
 
-Terms::Limit Terms::Limit::all()
-{
-    return Limit(0);
-}
-
 Terms::Offset::Offset(int value)
     : value(value)
 {
