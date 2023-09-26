@@ -196,6 +196,10 @@ public:
                 + end.toString(Qt::ISODate) + QLatin1String("' ");
         }
     }
+    QString titleClause(const QString titleFilter) const
+    {
+        return QLatin1String("title LIKE '") + Common::starPatternToLike(titleFilter) + QLatin1String("' ESCAPE '\\'");
+    }
 
     QString resourceEventJoinClause() const
     {
@@ -262,6 +266,7 @@ public:
 
         // WHERE clause for filtering on resource mime
         QStringList mimetypeFilter = transformedList(queryDefinition.types(), &ResultSetPrivate::mimetypeClause);
+        QStringList titleFilter = transformedList(queryDefinition.titleFilters(), &ResultSetPrivate::titleClause);
 
         QString dateColumn = QStringLiteral("1");
         QString resourceEventJoin;
@@ -277,13 +282,15 @@ public:
         queryString.replace(QLatin1String("ORDER_BY_CLAUSE"), QLatin1String("ORDER BY $orderingColumn resource ASC"))
             .replace(QLatin1String("LIMIT_CLAUSE"), limitOffsetSuffix());
 
-        const QString replacedQuery = queryString.replace(QLatin1String("$orderingColumn"), orderingColumn)
-                                          .replace(QLatin1String("$agentsFilter"), agentsFilter.join(QStringLiteral(" OR ")))
-                                          .replace(QLatin1String("$activitiesFilter"), activitiesFilter.join(QStringLiteral(" OR ")))
-                                          .replace(QLatin1String("$urlFilter"), urlFilter.join(QStringLiteral(" OR ")))
-                                          .replace(QLatin1String("$mimetypeFilter"), mimetypeFilter.join(QStringLiteral(" OR ")))
-                                          .replace(QLatin1String("$resourceEventJoin"), resourceEventJoin)
-                                          .replace(QLatin1String("$dateFilter"), dateColumn);
+        const QString replacedQuery =
+            queryString.replace(QLatin1String("$orderingColumn"), orderingColumn)
+                .replace(QLatin1String("$agentsFilter"), agentsFilter.join(QStringLiteral(" OR ")))
+                .replace(QLatin1String("$activitiesFilter"), activitiesFilter.join(QStringLiteral(" OR ")))
+                .replace(QLatin1String("$urlFilter"), urlFilter.join(QStringLiteral(" OR ")))
+                .replace(QLatin1String("$mimetypeFilter"), mimetypeFilter.join(QStringLiteral(" OR ")))
+                .replace(QLatin1String("$resourceEventJoin"), resourceEventJoin)
+                .replace(QLatin1String("$dateFilter"), dateColumn)
+                .replace(QLatin1String("$titleFilter"), titleFilter.isEmpty() ? QStringLiteral("1") : titleFilter.join(QStringLiteral(" OR ")));
         return kamd::utils::debug_and_return(DEBUG_QUERIES, "Query: ", replacedQuery);
     }
 
@@ -323,6 +330,7 @@ public:
                 AND ($urlFilter)
                 AND ($mimetypeFilter)
                 AND ($dateFilter)
+                AND ($titleFilter)
 
             GROUP BY resource, title
 
@@ -363,6 +371,7 @@ public:
                 AND ($urlFilter)
                 AND ($mimetypeFilter)
                 AND ($dateFilter)
+                AND ($titleFilter)
 
             GROUP BY resource, title
 
@@ -406,6 +415,7 @@ public:
                         AND ($urlFilter)
                         AND ($mimetypeFilter)
                         AND ($dateFilter)
+                        AND ($titleFilter)
                 ),
 
                 UsedResourcesResults AS (
@@ -428,6 +438,7 @@ public:
                         AND ($urlFilter)
                         AND ($mimetypeFilter)
                         AND ($dateFilter)
+                        AND ($titleFilter)
                 ),
 
                 CollectedResults AS (

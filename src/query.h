@@ -72,6 +72,7 @@ public:
 
     QStringList urlFilters() const;
     Terms::Order ordering() const;
+    QStringList titleFilters() const;
     int offset() const;
     int limit() const;
     QDate dateStart() const;
@@ -102,6 +103,7 @@ public:
     void setOrdering(Terms::Order ordering);
     void setOffset(int offset);
     void setLimit(int limit);
+    void setTitleFilters(const Terms::Title &title);
     /**
      * @since 5.62
      */
@@ -164,6 +166,10 @@ private:
     {
         setDateStart(date.start);
         setDateEnd(date.end);
+    }
+    inline void addTerm(Terms::Title title)
+    {
+        setTitleFilters(title);
     }
 
 public:

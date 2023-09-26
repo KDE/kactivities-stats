@@ -200,6 +200,24 @@ struct KACTIVITIESSTATS_EXPORT Url {
 
     const QStringList values;
 };
+/**
+ * @since 6.0
+ */
+struct KACTIVITIESSTATS_EXPORT Title {
+    /**
+     * Show resources with title that contain the specified pattern
+     */
+    Title(const QString &titlePattern)
+        : values({titlePattern})
+    {
+    }
+    /// Default constructor
+    Title()
+    {
+    }
+
+    const QStringList values;
+};
 
 /**
  * @struct KActivities::Stats::Terms::Date terms.h <KActivities/Stats/Terms>

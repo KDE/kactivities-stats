@@ -60,6 +60,7 @@ public:
     QStringList agents;
     QStringList activities;
     QStringList urlFilters;
+    QStringList titleFilters;
     Terms::Order ordering;
     QDate start, end;
     int limit;
@@ -206,6 +207,15 @@ QDate Query::dateStart() const
 QDate Query::dateEnd() const
 {
     return d->end;
+}
+void Query::setTitleFilters(const Terms::Title &title)
+{
+    d->titleFilters = title.values;
+}
+
+QStringList Query::titleFilters() const
+{
+    return d->titleFilters;
 }
 
 } // namespace Stats
