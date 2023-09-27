@@ -72,6 +72,7 @@ public:
         uint firstUpdate() const; ///< Timestamp of the first update
         LinkStatus linkStatus() const; ///< Differentiates between linked and non-linked resources in mixed queries
         QStringList linkedActivities() const; ///< Contains the activities this resource is linked to for the queries that care about resource linking
+        QString agent() const; /// Contains the initiating agent for this resource
 
         void setResource(QString resource);
         void setTitle(QString title);
@@ -81,6 +82,7 @@ public:
         void setFirstUpdate(uint firstUpdate);
         void setLinkStatus(LinkStatus linkedStatus);
         void setLinkedActivities(QStringList activities);
+        void setAgent(QString agent);
 
     private:
         ResultSet_ResultPrivate *d;

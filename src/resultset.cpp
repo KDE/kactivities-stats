@@ -47,6 +47,7 @@ public:
     uint firstUpdate;
     ResultSet::Result::LinkStatus linkStatus;
     QStringList linkedActivities;
+    QString agent;
 };
 
 ResultSet::Result::Result()
@@ -96,6 +97,7 @@ CREATE_GETTER_AND_SETTER(uint, lastUpdate, setLastUpdate)
 CREATE_GETTER_AND_SETTER(uint, firstUpdate, setFirstUpdate)
 CREATE_GETTER_AND_SETTER(ResultSet::Result::LinkStatus, linkStatus, setLinkStatus)
 CREATE_GETTER_AND_SETTER(QStringList, linkedActivities, setLinkedActivities)
+CREATE_GETTER_AND_SETTER(QString, agent, setAgent)
 
 #undef CREATE_GETTER_AND_SETTER
 
@@ -492,6 +494,7 @@ public:
         result.setScore(query.value(QStringLiteral("score")).toDouble());
         result.setLastUpdate(query.value(QStringLiteral("lastUpdate")).toUInt());
         result.setFirstUpdate(query.value(QStringLiteral("firstUpdate")).toUInt());
+        result.setAgent(query.value(QStringLiteral("agent")).toString());
 
         result.setLinkStatus(static_cast<ResultSet::Result::LinkStatus>(query.value(QStringLiteral("linkStatus")).toUInt()));
 

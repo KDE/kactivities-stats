@@ -49,6 +49,7 @@ public:
         LinkStatusRole = Qt::UserRole + 5,
         LinkedActivitiesRole = Qt::UserRole + 6,
         MimeType = Qt::UserRole + 7, // @since 5.77
+        Agent = Qt::UserRole + 8, // @since 6.0
     };
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
