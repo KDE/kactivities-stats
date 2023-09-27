@@ -1040,6 +1040,7 @@ QVariant ResultModel::data(const QModelIndex &item, int role) const
          : role == LinkStatusRole       ? result.linkStatus()
          : role == LinkedActivitiesRole ? result.linkedActivities()
          : role == MimeType             ? result.mimetype()
+         : role == Agent                ? result.agent()
          : QVariant()
          ;
     /* clang-format on */
