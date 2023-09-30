@@ -205,13 +205,13 @@ public:
 
     QString resourceEventJoinClause() const
     {
-        return QStringLiteral(R"sql(
+        return QStringLiteral(R"(
             LEFT JOIN
                 ResourceEvent re
                 ON  from_table.targettedResource = re.targettedResource
                 AND from_table.usedActivity      = re.usedActivity
                 AND from_table.initiatingAgent   = re.initiatingAgent
-        )sql");
+        )");
     }
 
     /**
@@ -301,7 +301,7 @@ public:
         // TODO: We need to correct the scores based on the time that passed
         //       since the cache was last updated, although, for this query,
         //       scores are not that important.
-        static const QString queryString = QStringLiteral(R"sql(
+        static const QString queryString = QStringLiteral(R"(
             SELECT
                 from_table.targettedResource as resource
               , SUM(rsc.cachedScore)         as score
@@ -338,7 +338,7 @@ public:
 
             ORDER_BY_CLAUSE
             LIMIT_CLAUSE
-            )sql");
+            )");
 
         return queryString;
     }
@@ -347,7 +347,7 @@ public:
     {
         // TODO: We need to correct the scores based on the time that passed
         //       since the cache was last updated
-        static const QString queryString = QStringLiteral(R"sql(
+        static const QString queryString = QStringLiteral(R"(
             SELECT
                 from_table.targettedResource as resource
               , SUM(from_table.cachedScore)  as score
@@ -379,7 +379,7 @@ public:
 
             ORDER_BY_CLAUSE
             LIMIT_CLAUSE
-            )sql");
+            )");
 
         return queryString;
     }
@@ -389,7 +389,7 @@ public:
         // TODO: We need to correct the scores based on the time that passed
         //       since the cache was last updated, although, for this query,
         //       scores are not that important.
-        static const QString queryString = QStringLiteral(R"sql(
+        static const QString queryString = QStringLiteral(R"(
             WITH
                 LinkedResourcesResults AS (
                     SELECT from_table.targettedResource as resource
@@ -475,7 +475,7 @@ public:
 
                 ORDER_BY_CLAUSE
                 LIMIT_CLAUSE
-            )sql");
+            )");
 
         return queryString;
     }
@@ -500,11 +500,11 @@ public:
 
         auto linkedActivitiesQuery = database->createQuery();
 
-        linkedActivitiesQuery.prepare(QStringLiteral(R"sql(
+        linkedActivitiesQuery.prepare(QStringLiteral(R"(
             SELECT usedActivity
             FROM   ResourceLink
             WHERE  targettedResource = :resource
-            )sql"));
+            )"));
 
         linkedActivitiesQuery.bindValue(QStringLiteral(":resource"), result.resource());
         linkedActivitiesQuery.exec();
