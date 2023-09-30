@@ -396,9 +396,7 @@ void ResultSetQuickCheckTest::pushToDatabase()
                            ",  %5 " // firstUpdate
                            ",  %6 " // lastUpdate
                            ")")
-                .arg(rsc.usedActivity)
-                .arg(rsc.initiatingAgent)
-                .arg(rsc.targettedResource)
+                .arg(rsc.usedActivity, rsc.initiatingAgent, rsc.targettedResource)
                 .arg(rsc.cachedScore)
                 .arg(rsc.firstUpdate)
                 .arg(rsc.lastUpdate));
@@ -430,9 +428,7 @@ void ResultSetQuickCheckTest::pushToDatabase()
                            ",   1  " // autoTitle
                            ",   1  " // autoMimetype
                            ")")
-                .arg(ri.targettedResource)
-                .arg(ri.title)
-                .arg(ri.mimetype));
+                .arg(ri.targettedResource, ri.title, ri.mimetype));
     }
     std::cerr << std::endl;
 
@@ -457,9 +453,7 @@ void ResultSetQuickCheckTest::pushToDatabase()
                            ", '%2' " // usedActivity
                            ", '%3' " // initiatingAgent
                            ")")
-                .arg(rl.targettedResource)
-                .arg(rl.usedActivity)
-                .arg(rl.initiatingAgent));
+                .arg(rl.targettedResource, rl.usedActivity, rl.initiatingAgent));
     }
     std::cerr << std::endl;
 }
