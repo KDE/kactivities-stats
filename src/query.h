@@ -84,6 +84,7 @@ public:
     void addAgents(const QStringList &agents);
     void addActivities(const QStringList &activities);
     void addUrlFilters(const QStringList &urlFilters);
+    void addTitleFilters(const QStringList &urlFilters);
     /**
      * @since 5.62
      */
@@ -115,6 +116,7 @@ public:
     void clearAgents();
     void clearActivities();
     void clearUrlFilters();
+    void clearTitleFilters();
 
     void removeTypes(const QStringList &types);
     void removeAgents(const QStringList &agents);

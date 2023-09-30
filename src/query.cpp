@@ -35,14 +35,20 @@ inline void validateActivities(QStringList &activities)
     Q_UNUSED(activities);
 }
 
+inline void validateFilters(QStringList &filters)
+{
+    for (auto it = filters.begin(), end = filters.end(); it != end; ++it) {
+        it->replace(QLatin1String("'"), QLatin1String(""));
+    }
+}
 inline void validateUrlFilters(QStringList &urlFilters)
 {
-    auto i = urlFilters.begin();
-    const auto end = urlFilters.end();
+    validateFilters(urlFilters);
+}
 
-    for (; i != end; ++i) {
-        i->replace(QLatin1String("'"), QLatin1String(""));
-    }
+inline void validateTitleFilters(QStringList &titleFilters)
+{
+    validateFilters(titleFilters);
 }
 
 } // namespace details
@@ -141,6 +147,7 @@ IMPLEMENT_QUERY_LIST_FIELD(Types, types, Type, QStringList(ANY_TYPE_TAG))
 IMPLEMENT_QUERY_LIST_FIELD(Agents, agents, Agent, QStringList(CURRENT_AGENT_TAG))
 IMPLEMENT_QUERY_LIST_FIELD(Activities, activities, Activity, QStringList(CURRENT_ACTIVITY_TAG))
 IMPLEMENT_QUERY_LIST_FIELD(UrlFilters, urlFilters, Url, QStringList(QStringLiteral("*")))
+IMPLEMENT_QUERY_LIST_FIELD(TitleFilters, titleFilters, Title, QStringList(QStringLiteral("*")))
 
 #undef IMPLEMENT_QUERY_LIST_FIELD
 
@@ -210,16 +217,6 @@ QDate Query::dateEnd() const
 {
     return d->end;
 }
-void Query::setTitleFilters(const Terms::Title &title)
-{
-    d->titleFilters = title.values;
-}
-
-QStringList Query::titleFilters() const
-{
-    return d->titleFilters;
-}
-
 } // namespace Stats
 } // namespace KActivities
 
