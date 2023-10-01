@@ -711,7 +711,8 @@ public:
 
             cache.loadOrderingConfig(activityTag);
 
-            fetch(0, query.limit());
+            // If the user has requested less than 50 entries, only fetch those. If more, they should be fetched in subsequent batches
+            fetch(0, qMin(s_defaultCacheSize, query.limit()));
 
         } else if (mode == FetchReload) {
             if (cache.size() > s_defaultCacheSize) {
