@@ -11,8 +11,7 @@ portingAid: false
 deprecated: false
 release: true
 libraries:
- - qmake: KActivitiesStats
-   cmake: "KF6::ActivitiesStats"
+ - cmake: "KF6::ActivitiesStats"
 cmakename: KF6ActivitiesStats
 
 public_lib: true
