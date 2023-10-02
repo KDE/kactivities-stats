@@ -200,6 +200,10 @@ public:
     }
     QString titleClause(const QString titleFilter) const
     {
+        if (titleFilter == QLatin1String("*")) {
+            return QStringLiteral("1");
+        }
+
         return QLatin1String("title LIKE '") + Common::starPatternToLike(titleFilter) + QLatin1String("' ESCAPE '\\'");
     }
 
