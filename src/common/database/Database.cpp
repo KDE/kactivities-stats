@@ -7,7 +7,6 @@
 #include "Database.h"
 
 #include <common/database/schema/ResourcesDatabaseSchema.h>
-#include <utils/d_ptr_implementation.h>
 
 #include <QDebug>
 #include <QSqlDatabase>
@@ -200,6 +199,7 @@ Database::Ptr Database::instance(Source source, OpenMode openMode)
 }
 
 Database::Database()
+    : d(new Database::Private())
 {
 }
 

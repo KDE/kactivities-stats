@@ -10,7 +10,6 @@
 #include <QRegularExpression>
 #include <QSqlQuery>
 #include <memory>
-#include <utils/d_ptr.h>
 
 namespace Common
 {
@@ -57,7 +56,8 @@ public:
     Common::Database::Locker lock(A)
 
 private:
-    D_PTR;
+    class Private;
+    std::unique_ptr<Private> d;
 };
 
 template<typename EscapeFunction>
