@@ -1,8 +1,8 @@
 Dependencies:
 - 'on': ['Linux', 'FreeBSD']
   'require':
-    'frameworks/extra-cmake-modules': '@same'
-    'frameworks/kactivities' : '@same'
+    'frameworks/extra-cmake-modules': '@latest-kf6'
+    'plasma/kactivities' : '@same'
 
 Options:
   test-before-installing: True
