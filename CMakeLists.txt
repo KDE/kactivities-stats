@@ -1,9 +1,9 @@
 # vim:set softtabstop=3 shiftwidth=3 tabstop=3 expandtab:
-
-project(KActivitiesStats)
-set(PROJECT_VERSION "5.27.80")
-
 cmake_minimum_required(VERSION 3.16)
+
+set(PROJECT_VERSION "5.27.80")
+set(PROJECT_VERSION_MAJOR 6)
+project(KActivitiesStats VERSION ${PROJECT_VERSION})
 
 set(QT_MIN_VERSION "6.4.0")
 set(KF6_MIN_VERSION "5.240.0")
@@ -13,69 +13,33 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(ECM ${KF6_MIN_VERSION} REQUIRED NO_MODULE)
-set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH} )
+set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules)
 
-cmake_minimum_required(VERSION 3.16)
+set(KASTATS_CURRENT_ROOT_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
-# We don't build in-source
-if ("${CMAKE_SOURCE_DIR}" STREQUAL "${CMAKE_BINARY_DIR}")
-   message (
-      FATAL_ERROR
-      "kactivities-stats require an out of source build. Please create a separate build directory and run 'cmake path_to_kactivities-stats [options]' there."
-   )
-endif ()
-
-set (KASTATS_CURRENT_ROOT_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
-
-include (FeatureSummary)
-include (KDEInstallDirs)
-include (KDECMakeSettings)
+include(FeatureSummary)
+include(KDEInstallDirs)
+include(KDECMakeSettings)
 include(KDEGitCommitHooks)
-include (KDEFrameworkCompilerSettings NO_POLICY_SCOPE)
-include (ECMGenerateExportHeader)
-include (ECMGenerateHeaders)
-include (ECMGeneratePkgConfigFile)
-include (ECMAddQch)
-include (ECMQtDeclareLoggingCategory)
+include(KDEFrameworkCompilerSettings NO_POLICY_SCOPE)
+include(ECMGenerateExportHeader)
+include(ECMGenerateHeaders)
+include(ECMGeneratePkgConfigFile)
+include(ECMAddQch)
+include(ECMQtDeclareLoggingCategory)
 include(ECMDeprecationSettings)
 
 option(BUILD_QCH "Build API documentation in QCH format (for e.g. Qt Assistant, Qt Creator & KDevelop)" OFF)
 add_feature_info(QCH ${BUILD_QCH} "API documentation in QCH format (for e.g. Qt Assistant, Qt Creator & KDevelop)")
 
-# Qt
-set (CMAKE_AUTOMOC ON)
-find_package (Qt6 ${QT_MIN_VERSION} CONFIG REQUIRED COMPONENTS Core DBus Sql)
+find_package(Qt6 ${QT_MIN_VERSION} CONFIG REQUIRED COMPONENTS Core DBus Sql)
 
-# KDE Frameworks
-# find_package (KF6DBusAddons ${KF6_MIN_VERSION} CONFIG REQUIRED)
-# find_package (KF6I18n ${KF6_MIN_VERSION} CONFIG REQUIRED)
-find_package (KF6Config ${KF6_MIN_VERSION} CONFIG REQUIRED)
-find_package (KF6Activities ${KF6_MIN_VERSION} CONFIG REQUIRED)
+find_package(KF6Config ${KF6_MIN_VERSION} CONFIG REQUIRED)
+find_package(KF6Activities ${PROJECT_VERSION} CONFIG REQUIRED)
 find_package(Threads REQUIRED)
 
-# Basic includes
-include (CPack)
-
-include (CMakePackageConfigHelpers)
-include (ECMSetupVersion)
-
-
-# Adding local CMake modules
-set (
-   CMAKE_MODULE_PATH
-   ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules
-   ${CMAKE_MODULE_PATH}
-   )
-
-# add_definitions (-DTRANSLATION_DOMAIN=\"kactivitiesstats5\")
-# ki18n_install (po)
-
-if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-   set(CMAKE_CXX_VISIBILITY_PRESET default)
-   set(CMAKE_VISIBILITY_INLINES_HIDDEN 0)
-endif ()
-
-# libKActivitiesStats
+include(CMakePackageConfigHelpers)
+include(ECMSetupVersion)
 
 set(kactivitiesstats_version_header "${CMAKE_CURRENT_BINARY_DIR}/src/kactivitiesstats_version.h")
 ecm_setup_version (
@@ -90,20 +54,19 @@ ecm_set_disabled_deprecation_versions(
     KF 5.102.0
 )
 
-
-add_subdirectory (src)
+add_subdirectory(src)
 if(BUILD_TESTING)
   set(Boost_NO_BOOST_CMAKE ON)
-  find_package (Boost 1.49)
+  find_package(Boost 1.49)
   if (Boost_FOUND)
-    add_subdirectory (autotests)
-  endif ()
-  add_subdirectory (tests)
-endif (BUILD_TESTING)
+    add_subdirectory(autotests)
+  endif()
+  add_subdirectory(tests)
+endif(BUILD_TESTING)
 
 set (CMAKECONFIG_INSTALL_DIR "${KDE_INSTALL_CMAKEPACKAGEDIR}/KF6ActivitiesStats")
 
-if (BUILD_QCH)
+if(BUILD_QCH)
     ecm_install_qch_export(
         TARGETS KF6ActivitiesStats_QCH
         FILE KF6ActivitiesStatsLibraryQchTargets.cmake
@@ -113,32 +76,32 @@ if (BUILD_QCH)
     set(PACKAGE_INCLUDE_QCHTARGETS "include(\"\${CMAKE_CURRENT_LIST_DIR}/KF6ActivitiesStatsLibraryQchTargets.cmake\")")
 endif()
 
-install (
+install(
    EXPORT KF6ActivitiesStatsLibraryTargets
    DESTINATION "${CMAKECONFIG_INSTALL_DIR}"
    FILE KF6ActivitiesStatsLibraryTargets.cmake
    NAMESPACE KF6::
    )
 
-configure_package_config_file (
+configure_package_config_file(
    "${CMAKE_CURRENT_SOURCE_DIR}/KF6ActivitiesStatsConfig.cmake.in"
    "${CMAKE_CURRENT_BINARY_DIR}/KF6ActivitiesStatsConfig.cmake"
    INSTALL_DESTINATION  ${CMAKECONFIG_INSTALL_DIR}
    )
 
-install (
+install(
    FILES "${CMAKE_CURRENT_BINARY_DIR}/KF6ActivitiesStatsConfig.cmake"
          "${CMAKE_CURRENT_BINARY_DIR}/KF6ActivitiesStatsConfigVersion.cmake"
    DESTINATION "${CMAKECONFIG_INSTALL_DIR}"
    COMPONENT Devel
    )
 
-install (
+install(
    FILES ${kactivitiesstats_version_header}
    DESTINATION ${KDE_INSTALL_INCLUDEDIR_KF}/KActivitiesStats COMPONENT Devel
    )
 
 # Write out the features
-feature_summary (WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
+feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
 
 kde_configure_git_pre_commit_hook(CHECKS CLANG_FORMAT)
