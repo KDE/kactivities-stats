@@ -65,7 +65,7 @@ target_include_directories(KF6ActivitiesStats
 ecm_generate_export_header (KF6ActivitiesStats
    BASE_NAME KActivitiesStats
    GROUP_BASE_NAME KF
-   VERSION ${KF_VERSION}
+   VERSION ${KF6_MIN_VERSION}
    USE_VERSION_HEADER
    DEPRECATED_BASE_VERSION 0
 )
