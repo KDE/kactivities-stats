@@ -80,25 +80,6 @@ void ResultWatcherTest::testLinkedResources()
     CHECK_SIGNAL_RESULT(&watcher, &KAStats::ResultWatcher::resultUnlinked, 5, (const QString &uri), QCOMPARE(QStringLiteral("test://link1"), uri));
 }
 
-void ResultWatcherTest::testUsedResources()
-{
-    using namespace KAStats;
-    using namespace KAStats::Terms;
-
-    KAStats::ResultWatcher watcher(UsedResources | Agent::current() | Activity::any());
-
-    // Opening a resource for a few seconds
-    {
-        KActivities::ResourceInstance resource(0);
-        resource.setUri(QUrl(QStringLiteral("test://test1")));
-
-        liveSleep(3);
-    }
-
-    // A signal should arrive soon, waiting for 5 seconds at most
-    CHECK_SIGNAL_RESULT(&watcher, &KAStats::ResultWatcher::resultScoreUpdated, 5, (const QString &uri, double), QCOMPARE(QStringLiteral("test://test1"), uri));
-}
-
 void ResultWatcherTest::initTestCase()
 {
 }

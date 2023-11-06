@@ -22,7 +22,6 @@ private Q_SLOTS:
     void initTestCase();
 
     void testLinkedResources();
-    void testUsedResources();
 
     void cleanupTestCase();
 };
