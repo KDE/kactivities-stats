@@ -14,7 +14,7 @@
 #include <QSqlQuery>
 
 // Local
-#include "kactivities-stats-logsettings.h"
+#include "plasma-activities-stats-logsettings.h"
 #include <common/database/Database.h>
 #include <utils/debug_and_return.h>
 
@@ -24,8 +24,8 @@
 #include <limits>
 #include <mutex>
 
-// KActivities
-#include <kactivities/consumer.h>
+// PlasmaActivities
+#include <plasmaactivities/consumer.h>
 
 #include "activitiessync_p.h"
 #include "common/dbus/common.h"
@@ -37,7 +37,7 @@
 
 #include <algorithm>
 
-#define QDBG qCDebug(KACTIVITIES_STATS_LOG) << "KActivitiesStats(" << (void *)this << ")"
+#define QDBG qCDebug(PLASMA_ACTIVITIES_STATS_LOG) << "PlasmaActivitiesStats(" << (void *)this << ")"
 
 namespace KActivities
 {
@@ -84,7 +84,7 @@ public:
     bool activityMatches(const QString &activity) const
     {
 #if DEBUG_MATCHERS
-        qCDebug(KACTIVITIES_STATS_LOG) << "Activity " << activity << "matching against" << query.activities();
+        qCDebug(PLASMA_ACTIVITIES_STATS_LOG) << "Activity " << activity << "matching against" << query.activities();
 #endif
 
         return kamd::utils::debug_and_return(DEBUG_MATCHERS,
@@ -101,7 +101,7 @@ public:
     bool agentMatches(const QString &agent) const
     {
 #if DEBUG_MATCHERS
-        qCDebug(KACTIVITIES_STATS_LOG) << "Agent " << agent << "matching against" << query.agents();
+        qCDebug(PLASMA_ACTIVITIES_STATS_LOG) << "Agent " << agent << "matching against" << query.agents();
 #endif
 
         return kamd::utils::debug_and_return(DEBUG_MATCHERS, " -> returning ", agent == ANY_AGENT_TAG || any_of(query.agents(), [&](const QString &matcher) {
@@ -116,7 +116,7 @@ public:
     bool urlMatches(const QString &url) const
     {
 #if DEBUG_MATCHERS
-        qCDebug(KACTIVITIES_STATS_LOG) << "Url " << url << "matching against" << urlFilters;
+        qCDebug(PLASMA_ACTIVITIES_STATS_LOG) << "Url " << url << "matching against" << urlFilters;
 #endif
 
         return kamd::utils::debug_and_return(DEBUG_MATCHERS, " -> returning ", any_of(urlFilters, [&](const QRegularExpression &matcher) {
@@ -149,10 +149,10 @@ public:
         });
 
 #if DEBUG_MATCHERS
-        qCDebug(KACTIVITIES_STATS_LOG) << "Type "
+        qCDebug(PLASMA_ACTIVITIES_STATS_LOG) << "Type "
                                        << "...type..."
                                        << "matching against" << query.types();
-        qCDebug(KACTIVITIES_STATS_LOG) << "ANY_TYPE_TAG" << ANY_TYPE_TAG;
+        qCDebug(PLASMA_ACTIVITIES_STATS_LOG) << "ANY_TYPE_TAG" << ANY_TYPE_TAG;
 #endif
 
         return kamd::utils::debug_and_return(DEBUG_MATCHERS, " -> returning ", any_of(query.types(), [&](const QString &matcher) {
@@ -179,7 +179,7 @@ public:
     void onResourceLinkedToActivity(const QString &agent, const QString &resource, const QString &activity)
     {
 #if DEBUG_MATCHERS
-        qCDebug(KACTIVITIES_STATS_LOG) << "Resource has been linked: " << agent << resource << activity;
+        qCDebug(PLASMA_ACTIVITIES_STATS_LOG) << "Resource has been linked: " << agent << resource << activity;
 #endif
 
         // The used resources do not really care about the linked ones
@@ -199,7 +199,7 @@ public:
     void onResourceUnlinkedFromActivity(const QString &agent, const QString &resource, const QString &activity)
     {
 #if DEBUG_MATCHERS
-        qCDebug(KACTIVITIES_STATS_LOG) << "Resource unlinked: " << agent << resource << activity;
+        qCDebug(PLASMA_ACTIVITIES_STATS_LOG) << "Resource unlinked: " << agent << resource << activity;
 #endif
 
         // The used resources do not really care about the linked ones
@@ -346,7 +346,7 @@ void ResultWatcher::unlinkFromActivity(const QUrl &resource, const Terms::Activi
 
     for (const auto &activity : activities) {
         for (const auto &agent : agents) {
-            qCDebug(KACTIVITIES_STATS_LOG) << "Unlink " << agent << resource << activity;
+            qCDebug(PLASMA_ACTIVITIES_STATS_LOG) << "Unlink " << agent << resource << activity;
             d->linking.UnlinkResourceFromActivity(agent, resource.toString(), activity);
         }
     }

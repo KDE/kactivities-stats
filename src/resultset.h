@@ -40,7 +40,7 @@ class ResultSet_IteratorPrivate;
  * }
  * @endcode
  */
-class KACTIVITIESSTATS_EXPORT ResultSet
+class PLASMAACTIVITIESSTATS_EXPORT ResultSet
 {
 public:
     /**
@@ -157,16 +157,16 @@ public:
 
         reference operator[](difference_type n) const;
 
-        KACTIVITIESSTATS_EXPORT friend bool operator==(const const_iterator &left, const const_iterator &right);
-        KACTIVITIESSTATS_EXPORT friend bool operator!=(const const_iterator &left, const const_iterator &right);
+        PLASMAACTIVITIESSTATS_EXPORT friend bool operator==(const const_iterator &left, const const_iterator &right);
+        PLASMAACTIVITIESSTATS_EXPORT friend bool operator!=(const const_iterator &left, const const_iterator &right);
 
-        KACTIVITIESSTATS_EXPORT friend bool operator<(const const_iterator &left, const const_iterator &right);
-        KACTIVITIESSTATS_EXPORT friend bool operator>(const const_iterator &left, const const_iterator &right);
+        PLASMAACTIVITIESSTATS_EXPORT friend bool operator<(const const_iterator &left, const const_iterator &right);
+        PLASMAACTIVITIESSTATS_EXPORT friend bool operator>(const const_iterator &left, const const_iterator &right);
 
-        KACTIVITIESSTATS_EXPORT friend bool operator<=(const const_iterator &left, const const_iterator &right);
-        KACTIVITIESSTATS_EXPORT friend bool operator>=(const const_iterator &left, const const_iterator &right);
+        PLASMAACTIVITIESSTATS_EXPORT friend bool operator<=(const const_iterator &left, const const_iterator &right);
+        PLASMAACTIVITIESSTATS_EXPORT friend bool operator>=(const const_iterator &left, const const_iterator &right);
 
-        KACTIVITIESSTATS_EXPORT friend difference_type operator-(const const_iterator &left, const const_iterator &right);
+        PLASMAACTIVITIESSTATS_EXPORT friend difference_type operator-(const const_iterator &left, const const_iterator &right);
 
     private:
         const_iterator(const ResultSet *resultSet, int currentRow);
@@ -224,16 +224,16 @@ private:
     ResultSetPrivate *d;
 };
 
-bool KACTIVITIESSTATS_EXPORT operator==(const ResultSet::const_iterator &left, const ResultSet::const_iterator &right);
-bool KACTIVITIESSTATS_EXPORT operator!=(const ResultSet::const_iterator &left, const ResultSet::const_iterator &right);
+bool PLASMAACTIVITIESSTATS_EXPORT operator==(const ResultSet::const_iterator &left, const ResultSet::const_iterator &right);
+bool PLASMAACTIVITIESSTATS_EXPORT operator!=(const ResultSet::const_iterator &left, const ResultSet::const_iterator &right);
 
-bool KACTIVITIESSTATS_EXPORT operator<(const ResultSet::const_iterator &left, const ResultSet::const_iterator &right);
-bool KACTIVITIESSTATS_EXPORT operator>(const ResultSet::const_iterator &left, const ResultSet::const_iterator &right);
+bool PLASMAACTIVITIESSTATS_EXPORT operator<(const ResultSet::const_iterator &left, const ResultSet::const_iterator &right);
+bool PLASMAACTIVITIESSTATS_EXPORT operator>(const ResultSet::const_iterator &left, const ResultSet::const_iterator &right);
 
-bool KACTIVITIESSTATS_EXPORT operator<=(const ResultSet::const_iterator &left, const ResultSet::const_iterator &right);
-bool KACTIVITIESSTATS_EXPORT operator>=(const ResultSet::const_iterator &left, const ResultSet::const_iterator &right);
+bool PLASMAACTIVITIESSTATS_EXPORT operator<=(const ResultSet::const_iterator &left, const ResultSet::const_iterator &right);
+bool PLASMAACTIVITIESSTATS_EXPORT operator>=(const ResultSet::const_iterator &left, const ResultSet::const_iterator &right);
 
-ResultSet::const_iterator::difference_type KACTIVITIESSTATS_EXPORT operator-(const ResultSet::const_iterator &left, const ResultSet::const_iterator &right);
+ResultSet::const_iterator::difference_type PLASMAACTIVITIESSTATS_EXPORT operator-(const ResultSet::const_iterator &left, const ResultSet::const_iterator &right);
 
 inline QDebug operator<<(QDebug out, const ResultSet::Result &result)
 {

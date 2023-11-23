@@ -14,7 +14,7 @@
 #include <QUrl>
 
 // Local
-#include "kactivities-stats-logsettings.h"
+#include "plasma-activities-stats-logsettings.h"
 #include <common/database/Database.h>
 #include <common/specialvalues.h>
 #include <utils/debug_and_return.h>
@@ -134,7 +134,7 @@ public:
                                              : QString()));
 
         if (query.lastError().isValid()) {
-            qCWarning(KACTIVITIES_STATS_LOG) << "[Error at ResultSetPrivate::initQuery]: " << query.lastError();
+            qCWarning(PLASMA_ACTIVITIES_STATS_LOG) << "[Error at ResultSetPrivate::initQuery]: " << query.lastError();
         }
     }
 
@@ -519,7 +519,7 @@ public:
         }
 
         result.setLinkedActivities(linkedActivities);
-        // qDebug(KACTIVITIES_STATS_LOG) << result.resource() << "linked to activities" << result.linkedActivities();
+        // qDebug(PLASMA_ACTIVITIES_STATS_LOG) << result.resource() << "linked to activities" << result.linkedActivities();
 
         return result;
     }
@@ -533,7 +533,7 @@ ResultSet::ResultSet(Query queryDefinition)
     d->database = Database::instance(Database::ResourcesDatabase, Database::ReadOnly);
 
     if (!(d->database)) {
-        qCWarning(KACTIVITIES_STATS_LOG) << "KActivities ERROR: There is no database. This probably means "
+        qCWarning(PLASMA_ACTIVITIES_STATS_LOG) << "Plasma Activities ERROR: There is no database. This probably means "
                                             "that you do not have the Activity Manager running, or that "
                                             "something else is broken on your system. Recent documents and "
                                             "alike will not work!";

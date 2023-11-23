@@ -21,7 +21,7 @@
 #include <QQmlContext>
 #include <QQuickItem>
 
-#include <KActivities/Consumer>
+#include <PlasmaActivities/Consumer>
 
 namespace KAStats = KActivities::Stats;
 

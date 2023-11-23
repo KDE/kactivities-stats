@@ -13,7 +13,7 @@
 #include <QString>
 #include <QStringList>
 
-#include "kactivitiesstats_export.h"
+#include "plasmaactivitiesstats_export.h"
 
 namespace KActivities
 {
@@ -29,7 +29,7 @@ namespace Terms
  * Enumerator specifying the ordering in which the
  * results of the query should be listed
  */
-enum KACTIVITIESSTATS_EXPORT Order {
+enum PLASMAACTIVITIESSTATS_EXPORT Order {
     HighScoredFirst, ///< Resources with the highest scores first
     RecentlyUsedFirst, ///< Recently used resources first
     RecentlyCreatedFirst, ///< Recently created resources first
@@ -40,7 +40,7 @@ enum KACTIVITIESSTATS_EXPORT Order {
 /**
  * Which resources should be returned
  */
-enum KACTIVITIESSTATS_EXPORT Select {
+enum PLASMAACTIVITIESSTATS_EXPORT Select {
     LinkedResources, ///< Resources linked to an activity, or globally
     UsedResources, ///< Resources that have been accessed
     AllResources, ///< Combined set of accessed and linked resources
@@ -51,7 +51,7 @@ enum KACTIVITIESSTATS_EXPORT Select {
  *
  * How many items you need. The default is 50
  */
-struct KACTIVITIESSTATS_EXPORT Limit {
+struct PLASMAACTIVITIESSTATS_EXPORT Limit {
     Limit(int value);
     int value;
 };
@@ -62,7 +62,7 @@ struct KACTIVITIESSTATS_EXPORT Limit {
  * How many items to skip?
  * This can be specified only if limit is also set to a finite value.
  */
-struct KACTIVITIESSTATS_EXPORT Offset {
+struct PLASMAACTIVITIESSTATS_EXPORT Offset {
     Offset(int value);
     int value;
 };
@@ -72,7 +72,7 @@ struct KACTIVITIESSTATS_EXPORT Offset {
  *
  * Term to filter the resources according to their types
  */
-struct KACTIVITIESSTATS_EXPORT Type {
+struct PLASMAACTIVITIESSTATS_EXPORT Type {
     /**
      * Show resources of any type
      */
@@ -103,7 +103,7 @@ struct KACTIVITIESSTATS_EXPORT Type {
  * Term to filter the resources according the agent (application) which
  * accessed it
  */
-struct KACTIVITIESSTATS_EXPORT Agent {
+struct PLASMAACTIVITIESSTATS_EXPORT Agent {
     /**
      * Show resources accessed/linked by any application
      */
@@ -136,7 +136,7 @@ struct KACTIVITIESSTATS_EXPORT Agent {
  * Term to filter the resources according the activity in which they
  * were accessed
  */
-struct KACTIVITIESSTATS_EXPORT Activity {
+struct PLASMAACTIVITIESSTATS_EXPORT Activity {
     /**
      * Show resources accessed in / linked to any activity
      */
@@ -168,7 +168,7 @@ struct KACTIVITIESSTATS_EXPORT Activity {
  *
  * Url filtering.
  */
-struct KACTIVITIESSTATS_EXPORT Url {
+struct PLASMAACTIVITIESSTATS_EXPORT Url {
     /**
      * Show only resources that start with the specified prefix
      */
@@ -202,7 +202,7 @@ struct KACTIVITIESSTATS_EXPORT Url {
 /**
  * @since 6.0
  */
-struct KACTIVITIESSTATS_EXPORT Title {
+struct PLASMAACTIVITIESSTATS_EXPORT Title {
     /**
      * Show resources with title that contain the specified pattern
      */
@@ -223,7 +223,7 @@ struct KACTIVITIESSTATS_EXPORT Title {
  *
  * On which start access date do you want to filter ?
  */
-struct KACTIVITIESSTATS_EXPORT Date {
+struct PLASMAACTIVITIESSTATS_EXPORT Date {
     Date(QDate value);
     Date(QDate start, QDate end);
 
@@ -241,31 +241,31 @@ struct KACTIVITIESSTATS_EXPORT Date {
 } // namespace Stats
 } // namespace KActivities
 
-KACTIVITIESSTATS_EXPORT
+PLASMAACTIVITIESSTATS_EXPORT
 QDebug operator<<(QDebug dbg, const KActivities::Stats::Terms::Order &order);
 
-KACTIVITIESSTATS_EXPORT
+PLASMAACTIVITIESSTATS_EXPORT
 QDebug operator<<(QDebug dbg, const KActivities::Stats::Terms::Select &select);
 
-KACTIVITIESSTATS_EXPORT
+PLASMAACTIVITIESSTATS_EXPORT
 QDebug operator<<(QDebug dbg, const KActivities::Stats::Terms::Type &type);
 
-KACTIVITIESSTATS_EXPORT
+PLASMAACTIVITIESSTATS_EXPORT
 QDebug operator<<(QDebug dbg, const KActivities::Stats::Terms::Agent &agent);
 
-KACTIVITIESSTATS_EXPORT
+PLASMAACTIVITIESSTATS_EXPORT
 QDebug operator<<(QDebug dbg, const KActivities::Stats::Terms::Activity &activity);
 
-KACTIVITIESSTATS_EXPORT
+PLASMAACTIVITIESSTATS_EXPORT
 QDebug operator<<(QDebug dbg, const KActivities::Stats::Terms::Url &url);
 
-KACTIVITIESSTATS_EXPORT
+PLASMAACTIVITIESSTATS_EXPORT
 QDebug operator<<(QDebug dbg, const KActivities::Stats::Terms::Limit &limit);
 
-KACTIVITIESSTATS_EXPORT
+PLASMAACTIVITIESSTATS_EXPORT
 QDebug operator<<(QDebug dbg, const KActivities::Stats::Terms::Offset &offset);
 
-KACTIVITIESSTATS_EXPORT
+PLASMAACTIVITIESSTATS_EXPORT
 QDebug operator<<(QDebug dbg, const KActivities::Stats::Terms::Date &date);
 
 #endif // KACTIVITIES_STATS_TERMS_H

@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.16)
 
 set(PROJECT_VERSION "5.81.80")
 set(PROJECT_VERSION_MAJOR 6)
-project(KActivitiesStats VERSION ${PROJECT_VERSION})
+project(PlasmaActivitiesStats VERSION ${PROJECT_VERSION})
 
 set(QT_MIN_VERSION "6.5.0")
 set(KF6_MIN_VERSION "5.240.0")
@@ -35,18 +35,18 @@ add_feature_info(QCH ${BUILD_QCH} "API documentation in QCH format (for e.g. Qt 
 find_package(Qt6 ${QT_MIN_VERSION} CONFIG REQUIRED COMPONENTS Core DBus Sql)
 
 find_package(KF6Config ${KF6_MIN_VERSION} CONFIG REQUIRED)
-find_package(KF6Activities ${PROJECT_VERSION} CONFIG REQUIRED)
+find_package(PlasmaActivities ${PROJECT_VERSION} CONFIG REQUIRED)
 find_package(Threads REQUIRED)
 
 include(CMakePackageConfigHelpers)
 include(ECMSetupVersion)
 
-set(kactivitiesstats_version_header "${CMAKE_CURRENT_BINARY_DIR}/src/kactivitiesstats_version.h")
+set(plasmaactivitiesstats_version_header "${CMAKE_CURRENT_BINARY_DIR}/src/plasmaactivitiesstats_version.h")
 ecm_setup_version (
    PROJECT
-   VARIABLE_PREFIX KACTIVITIESSTATS
-   VERSION_HEADER ${kactivitiesstats_version_header}
-   PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/KF6ActivitiesStatsConfigVersion.cmake"
+   VARIABLE_PREFIX PLASMAACTIVITIESSTATS
+   VERSION_HEADER ${plasmaactivitiesstats_version_header}
+   PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/PlasmaActivitiesStatsConfigVersion.cmake"
    SOVERSION 1
    )
 ecm_set_disabled_deprecation_versions(
@@ -64,41 +64,41 @@ if(BUILD_TESTING)
   add_subdirectory(tests)
 endif(BUILD_TESTING)
 
-set (CMAKECONFIG_INSTALL_DIR "${KDE_INSTALL_CMAKEPACKAGEDIR}/KF6ActivitiesStats")
+set (CMAKECONFIG_INSTALL_DIR "${KDE_INSTALL_CMAKEPACKAGEDIR}/PlasmaActivitiesStats")
 
 if(BUILD_QCH)
     ecm_install_qch_export(
-        TARGETS KF6ActivitiesStats_QCH
-        FILE KF6ActivitiesStatsLibraryQchTargets.cmake
+        TARGETS PlasmaActivitiesStats_QCH
+        FILE PlasmaActivitiesStatsLibraryQchTargets.cmake
         DESTINATION "${CMAKECONFIG_INSTALL_DIR}"
         COMPONENT Devel
     )
-    set(PACKAGE_INCLUDE_QCHTARGETS "include(\"\${CMAKE_CURRENT_LIST_DIR}/KF6ActivitiesStatsLibraryQchTargets.cmake\")")
+    set(PACKAGE_INCLUDE_QCHTARGETS "include(\"\${CMAKE_CURRENT_LIST_DIR}/PlasmaActivitiesStatsLibraryQchTargets.cmake\")")
 endif()
 
 install(
-   EXPORT KF6ActivitiesStatsLibraryTargets
+   EXPORT PlasmaActivitiesStatsLibraryTargets
    DESTINATION "${CMAKECONFIG_INSTALL_DIR}"
-   FILE KF6ActivitiesStatsLibraryTargets.cmake
-   NAMESPACE KF6::
+   FILE PlasmaActivitiesStatsLibraryTargets.cmake
+   NAMESPACE Plasma::
    )
 
 configure_package_config_file(
-   "${CMAKE_CURRENT_SOURCE_DIR}/KF6ActivitiesStatsConfig.cmake.in"
-   "${CMAKE_CURRENT_BINARY_DIR}/KF6ActivitiesStatsConfig.cmake"
+   "${CMAKE_CURRENT_SOURCE_DIR}/PlasmaActivitiesStatsConfig.cmake.in"
+   "${CMAKE_CURRENT_BINARY_DIR}/PlasmaActivitiesStatsConfig.cmake"
    INSTALL_DESTINATION  ${CMAKECONFIG_INSTALL_DIR}
    )
 
 install(
-   FILES "${CMAKE_CURRENT_BINARY_DIR}/KF6ActivitiesStatsConfig.cmake"
-         "${CMAKE_CURRENT_BINARY_DIR}/KF6ActivitiesStatsConfigVersion.cmake"
+   FILES "${CMAKE_CURRENT_BINARY_DIR}/PlasmaActivitiesStatsConfig.cmake"
+         "${CMAKE_CURRENT_BINARY_DIR}/PlasmaActivitiesStatsConfigVersion.cmake"
    DESTINATION "${CMAKECONFIG_INSTALL_DIR}"
    COMPONENT Devel
    )
 
 install(
-   FILES ${kactivitiesstats_version_header}
-   DESTINATION ${KDE_INSTALL_INCLUDEDIR_KF}/KActivitiesStats COMPONENT Devel
+   FILES ${plasmaactivitiesstats_version_header}
+   DESTINATION ${KDE_INSTALL_INCLUDEDIR}/PlasmaActivitiesStats COMPONENT Devel
    )
 
 # Write out the features

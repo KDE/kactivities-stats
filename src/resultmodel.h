@@ -31,7 +31,7 @@ class ResultModelPrivate;
  * Provides a model which displays the resources matching
  * the specified Query.
  */
-class KACTIVITIESSTATS_EXPORT ResultModel : public QAbstractListModel
+class PLASMAACTIVITIESSTATS_EXPORT ResultModel : public QAbstractListModel
 {
     Q_OBJECT
 

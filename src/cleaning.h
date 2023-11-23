@@ -18,9 +18,9 @@ namespace Stats
 /**
  * Forget the resource(s) for the specified activity and agent
  */
-void KACTIVITIESSTATS_EXPORT forgetResource(Terms::Activity activity, Terms::Agent agent, const QString &resource);
+void PLASMAACTIVITIESSTATS_EXPORT forgetResource(Terms::Activity activity, Terms::Agent agent, const QString &resource);
 
-enum KACTIVITIESSTATS_EXPORT TimeUnit {
+enum PLASMAACTIVITIESSTATS_EXPORT TimeUnit {
     Hours,
     Days,
     Months,
@@ -29,17 +29,17 @@ enum KACTIVITIESSTATS_EXPORT TimeUnit {
 /**
  * Forget recent stats for the specified activity and time
  */
-void KACTIVITIESSTATS_EXPORT forgetRecentStats(Terms::Activity activity, int count, TimeUnit what);
+void PLASMAACTIVITIESSTATS_EXPORT forgetRecentStats(Terms::Activity activity, int count, TimeUnit what);
 
 /**
  * Forget events that are older than the specified number of months
  */
-void KACTIVITIESSTATS_EXPORT forgetEarlierStats(Terms::Activity activity, int months);
+void PLASMAACTIVITIESSTATS_EXPORT forgetEarlierStats(Terms::Activity activity, int months);
 
 /**
  * Forget resources that match the specified query
  */
-void KACTIVITIESSTATS_EXPORT forgetResources(const Query &query);
+void PLASMAACTIVITIESSTATS_EXPORT forgetResources(const Query &query);
 
 } // namespace Stats
 } // namespace KActivities

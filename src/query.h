@@ -12,7 +12,7 @@
 #include <QString>
 #include <QStringList>
 
-#include "kactivitiesstats_export.h"
+#include "plasmaactivitiesstats_export.h"
 
 #include "terms.h"
 
@@ -50,7 +50,7 @@ class QueryPrivate;
  *                 | Activity::current();
  * @endcode
  */
-class KACTIVITIESSTATS_EXPORT Query
+class PLASMAACTIVITIESSTATS_EXPORT Query
 {
 public:
     Query(Terms::Select selection = Terms::AllResources);
@@ -203,7 +203,7 @@ inline Query operator|(Terms::Select selection, Term &&term)
 } // namespace Stats
 } // namespace KActivities
 
-KACTIVITIESSTATS_EXPORT
+PLASMAACTIVITIESSTATS_EXPORT
 QDebug operator<<(QDebug dbg, const KActivities::Stats::Query &query);
 
 #endif // KACTIVITIES_STATS_QUERY_H

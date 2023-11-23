@@ -18,7 +18,7 @@
 #include <map>
 #include <mutex>
 
-#include "kactivities-stats-logsettings.h"
+#include "plasma-activities-stats-logsettings.h"
 
 namespace Common
 {
@@ -69,18 +69,18 @@ public:
         m_open = m_database.open();
 
         if (!m_open) {
-            qCWarning(KACTIVITIES_STATS_LOG) << "KActivities: Database is not open: " << m_database.connectionName() << m_database.databaseName()
+            qCWarning(PLASMA_ACTIVITIES_STATS_LOG) << "PlasmaActivities: Database is not open: " << m_database.connectionName() << m_database.databaseName()
                                              << m_database.lastError();
 
             if (info.openMode == Database::ReadWrite) {
-                qFatal("KActivities: Opening the database in RW mode should always succeed");
+                qFatal("PlasmaActivities: Opening the database in RW mode should always succeed");
             }
         }
     }
 
     ~QSqlDatabaseWrapper()
     {
-        qCDebug(KACTIVITIES_STATS_LOG) << "Closing SQL connection: " << m_connectionName;
+        qCDebug(PLASMA_ACTIVITIES_STATS_LOG) << "Closing SQL connection: " << m_connectionName;
     }
 
     QSqlDatabase &get()
@@ -178,7 +178,7 @@ Database::Ptr Database::instance(Source source, OpenMode openMode)
     auto walResult = ptr->pragma(QStringLiteral("journal_mode = WAL"));
 
     if (walResult != QLatin1String("wal")) {
-        qCWarning(KACTIVITIES_STATS_LOG) << "KActivities: Database can not be opened in WAL mode. Check the "
+        qCWarning(PLASMA_ACTIVITIES_STATS_LOG) << "PlasmaActivities: Database can not be opened in WAL mode. Check the "
                                             "SQLite version (required >3.7.0). And whether your filesystem "
                                             "supports shared memory";
 
@@ -189,7 +189,7 @@ Database::Ptr Database::instance(Source source, OpenMode openMode)
     // it reaches 400k, not 4M as is default
     ptr->setPragma(QStringLiteral("wal_autocheckpoint = 100"));
 
-    qCDebug(KACTIVITIES_STATS_LOG) << "KActivities: Database connection: " << ptr->d->database->connectionName()
+    qCDebug(PLASMA_ACTIVITIES_STATS_LOG) << "PlasmaActivities: Database connection: " << ptr->d->database->connectionName()
                                    << "\n    query_only:         " << ptr->pragma(QStringLiteral("query_only"))
                                    << "\n    journal_mode:       " << ptr->pragma(QStringLiteral("journal_mode"))
                                    << "\n    wal_autocheckpoint: " << ptr->pragma(QStringLiteral("wal_autocheckpoint"))

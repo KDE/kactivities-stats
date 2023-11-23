@@ -24,7 +24,7 @@ class ResultWatcherPrivate;
  * A very thin class that sends signals when new resources matching
  * a predefined query are available.
  */
-class KACTIVITIESSTATS_EXPORT ResultWatcher : public QObject
+class PLASMAACTIVITIESSTATS_EXPORT ResultWatcher : public QObject
 {
     Q_OBJECT
 

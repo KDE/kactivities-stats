@@ -24,8 +24,8 @@
 
 // Local
 #include "cleaning.h"
-#include "kactivities-stats-logsettings.h"
-#include "kactivities/consumer.h"
+#include "plasma-activities-stats-logsettings.h"
+#include "plasmaactivities/consumer.h"
 #include "resultset.h"
 #include "resultwatcher.h"
 #include <common/database/Database.h>
@@ -37,7 +37,7 @@
 
 constexpr int s_defaultCacheSize = 50;
 
-#define QDBG qCDebug(KACTIVITIES_STATS_LOG) << "KActivitiesStats(" << (void *)this << ")"
+#define QDBG qCDebug(PLASMA_ACTIVITIES_STATS_LOG) << "PlasmaActivitiesStats(" << (void *)this << ")"
 
 namespace KActivities
 {
@@ -97,7 +97,7 @@ public:
         inline void setLinkedResultPosition(const QString &resourcePath, int position)
         {
             if (!m_orderingConfig.isValid()) {
-                qCWarning(KACTIVITIES_STATS_LOG) << "We can not reorder the results, no clientId was specified";
+                qCWarning(PLASMA_ACTIVITIES_STATS_LOG) << "We can not reorder the results, no clientId was specified";
                 return;
             }
 
@@ -175,14 +175,14 @@ public:
         inline void debug() const
         {
             for (const auto &item : m_items) {
-                qCDebug(KACTIVITIES_STATS_LOG) << "Item: " << item;
+                qCDebug(PLASMA_ACTIVITIES_STATS_LOG) << "Item: " << item;
             }
         }
 
         void loadOrderingConfig(const QString &activityTag)
         {
             if (!m_configFile) {
-                qCDebug(KACTIVITIES_STATS_LOG) << "Nothing to load - the client id is empty";
+                qCDebug(PLASMA_ACTIVITIES_STATS_LOG) << "Nothing to load - the client id is empty";
                 return;
             }
 

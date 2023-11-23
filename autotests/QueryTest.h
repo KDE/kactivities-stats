@@ -9,7 +9,7 @@
 
 #include <common/test.h>
 
-#include <KActivities/Controller>
+#include <PlasmaActivities/Controller>
 
 class QueryTest : public Test
 {

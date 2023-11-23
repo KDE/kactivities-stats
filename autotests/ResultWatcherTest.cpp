@@ -15,7 +15,7 @@
 #include <QTest>
 #include <QTime>
 
-#include <KActivities/ResourceInstance>
+#include <PlasmaActivities/ResourceInstance>
 
 #include <query.h>
 #include <resultset.h>

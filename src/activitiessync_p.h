@@ -10,7 +10,7 @@
 #include <memory>
 #include <mutex>
 
-#include <KActivities/Consumer>
+#include <PlasmaActivities/Consumer>
 
 namespace ActivitiesSync
 {
